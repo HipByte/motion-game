@@ -1,4 +1,4 @@
-COCOS2D_PATH = '/Users/lrz/Downloads/cocos2d-x-3.3'
+COCOS2D_PATH = 'ext/cocos2d-x-3.3'
 RM_VM_PATH = '/Users/lrz/src/RubyMotion/vm'
 XCODE_PATH = '/Applications/Xcode.app'
 XCODE_IOS_SDK = '8.1'
