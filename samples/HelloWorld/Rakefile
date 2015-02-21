@@ -1,0 +1,15 @@
+# -*- coding: utf-8 -*-
+$:.unshift("/Users/lrz/src/RubyMotion/lib")
+require 'motion/project/template/ios'
+require '../../lib/ios/project.rb'
+
+begin
+  require 'bundler'
+  Bundler.require
+rescue LoadError
+end
+
+Motion::Project::App.setup do |app|
+  # Use `rake config' to see complete project settings.
+  app.name = 'HelloWorld'
+end
