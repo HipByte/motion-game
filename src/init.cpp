@@ -19,6 +19,7 @@ Init_Fluency(void)
     INIT_MODULE(Label)
     INIT_MODULE(Menu)
     INIT_MODULE(Sprite)
+    INIT_MODULE(Particle)
     INIT_MODULE(Audio)
     INIT_MODULE(Types)
 

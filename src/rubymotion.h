@@ -62,6 +62,7 @@ extern VALUE rb_cLayer;
 extern VALUE rb_cMenu;
 extern VALUE rb_cLabel;
 extern VALUE rb_cSprite;
+extern VALUE rb_cParticle;
 extern VALUE rb_cAudio;
 extern VALUE rb_cPoint;
 extern VALUE rb_cSize;
