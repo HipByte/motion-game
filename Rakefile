@@ -107,18 +107,31 @@ def build_project(platforms, platform_code, build_dir)
     end
   
     Dir.chdir('src') do
-      add_flags = "-I. -Werror -I#{COCOS2D_PATH}/cocos -I#{COCOS2D_PATH}/cocos/audio/include -I#{RM_VM_PATH} -I#{RM_VM_PATH}/include -DMACRUBY_STATIC -DNO_LIBAUTO"
+      add_flags = "-I. -Werror -I#{COCOS2D_PATH}/cocos -I#{COCOS2D_PATH}/cocos/audio/include -I#{RM_VM_PATH}"
+      case platform_code
+        when 'ios'
+          add_flags << " -I#{RM_VM_PATH}/include -DMACRUBY_STATIC -DNO_LIBAUTO"
+        when 'android'
+          add_flags << " -I#{RM_VM_PATH}/java"
+      end
       Dir.glob(file_pattern).each do |src_path|
         objs << compile_obj.call(src_path, add_flags, platform)
       end
     end
   end
 
+  ranlib = case platform_code
+    when 'ios'
+      '/usr/bin/ranlib'
+    when 'android'
+      "#{ANDROID_NDK_PATH}/toolchains/x86-4.9/prebuilt/darwin-x86_64/i686-linux-android/bin/ranlib"
+  end
+
   lib = File.join(build_dir, 'libmotion-cocos.a')
   if !File.exist?(lib) or objs.any? { |x| File.mtime(x) > File.mtime(lib) }
     rm_rf lib
     sh "/usr/bin/ar rcu #{lib} #{objs.join(' ')}"
-    sh "/usr/bin/ranlib #{lib}"
+    sh "#{ranlib} #{lib}"
   end
 
   prebuild_platform = platform_code

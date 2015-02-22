@@ -3,10 +3,6 @@
 
 #include "cocos2d.h"
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
 #if CC_TARGET_OS_IPHONE
 
 #include <objc/runtime.h>
@@ -19,6 +15,7 @@ extern "C" {
 
 #define rb_define_method(klass, name, imp, arity) \
     rb_objc_define_method(klass, name, (void *)imp, arity)
+
 #define rb_define_singleton_method(klass, name, imp, arity) \
     rb_define_method(RB_GET_CLASS(klass), name, imp, arity)
 
@@ -52,6 +49,29 @@ rb_class_wrap_new(void *ptr, VALUE klass)
 #define rb_obj_retain(obj) (VALUE)rb_objc_retain((void *)obj)
 #define rb_obj_release(obj) (VALUE)rb_objc_release((void *)obj)
 
+#elif CC_TARGET_OS_ANDROID
+
+#include "runtime.h"
+
+#define NUM2DBL NUM2DOUBLE
+#define DBL2NUM DOUBLE2NUM
+
+#define rb_obj_is_kind_of(obj, klass) rb_vm_kind_of(obj, (VALUE)klass)
+
+#define rb_selector(str) sel_registerName(str)
+
+#define rb_send rb_dispatch
+
+#define rb_define_method(klass, name, imp, arity) \
+    rb_define_method((jclass)klass, name, arity, (IMP)imp)
+
+#define rb_define_singleton_method(klass, name, imp, arity) \
+    rb_define_static_method((jclass)klass, name, arity, (IMP)imp)
+
+#endif
+
+#if defined(__cplusplus)
+extern "C" {
 #endif
 
 extern VALUE rb_mMC;
