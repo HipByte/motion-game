@@ -41,6 +41,8 @@ class GameLayer < MC::Layer
     @background.add spatialAnomaly1, -1, bg_speed, [900, visible_size.height * 0.3]
     @background.add spatialAnomaly2, -1, bg_speed, [1500, visible_size.height * 0.9]
 
+    %w{Stars1.plist Stars2.plist Stars3.plist}.each { |path| add MC::Particle.new(path) }
+
     # Asteroids.
     @asteroids = []
     15.times do
