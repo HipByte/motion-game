@@ -9,5 +9,6 @@ Motion::Project::App.setup do |app|
   app.resources_dirs = []
   app.files.concat(Dir.glob(File.join(File.dirname(__FILE__), 'android/*.rb')))
   app.libs += ['-lz', *Dir.glob('../../build/android/*.a')]
+  app.vendor_project :jar => '../../build/android/motion-cocos.jar'
   app.custom_init_funcs << 'Init_Fluency'
 end
