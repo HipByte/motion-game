@@ -7,9 +7,9 @@ static VALUE
 director_instance(VALUE rcv, SEL sel)
 {
     if (mc_director_instance == Qnil) {
-	mc_director_instance = rb_class_wrap_new(
+	VALUE obj = rb_class_wrap_new(
 		(void *)cocos2d::Director::getInstance(), rb_cDirector);
-	rb_obj_retain(mc_director_instance);
+	mc_director_instance = rb_retain(obj);
     }
     return mc_director_instance;
 }
@@ -17,9 +17,11 @@ director_instance(VALUE rcv, SEL sel)
 static VALUE
 director_view_set(VALUE rcv, SEL sel, VALUE obj)
 {
+#if CC_TARGET_OS_IPHONE
     cocos2d::GLView *glview =
 	cocos2d::GLViewImpl::createWithEAGLView((void *)obj);
     DIRECTOR(rcv)->setOpenGLView(glview);
+#endif
     return obj;
 }
 

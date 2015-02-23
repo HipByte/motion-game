@@ -46,8 +46,12 @@ rb_class_wrap_new(void *ptr, VALUE klass)
 #define rb_class_wrap_get_ptr(obj) \
     ((struct rb_class_ptr *)obj)->ptr
     
-#define rb_obj_retain(obj) (VALUE)rb_objc_retain((void *)obj)
-#define rb_obj_release(obj) (VALUE)rb_objc_release((void *)obj)
+#define rb_retain(obj) (VALUE)rb_objc_retain((void *)obj)
+#define rb_release(obj) (VALUE)rb_objc_release((void *)obj)
+
+#define rb_current_block() (VALUE)rb_vm_current_block()
+#define rb_block_call(block, argc, argv) \
+    rb_vm_block_eval((rb_vm_block_t *)block, argc, argv)
 
 #elif CC_TARGET_OS_ANDROID
 
@@ -67,6 +71,30 @@ rb_class_wrap_new(void *ptr, VALUE klass)
 
 #define rb_define_singleton_method(klass, name, imp, arity) \
     rb_define_static_method((jclass)klass, name, arity, (IMP)imp)
+
+#define rb_define_module(name) \
+    (VALUE)rb_define_module(name)
+
+#define rb_define_class_under(module, name, super) \
+    (VALUE)rb_vm_define_ruby_class(name, (VALUE)super, (VALUE)module)
+
+#define rb_class_wrap_new(ptr, klass) rb_object_new((jclass)klass, ptr)
+#define rb_class_wrap_get_ptr(obj) rb_object_ptr(obj)
+
+#define rb_retain(obj) (VALUE)VM_GLOBAL(obj)
+#define rb_release(obj) \
+    ({ \
+	VALUE _obj = obj; \
+	VALUE _local = VM_LOCAL(_obj); \
+	VM_GLOBAL_DELETE(_obj); \
+	_local; \
+    })
+
+#define RSTRING_PTR(str) rb_str_to_stdstring(str).c_str()
+
+#define rb_current_block() rb_vm_current_block_object()
+#define rb_block_call(block, argc, argv) \
+    rb_vm_block_dispatch(RB_BLOCK_PTR(block), argc, argv)
 
 #endif
 

@@ -12,16 +12,16 @@ menu_alloc(VALUE rcv, SEL sel)
 static VALUE
 menu_image_item(VALUE rcv, SEL sel, VALUE normal_image, VALUE selected_image)
 {
-    rb_vm_block_t *block = rb_vm_current_block();
-    if (block == NULL) {
+    VALUE block = rb_current_block();
+    if (block == Qnil) {
 	rb_raise(rb_eArgError, "block not given");
     }
-    rb_obj_retain(block); // FIXME need release...
+    block = rb_retain(block); // FIXME need release...
 
     cocos2d::MenuItemImage *item = cocos2d::MenuItemImage::create(
 	    RSTRING_PTR(normal_image), RSTRING_PTR(selected_image),
 	    [block](cocos2d::Ref *sender) {
-		rb_vm_block_eval(block, 0, NULL);
+		rb_block_call(block, 0, NULL);
 	    });
     MENU(rcv)->addChild(item);
     return rcv;

@@ -32,9 +32,9 @@ static VALUE
 application_instance(VALUE rcv, SEL sel)
 {
     if (mc_application_instance == Qnil) {
-	mc_application_instance = rb_class_wrap_new(
+	VALUE obj = rb_class_wrap_new(
 		(void *)cocos2d::Application::getInstance(), rb_cApplication);
-	rb_obj_retain(mc_application_instance);
+	mc_application_instance = rb_retain(obj);
     }
     return mc_application_instance;
 }

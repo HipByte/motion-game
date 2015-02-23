@@ -76,11 +76,11 @@ node_stop_update(VALUE rcv, SEL sel)
 static VALUE
 node_listen(VALUE rcv, SEL sel, VALUE event)
 {
-    rb_vm_block_t *block = rb_vm_current_block();
-    if (block == NULL) {
+    VALUE block = rb_current_block();
+    if (block == Qnil) {
 	rb_raise(rb_eArgError, "block not given");
     }
-    rb_obj_retain(block); // FIXME need release...
+    block = rb_retain(block); // FIXME need release...
 
     cocos2d::EventListener *listener = NULL;
     const char *event_str = rb_sym2name(event);
@@ -89,7 +89,7 @@ node_listen(VALUE rcv, SEL sel, VALUE event)
 	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
 	touch_listener->onTouchBegan = [block](cocos2d::Touch *touch,
 		cocos2d::Event *event) -> bool {
-	    return RTEST(rb_vm_block_eval(block, 0, NULL));
+	    return RTEST(rb_block_call(block, 0, NULL));
 	};
 	listener = touch_listener;
     }
@@ -99,7 +99,7 @@ node_listen(VALUE rcv, SEL sel, VALUE event)
 		[block](cocos2d::Acceleration *acc, cocos2d::Event *event) {
 		VALUE acc_obj = rb_class_wrap_new((void *)acc,
 			rb_cAcceleration);
-		rb_vm_block_eval(block, 1, &acc_obj);
+		rb_block_call(block, 1, &acc_obj);
 	    });
     }
     else {
@@ -134,13 +134,14 @@ node_intersects(VALUE rcv, SEL sel, VALUE node)
 static VALUE
 run_action(VALUE rcv, cocos2d::FiniteTimeAction *action)
 {
-    rb_vm_block_t *block = rb_vm_current_block();
-    if (block != NULL) {
-	rb_obj_retain(block); // FIXME need release...
-	action = cocos2d::Sequence::create(action,
-		cocos2d::CallFuncN::create([block](cocos2d::Node *node) {
-		    rb_vm_block_eval(block, 0, NULL);
-		}), NULL);
+    VALUE block = rb_current_block();
+    if (block != Qnil) {
+	block = rb_retain(block); // FIXME need release...
+	auto call_funcn =
+	    cocos2d::CallFuncN::create([block](cocos2d::Node *node) {
+		rb_block_call(block, 0, NULL);
+	    });
+	action = cocos2d::Sequence::create(action, call_funcn, (void *)0);
     }
     NODE(rcv)->runAction(action);
     return rcv;
