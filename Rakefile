@@ -179,7 +179,8 @@ task 'gen_tasks_shortcuts' do
   File.open('lib/shortcuts.rb', 'w') do |io|
     io.puts "# This file has been generated, do not edit by hand.\n"
     io.puts "def invoke_rake(platform, task)"
-    io.puts "  system \"/usr/bin/rake -r \\\"#\{File.dirname(__FILE__)\}/#\{platform\}.rb\\\" -f \\\"config/#\{platform\}.rb\\\" \\\"#\{task\}\\\" #\{Rake.verbose ? '--trace' : ''\}\" or exit 1"
+    io.puts "  trace = Rake.application.options.trace == true"
+    io.puts "  system \"/usr/bin/rake -r \\\"#\{File.dirname(__FILE__)\}/#\{platform\}.rb\\\" -f \\\"config/#\{platform\}.rb\\\" \\\"#\{task\}\\\" #\{trace ? '--trace' : ''\}\" or exit 1"
     io.puts "end"
     %w{ios android}.each do |platform|
       io.puts "namespace '#{platform}' do"

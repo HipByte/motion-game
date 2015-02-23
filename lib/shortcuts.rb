@@ -1,6 +1,7 @@
 # This file has been generated, do not edit by hand.
 def invoke_rake(platform, task)
-  system "/usr/bin/rake -r \"#{File.dirname(__FILE__)}/#{platform}.rb\" -f \"config/#{platform}.rb\" \"#{task}\" #{Rake.verbose ? '--trace' : ''}" or exit 1
+  trace = Rake.application.options.trace == true
+  system "/usr/bin/rake -r \"#{File.dirname(__FILE__)}/#{platform}.rb\" -f \"config/#{platform}.rb\" \"#{task}\" #{trace ? '--trace' : ''}" or exit 1
 end
 namespace 'ios' do
   desc "Create an .ipa archive"
