@@ -5,14 +5,20 @@ VALUE rb_cLayer = Qnil;
 class mc_Layer : private cocos2d::Layer {
     public:
 	VALUE obj;
+	SEL update_sel;
 
     mc_Layer() {
 	obj = Qnil;
+#if CC_TARGET_OS_IPHONE
+	update_sel = rb_selector("update:");
+#else
+	update_sel = rb_selector("update");
+#endif
     }
 
     virtual void update(float delta) {
 	VALUE arg = DBL2NUM(delta);
-	rb_send(obj, rb_selector("update:"), 1, &arg);
+	rb_send(obj, update_sel, 1, &arg);
     }
 };
 
