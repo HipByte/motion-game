@@ -76,7 +76,7 @@ rb_class_wrap_new(void *ptr, VALUE klass)
     (VALUE)rb_define_module(name)
 
 #define rb_define_class_under(module, name, super) \
-    (VALUE)rb_vm_define_ruby_class(name, (VALUE)super, (VALUE)module)
+    rb_retain(rb_vm_define_ruby_class(name, (VALUE)super, (VALUE)module))
 
 #define rb_class_wrap_new(ptr, klass) rb_object_new((jclass)klass, ptr)
 #define rb_class_wrap_get_ptr(obj) rb_object_ptr(obj)
