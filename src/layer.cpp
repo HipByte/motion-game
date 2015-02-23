@@ -21,7 +21,7 @@ layer_alloc(VALUE rcv, SEL sel)
 {
     mc_Layer *layer = new mc_Layer();
     VALUE obj = rb_class_wrap_new((void *)layer, rcv);
-    layer->obj = obj;
+    layer->obj = rb_retain(obj);
     return obj;
 }
 
