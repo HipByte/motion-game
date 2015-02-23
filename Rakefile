@@ -121,17 +121,18 @@ def build_project(platforms, platform_code, build_dir)
     end
   end
 
-  ranlib = case platform_code
-    when 'ios'
-      '/usr/bin/ranlib'
-    when 'android'
-      "#{ANDROID_NDK_PATH}/toolchains/x86-4.9/prebuilt/darwin-x86_64/i686-linux-android/bin/ranlib"
+  ar = '/usr/bin/ar'
+  ranlib = '/usr/bin/ranlib'
+  if platform_code == 'android'
+    toolchain_bin = "#{ANDROID_NDK_PATH}/toolchains/x86-4.9/prebuilt/darwin-x86_64/i686-linux-android/bin"
+    ar = toolchain_bin + "/ar"
+    ranlib = toolchain_bin + "/ranlib"
   end
 
   lib = File.join(build_dir, 'libmotion-cocos.a')
   if !File.exist?(lib) or objs.any? { |x| File.mtime(x) > File.mtime(lib) }
     rm_rf lib
-    sh "/usr/bin/ar rcu #{lib} #{objs.join(' ')}"
+    sh "#{ar} rcu #{lib} #{objs.join(' ')}"
     sh "#{ranlib} #{lib}"
   end
 
