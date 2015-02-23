@@ -6,6 +6,7 @@ XCODE_IOS_SDK = '8.1'
 XCODE_IOS_DEPLOYMENT_TARGET = '7.0'
 
 ANDROID_NDK_PATH = '/Users/lrz/src/android-ndk-r10c'
+ANDROID_SDK_PATH = '/Users/lrz/src/android-sdk-macosx'
 ANDROID_API = '18'
 
 BUILD_OPTIONS = {}
@@ -141,6 +142,19 @@ def build_project(platforms, platform_code, build_dir)
     lib_dest = File.join(build_dir, File.basename(lib))
     if !File.exist?(lib_dest) or File.mtime(lib) > File.mtime(lib_dest)
       install lib, lib_dest
+    end
+  end
+
+  if platform_code == 'android'
+    classes_dir = File.join(build_dir, 'classes')
+    Dir.chdir(File.join(COCOS2D_PATH, 'cocos/platform/android/java/src')) do
+      java_src_files = Dir.glob('*/**/*.java')
+      android_jar = "#{ANDROID_SDK_PATH}/platforms/android-#{ANDROID_API}/android.jar"
+      mkdir_p classes_dir unless File.exist? classes_dir
+      sh "/usr/bin/javac -d \"#{classes_dir}\" -bootclasspath \"#{android_jar}\" #{java_src_files.join(' ')}"
+    end
+    Dir.chdir(classes_dir) do
+      sh "/usr/bin/jar cvf ../motion-cocos.jar ."
     end
   end
 end
