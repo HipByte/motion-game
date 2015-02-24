@@ -55,9 +55,7 @@ static VALUE
 director_end(VALUE rcv, SEL sel)
 {
     DIRECTOR(rcv)->end();
-#if CC_TARGET_OS_IPHONE
     exit(0);
-#endif
     return rcv;
 }
 
