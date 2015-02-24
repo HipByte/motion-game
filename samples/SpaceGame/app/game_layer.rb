@@ -104,7 +104,7 @@ class GameLayer < MC::Layer
     now = Time.now
     current_usecs = (now.to_i * 1000) + (now.usec / 1000)
     if current_usecs > @next_asteroid_spawn
-      @next_asteroid_spawn = (@random.rand(0.5..1.2) * 1000) + current_usecs
+      @next_asteroid_spawn = (@random.rand(0.5..1.2) * 1000).to_i + current_usecs
 
       rand_y = @random.rand(0..(win_size.height))
       rand_duration = @random.rand(2..10)
