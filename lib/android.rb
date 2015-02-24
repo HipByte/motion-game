@@ -11,4 +11,10 @@ Motion::Project::App.setup do |app|
   app.vendor_project :jar => '../../build/android/motion-cocos.jar'
   app.libs += %w{motion-cocos chipmunk crypto curl freetype jpeg png ssl tiff webp websockets}.map { |x| "../../build/android/lib#{x}.a" } + ['-lz', '-latomic', '-lEGL', '-lGLESv2', '-landroid'] # The order of these libraries is very important for the linker to find all symbols.
   app.custom_init_funcs << 'Init_Fluency'
+
+  app.manifest.add_child('uses-feature')['android:glEsVersion'] = '0x00020000'
+  app.manifest.child('application').child('activity') do |main_activity|
+    main_activity['android:screenOrientation'] = 'landscape'
+    main_activity['android:theme'] = '@android:style/Theme.NoTitleBar.Fullscreen'
+  end
 end
