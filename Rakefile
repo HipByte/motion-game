@@ -195,3 +195,18 @@ task 'gen_tasks_shortcuts' do
     end
   end
 end
+
+task 'archive' do
+  archive_dir = '/tmp/motion-game'
+  rm_rf archive_dir
+  mkdir_p archive_dir
+  files = []
+  files += Dir.glob('build/{ios,android}/*.{a,jar}')
+  files += Dir.glob('lib/**/*.rb')
+  files += Dir.glob('samples/**/*').reject { |x| x.include?('build') or File.directory?(x) }
+  files.each do |path|
+    dest = File.join(archive_dir, File.dirname(path))
+    mkdir_p dest
+    install path, dest
+  end
+end
