@@ -210,3 +210,104 @@ task 'archive' do
     install path, dest
   end
 end
+
+class DocAPIGen
+  def initialize
+    @classes = []
+  end
+
+  def parse(path)
+    txt = File.read(path)
+    current_class = nil
+    current_node = nil
+    txt.lines.select { |x| x.start_with?('/// ') }.each do |line|
+      line = line[4..-1].rstrip
+      if md = line.match(/@class\s+(.+)/)
+        current_class = current_node = add_class(md[1])
+      elsif md = line.match(/@method\s+(.+)/)
+        current_node = add_method(current_class, md[1])
+      elsif md = line.match(/@property\s+(.+)/)
+        current_node = add_property(current_class, md[1])
+      else
+        current_node[:doc] << line << "\n"
+      end
+    end
+  end
+
+  def to_ruby
+    require 'stringio'
+    io = StringIO.new
+    io.puts "module MC"
+    io.puts "module Events; end"
+    @classes.each do |klass|
+      io.puts doc_comment(klass, 0)
+      io.puts "class #{klass[:def]}"
+      io.puts
+      klass[:properties].each do |property|
+        io.puts doc_comment(property, 2)
+        io.puts "  attr_accessor :#{property[:sel]}"
+        io.puts
+      end
+      klass[:cmethods].each do |method|
+        io.puts doc_comment(method, 2)
+        io.puts "  def self.#{method[:sel]}; end"
+        io.puts
+      end
+      klass[:imethods].each do |method|
+        io.puts doc_comment(method, 2)
+        io.puts "  def #{method[:sel]}; end"
+        io.puts
+      end
+      io.puts "end"
+    end
+    io.puts "end"
+    io
+  end
+
+  private
+
+  def add_class(definition)
+   klass = { :def => definition, :doc => '', :cmethods => [], :imethods => [], :properties => [] }
+   @classes << klass
+   klass
+  end
+
+  def add_method(klass, definition)
+    method = { :sel => definition[1..-1], :doc => '' }
+    ary = case definition[0]
+      when '.'
+        klass[:cmethods]
+      when '#'
+        klass[:imethods]
+      else
+        raise "expected method definition `#{definition}' to start with '.' or '#'" 
+    end
+    ary << method
+    method
+  end
+
+  def add_property(klass, definition)
+    property = { :sel => definition[1..-1], :doc => '' }
+    ary = case definition[0]
+      when '#'
+        klass[:properties]
+      else
+        raise "expected property definition `#{definition}' to start with '#'" 
+    end
+    ary << property
+    property
+  end
+
+  def doc_comment(node, level)
+    node[:doc].lines.map { |x| (' ' * level) + "# " + x }.join
+  end
+end
+
+task 'doc' do
+  api_gen = DocAPIGen.new
+  Dir.glob('src/*.cpp').each { |path| api_gen.parse(path) }
+  rm_rf 'doc'
+  mkdir_p 'doc'
+  File.open('/tmp/fake.rb', 'w') { |io| io.write(api_gen.to_ruby.string) }
+  sh "yard doc -o ./doc /tmp/fake.rb"
+end
