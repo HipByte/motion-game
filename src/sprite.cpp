@@ -1,6 +1,18 @@
 #include "rubymotion.h"
 
+/// @class Sprite < Node
+
 VALUE rb_cSprite = Qnil;
+
+/// @method .load(file_name)
+/// Loads all sprites from the content of +file_name+, which should be
+/// the name of a property list spritesheet file in the application's resource
+//  directory. Once a spritesheet file is loaded, its frames can be created
+/// using {Sprite#initialize}.
+/// Sprite frames files can be created with a visual editor such as
+/// TexturePacker.
+/// @param file_name [String] the name of the sprite frames property list file.
+/// @return [nil]
 
 static VALUE
 sprite_load(VALUE rcv, SEL sel, VALUE plist_path)
@@ -9,6 +21,12 @@ sprite_load(VALUE rcv, SEL sel, VALUE plist_path)
 	    RSTRING_PTR(plist_path));
     return Qnil;
 }
+
+/// @method #initialize(sprite_name)
+/// Creates a new sprite object from the name of +sprite_name+. The sprite
+/// must either exist as a standalone image file in the application's resource
+/// directory, or must have been loaded from a spritesheet using #{load}.
+/// @param sprite_name [String] the name of the sprite to create.
 
 static VALUE
 sprite_new(VALUE rcv, SEL sel, VALUE name)

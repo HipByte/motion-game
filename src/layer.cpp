@@ -1,5 +1,7 @@
 #include "rubymotion.h"
 
+/// @class Scene < Node
+
 VALUE rb_cLayer = Qnil;
 
 class mc_Layer : private cocos2d::Layer {
@@ -20,6 +22,11 @@ class mc_Layer : private cocos2d::Layer {
 	VALUE arg = DBL2NUM(delta);
 	rb_send(obj, update_sel, 1, &arg);
     }
+
+    virtual bool onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *event) {
+	printf("onTouchBegan\n");
+	return true;
+    }
 };
 
 static VALUE
@@ -31,10 +38,15 @@ layer_alloc(VALUE rcv, SEL sel)
     return obj;
 }
 
+/// @method #initialize
+/// The default initializer. Subclasses can construct the scene interface in
+/// this method, as well as providing an implementation for {#update}, then
+/// run the update loop by calling {#start_update}.
+/// @return [Scene] the receiver.
+
 static VALUE
 layer_initialize(VALUE rcv, SEL sel)
 {
-    //LAYER(rcv)->init();
     return rcv;
 }
 
@@ -42,7 +54,7 @@ extern "C"
 void
 Init_Layer(void)
 {
-    rb_cLayer = rb_define_class_under(rb_mMC, "Layer", rb_cNode);
+    rb_cLayer = rb_define_class_under(rb_mMC, "Scene", rb_cNode);
 
     rb_define_singleton_method(rb_cLayer, "alloc", layer_alloc, 0);
     rb_define_method(rb_cLayer, "initialize", layer_initialize, 0);

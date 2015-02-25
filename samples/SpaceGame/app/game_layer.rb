@@ -1,8 +1,8 @@
-class GameLayer < MC::Layer
+class GameLayer < MC::Scene
   def initialize
     @random = Random.new
 
-    director = MC::Director.instance
+    director = MC::Director.shared
     visible_size = director.size
     visible_origin = director.origin  
  
@@ -64,11 +64,11 @@ class GameLayer < MC::Layer
     @next_ship_laser = 0
 
     # Enable events.
-    listen :on_touch_begin { fire_ship_laser }
+    listen :touch_begin { fire_ship_laser }
     listen :accelerate { |acc| calculate_ship_position(acc) }
 
     # Start background music.
-    MC::Audio.background 'background_music'
+    MC::Audio.shared.background 'background_music'
 
     # Start the game loop.
     @lives = 3
@@ -77,7 +77,7 @@ class GameLayer < MC::Layer
   end
 
   def update(delta)
-    win_size = MC::Director.instance.size
+    win_size = MC::Director.shared.size
 
     # Move background space dusts.
     width = @space_dust1.size.width
@@ -124,7 +124,7 @@ class GameLayer < MC::Layer
       @ship_lasers.each do |ship_laser|
         next unless ship_laser.visible?
         if ship_laser.intersects?(asteroid)
-          MC::Audio.effect('explosion_large')
+          MC::Audio.shared.effect('explosion_large')
           ship_laser.visible = asteroid.visible = false
           @score += 1
         end
@@ -140,7 +140,7 @@ class GameLayer < MC::Layer
   end
 
   def fire_ship_laser
-    MC::Audio.effect 'laser_ship'
+    MC::Audio.shared.effect 'laser_ship'
 
     ship_laser = @ship_lasers[@next_ship_laser]
     @next_ship_laser += 1
@@ -148,13 +148,13 @@ class GameLayer < MC::Layer
 
     ship_laser.position = @ship.position + [ship_laser.size.width / 2.0, 0]
     ship_laser.visible = true
-    ship_laser.move_by [MC::Director.instance.size.width, 0], 0.5 { ship_laser.visible = false }
+    ship_laser.move_by [MC::Director.shared.size.width, 0], 0.5 { ship_laser.visible = false }
   end
 
   def calculate_ship_position(acc)
     filtering_factor = 0.1
     rest_accel_x = -0.6
-    ship_max_points_per_sec = MC::Director.instance.size.height * 0.5
+    ship_max_points_per_sec = MC::Director.shared.size.height * 0.5
     max_diff_x = 0.2
 
     x = acc.y
@@ -167,7 +167,7 @@ class GameLayer < MC::Layer
   end
 
   def game_over
-    win_size = MC::Director.instance.size
+    win_size = MC::Director.shared.size
 
     label = MC::Label.new("Game Over!\nYour score is #{@score}\nTap to restart", 'Arial', 42)
     label.position = [win_size.width / 2, win_size.height / 2]
@@ -178,6 +178,6 @@ class GameLayer < MC::Layer
   end
 
   def restart
-    MC::Director.instance.replace GameLayer.new
+    MC::Director.shared.replace GameLayer.new
   end
 end

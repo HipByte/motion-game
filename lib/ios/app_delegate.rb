@@ -12,8 +12,8 @@ class AppDelegate
     @window.rootViewController = rootViewController
     @window.makeKeyAndVisible
 
-    MC::Director.instance._set_glview(glview)
-    MC::Application.instance.run
+    MC::Director.shared._set_glview(glview)
+    MC::Application.shared.run
 
     true
   end

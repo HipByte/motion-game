@@ -1,19 +1,23 @@
 #include "rubymotion.h"
 
+/// @class Application < Object
+
 VALUE rb_cApplication = Qnil;
 static VALUE mc_application_instance = Qnil;
 
 class mc_Application : private cocos2d::Application {
     public:
 	VALUE obj;
+	SEL start_sel;
 
     mc_Application() {
 	obj = Qnil;
+	start_sel = rb_selector("start");
     }
 
     virtual bool
     applicationDidFinishLaunching() {
-	rb_send(obj, rb_selector("start"), 0, NULL);
+	rb_send(obj, start_sel, 0, NULL);
 	return true;
     }
 
@@ -27,6 +31,9 @@ class mc_Application : private cocos2d::Application {
 
     }
 };
+
+/// @method .shared
+/// @return [Application] the shared Application instance.
 
 static VALUE
 application_instance(VALUE rcv, SEL sel)
@@ -48,27 +55,23 @@ application_alloc(VALUE rcv, SEL sel)
     return obj;
 }
 
-static VALUE mc_application_orientation = Qnil;
-
-static VALUE
-application_orientation(VALUE rcv, SEL sel, int argc, VALUE *argv)
-{
-    if (argc > 1) {
-	rb_raise(rb_eArgError, "expected 1 or 0 arguments");
-    }
-    if (argc == 1) {
-	if (mc_application_orientation != argv[0]) {
-	    // TODO: validate argument
-	    mc_application_orientation = argv[0];
-	}
-    }
-    return mc_application_orientation;
-}
-
 static VALUE
 application_run(VALUE rcv, SEL sel)
 {
     APPLICATION(rcv)->run();
+    return rcv;
+}
+
+/// @method #start
+/// This method is called when the application finished launching. This method
+/// is empty by default, and you are responsible to provide a custom
+/// implementation that will create the interface of your game.
+/// @return [Application] the receiver.
+
+static VALUE
+application_start(VALUE rcv, SEL sel)
+{
+    // Do nothing.
     return rcv;
 }
 
@@ -90,18 +93,15 @@ Init_Application(void)
 {
     rb_cApplication = rb_define_class_under(rb_mMC, "Application", rb_cObject);
 
-    rb_define_singleton_method(rb_cApplication, "instance",
+    rb_define_singleton_method(rb_cApplication, "shared",
 	    application_instance, 0);
     rb_define_singleton_method(rb_cApplication, "alloc", application_alloc, 0);
-    rb_define_singleton_method(rb_cApplication, "orientation",
-	    application_orientation, -1);
     rb_define_method(rb_cApplication, "run", application_run, 0);
+    rb_define_method(rb_cApplication, "start", application_start, 0);
 
     // Internal.
     rb_define_method(rb_cApplication, "_screen_size_changed",
 	    application_screen_size_changed, 0);
-
-    mc_application_orientation = rb_name2sym("all");
 }
 
 #if CC_TARGET_OS_ANDROID

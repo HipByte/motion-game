@@ -1,6 +1,14 @@
 #include "rubymotion.h"
 
+/// @class Label < Node
+
 VALUE rb_cLabel = Qnil;
+
+/// @method #initialize(text, font, font_size)
+/// Creates a new label object, with a given text and font attributes.
+/// @param text [String] the label title.
+/// @param font [String] the name of the font to use.
+/// @param font_size [Float] the size of the font ot use.
 
 static VALUE
 label_new(VALUE rcv, SEL sel, VALUE text, VALUE font, VALUE fontsize)

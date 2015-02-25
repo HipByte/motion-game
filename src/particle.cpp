@@ -1,6 +1,15 @@
 #include "rubymotion.h"
 
+/// @class Particle < Node
+
 VALUE rb_cParticle = Qnil;
+
+/// @method #initialize(file_name)
+/// Creates a Particle object with the content of +file_name+, which should
+/// be the name of a property list file in the application's resource
+/// directory. Particle files can be created manually or with a visual editor
+/// such as Particle Designer.
+/// @param file_name [String] the name of the property list particle file.
 
 static VALUE
 particle_new(VALUE rcv, SEL sel, VALUE name)

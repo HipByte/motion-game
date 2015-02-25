@@ -1,5 +1,7 @@
 #include "rubymotion.h"
 
+/// @class Point < Object
+
 VALUE rb_cPoint = Qnil;
 
 extern "C"
@@ -16,11 +18,17 @@ point_alloc(VALUE rcv, SEL sel)
     return rb_ccvec2_to_obj(cocos2d::Vec2());
 }
 
+/// @property #x
+/// @return [Float] the x coordinate of the point.
+
 static VALUE
 point_x(VALUE rcv, SEL sel)
 {
     return DBL2NUM(VEC2(rcv)->x);
 }
+
+/// @property #y
+/// @return [Float] the y coordinate of the point.
 
 static VALUE
 point_y(VALUE rcv, SEL sel)
@@ -42,11 +50,19 @@ point_y_set(VALUE rcv, SEL sel, VALUE y)
     return y;
 }
 
+/// @method #+(point)
+/// Adds the coordinates of the receiver with the coordinates of the given
+/// point object.
+/// @param point [Point]
+/// @return [Point] A new Point object.
+
 static VALUE
 point_plus(VALUE rcv, SEL sel, VALUE obj)
 {
     return rb_ccvec2_to_obj(*VEC2(rcv) + rb_any_to_ccvec2(obj));
 }
+
+/// @class Size < Object
 
 VALUE rb_cSize = Qnil;
 
@@ -64,11 +80,17 @@ size_alloc(VALUE rcv, SEL sel)
     return rb_ccsize_to_obj(cocos2d::Size());
 }
 
+/// @property #width
+/// @return [Float] the size width.
+
 static VALUE
 size_width(VALUE rcv, SEL sel)
 {
     return DBL2NUM(SIZE(rcv)->width);
 }
+
+/// @property #height
+/// @return [Float] the size height.
 
 static VALUE
 size_height(VALUE rcv, SEL sel)

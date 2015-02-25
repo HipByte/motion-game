@@ -72,8 +72,8 @@ rb_class_wrap_new(void *ptr, VALUE klass)
 #define rb_define_singleton_method(klass, name, imp, arity) \
     rb_define_static_method((jclass)klass, name, arity, (IMP)imp)
 
-#define rb_define_module(name) \
-    (VALUE)rb_define_module(name)
+#define rb_define_module_under(mod, name) \
+    (VALUE)rb_define_module((jclass)mod, name)
 
 #define rb_define_class_under(module, name, super) \
     rb_retain(rb_vm_define_ruby_class(name, (VALUE)super, (VALUE)module))
@@ -123,6 +123,7 @@ extern VALUE rb_cSize;
 #define LAYER(obj) _COCOS_WRAP_GET(obj, cocos2d::Layer)
 #define SCENE(obj) _COCOS_WRAP_GET(obj, cocos2d::Scene)
 #define MENU(obj) _COCOS_WRAP_GET(obj, cocos2d::Menu)
+#define AUDIO(obj) _COCOS_WRAP_GET(obj, CocosDenshion::SimpleAudioEngine)
 #define VEC2(obj) _COCOS_WRAP_GET(obj, cocos2d::Vec2)
 #define SIZE(obj) _COCOS_WRAP_GET(obj, cocos2d::Size)
 

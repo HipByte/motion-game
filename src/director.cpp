@@ -1,7 +1,12 @@
 #include "rubymotion.h"
 
+/// @class Director < Object
+
 VALUE rb_cDirector = Qnil;
 static VALUE mc_director_instance = Qnil;
+
+/// @method .shared
+/// @return [Director] the shared Director instance.
 
 static VALUE
 director_instance(VALUE rcv, SEL sel)
@@ -14,16 +19,16 @@ director_instance(VALUE rcv, SEL sel)
     return mc_director_instance;
 }
 
+#if CC_TARGET_OS_IPHONE
 static VALUE
 director_view_set(VALUE rcv, SEL sel, VALUE obj)
 {
-#if CC_TARGET_OS_IPHONE
     cocos2d::GLView *glview =
 	cocos2d::GLViewImpl::createWithEAGLView((void *)obj);
     DIRECTOR(rcv)->setOpenGLView(glview);
-#endif
     return obj;
 }
+#endif
 
 static cocos2d::Scene *
 obj_to_scene(VALUE obj)
@@ -37,19 +42,34 @@ obj_to_scene(VALUE obj)
     return scene;
 }
 
+/// @method #run(scene)
+/// Runs the given scene object.
+/// @param scene [Scene] the scene to run.
+/// @return [Director] the receiver.
+
 static VALUE
 director_run(VALUE rcv, SEL sel, VALUE obj)
 {
     DIRECTOR(rcv)->runWithScene(obj_to_scene(obj));
-    return obj;
+    return rcv;
 }
+
+/// @method #replace(scene)
+/// Replaces the current scene with a new one. The running scene will be
+/// terminated.
+/// @param scene [Scene] the scene to replace the current one with.
+/// @return [Director] the receiver.
 
 static VALUE
 director_replace(VALUE rcv, SEL sel, VALUE obj)
 {
     DIRECTOR(rcv)->replaceScene(obj_to_scene(obj));
-    return obj;
+    return rcv;
 }
+
+/// @method #end
+/// Ends the execution. This also has the effect of quitting the application.
+/// @return [Director] the receiver.
 
 static VALUE
 director_end(VALUE rcv, SEL sel)
@@ -59,17 +79,28 @@ director_end(VALUE rcv, SEL sel)
     return rcv;
 }
 
+/// @method #origin
+/// @return [Point] the visible origin of the director view in points.
+
 static VALUE
 director_origin(VALUE rcv, SEL sel)
 {
     return rb_ccvec2_to_obj(DIRECTOR(rcv)->getVisibleOrigin());
 }
 
+/// @method #size
+/// @return [Size] the visible size of the director view in points.
+
 static VALUE
 director_size(VALUE rcv, SEL sel)
 {
     return rb_ccsize_to_obj(DIRECTOR(rcv)->getVisibleSize());
 }
+
+/// @property #show_stats
+/// Controls whether the FPS (frame-per-second) statistic label is displayed
+/// in the bottom-left corner of the director view. By default it is hidden.
+/// @return [Boolean] whether the FPS label is displayed.
 
 static VALUE
 director_show_stats(VALUE rcv, SEL sel, VALUE val)
@@ -83,7 +114,7 @@ void
 Init_Director(void)
 {
     rb_cDirector = rb_define_class_under(rb_mMC, "Director", rb_cObject);
-    rb_define_singleton_method(rb_cDirector, "instance", director_instance, 0);
+    rb_define_singleton_method(rb_cDirector, "shared", director_instance, 0);
     rb_define_method(rb_cDirector, "run", director_run, 1);
     rb_define_method(rb_cDirector, "replace", director_replace, 1);
     rb_define_method(rb_cDirector, "end", director_end, 0);
@@ -92,5 +123,7 @@ Init_Director(void)
     rb_define_method(rb_cDirector, "show_stats=", director_show_stats, 1);
 
     // Internal.
+#if CC_TARGET_OS_IPHONE
     rb_define_method(rb_cDirector, "_set_glview", director_view_set, 1);
+#endif
 }
