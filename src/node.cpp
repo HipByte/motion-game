@@ -247,6 +247,38 @@ node_blink(VALUE rcv, SEL sel, VALUE blinks, VALUE interval)
 		NUM2INT(blinks)));
 }
 
+/// @method #clear(cleanup=true)
+/// Removes all children nodes from the receiver.
+/// @param cleanup [Boolean] cleans all running actions on children before
+///   removing them.
+/// @return [Node] the receiver.
+
+static VALUE
+node_clear(VALUE rcv, SEL sel, int argc, VALUE *argv)
+{
+    VALUE cleanup = Qnil;
+    rb_scan_args(argc, argv, "01", &cleanup);
+
+    NODE(rcv)->removeAllChildrenWithCleanup(RTEST(cleanup));
+    return rcv;
+}
+
+/// @method #delete(node, cleanup=true)
+/// Removes the given child node from the receiver.
+/// @param cleanup [Boolean] cleans all running actions on child before
+///   removing it.
+/// @return [Node] the receiver.
+
+static VALUE
+node_delete(VALUE rcv, SEL sel, int argc, VALUE *argv)
+{
+    VALUE node = Qnil, cleanup = Qnil;
+    rb_scan_args(argc, argv, "11", &node, &cleanup);
+
+    NODE(rcv)->removeChild(NODE(node), RTEST(cleanup));
+    return rcv;
+}
+
 /// @class ParallaxNode < Node
 
 #define PNODE(obj) _COCOS_WRAP_GET(obj, cocos2d::ParallaxNode)
@@ -351,6 +383,8 @@ Init_Node(void)
     rb_define_method(rb_cNode, "intersects?", node_intersects, 1);
     rb_define_method(rb_cNode, "move_by", node_move_by, 2);
     rb_define_method(rb_cNode, "blink", node_blink, 2);
+    rb_define_method(rb_cNode, "clear", node_clear, -1);
+    rb_define_method(rb_cNode, "delete", node_delete, -1);
 
     rb_cParallaxNode = rb_define_class_under(rb_mMC, "ParallaxNode", rb_cNode);
 
