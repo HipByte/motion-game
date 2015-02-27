@@ -4,6 +4,8 @@
 
 VALUE rb_cSprite = Qnil;
 
+/// @group Spritesheets
+
 /// @method .load(file_name)
 /// Loads all sprites from the content of +file_name+, which should be
 /// the name of a property list spritesheet file in the application's resource
@@ -21,6 +23,8 @@ sprite_load(VALUE rcv, SEL sel, VALUE plist_path)
 	    RSTRING_PTR(plist_path));
     return Qnil;
 }
+
+/// @group Constructors
 
 /// @method #initialize(sprite_name)
 /// Creates a new sprite object from the name of +sprite_name+. The sprite

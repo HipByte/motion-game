@@ -4,6 +4,8 @@
 
 VALUE rb_cParticle = Qnil;
 
+/// @group Constructors
+
 /// @method #initialize(file_name)
 /// Creates a Particle object with the content of +file_name+, which should
 /// be the name of a property list file in the application's resource

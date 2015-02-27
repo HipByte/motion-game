@@ -8,6 +8,8 @@ static VALUE rb_mEvents = Qnil;
 static VALUE rb_cAcceleration = Qnil;
 static VALUE rb_cTouch = Qnil;
 
+/// @group Properties
+
 /// @property #anchor_point
 /// The anchor point of the node, as a set of percentage coordinates.
 /// The anchor point represents where the node will be attached to its parent,
@@ -63,63 +65,37 @@ node_size_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
-/// @method #add(node, zpos=0)
-/// Adds a child node to the receiver with a local z-order.
-/// @param node [Node] the child to add.
-/// @param zpos [Integer] the local z-order.
-/// @return [Node] the receiver. 
+/// @property #visible?
+/// @return [Boolean] whether the node should be visible. The default value is
+///   true.
 
 static VALUE
-node_add(VALUE rcv, SEL sel, int argc, VALUE *argv)
+node_visible_set(VALUE rcv, SEL sel, VALUE val)
 {
-    VALUE child = Qnil;
-    VALUE zpos = Qnil;
-    rb_scan_args(argc, argv, "11", &child, &zpos);
-
-    if (zpos == Qnil) {
-	NODE(rcv)->addChild(NODE(child));
-    }
-    else {
-	NODE(rcv)->addChild(NODE(child), NUM2LONG(zpos));
-    }
-    return rcv;
+    NODE(rcv)->setVisible(RTEST(val));
+    return val;
 }
-
-/// @method #start_update
-/// Starts the update loop. The +#update+ method will be called on this object
-/// for every frame.
-/// @return [Node] the receiver.
 
 static VALUE
-node_start_update(VALUE rcv, SEL sel)
+node_visible(VALUE rcv, SEL sel)
 {
-    NODE(rcv)->scheduleUpdate();
-    return rcv;
+    return NODE(rcv)->isVisible() ? Qtrue : Qfalse;
 }
 
-/// @method #stop_update
-/// Stops the update loop. The +#update+ method will no longer be called on
-/// this object.
-/// @return [Node] the receiver.
+/// @group Miscellaneous
+
+/// @method #intersects?(node)
+/// @param node [Node] a given Node object.
+/// @return [Boolean] whether the receiver's bounding box intersects with the given node's bounding box.
 
 static VALUE
-node_stop_update(VALUE rcv, SEL sel)
+node_intersects(VALUE rcv, SEL sel, VALUE node)
 {
-    NODE(rcv)->unscheduleUpdate();
-    return rcv;
+    return NODE(rcv)->getBoundingBox().intersectsRect(
+	    NODE(node)->getBoundingBox()) ? Qtrue : Qfalse;
 }
 
-/// @method #update
-/// The update loop method. Subclasses can provide a custom implementation of
-/// this method. The default implementation is empty.
-/// @return [Node] the receiver.
-
-static VALUE
-node_update(VALUE rcv, SEL sel)
-{
-    // Do nothing.
-    return rcv;
-}
+/// @group Events
 
 /// @method #listen(event)
 /// Starts listening for the given +event+ on the receiver, and yields the
@@ -174,33 +150,45 @@ node_listen(VALUE rcv, SEL sel, VALUE event)
     return rcv;
 }
 
-/// @property #visible?
-/// @return [Boolean] whether the node should be visible. The default value is
-///   true.
+/// @group Update Loop
+
+/// @method #start_update
+/// Starts the update loop. The +#update+ method will be called on this object
+/// for every frame.
+/// @return [Node] the receiver.
 
 static VALUE
-node_visible_set(VALUE rcv, SEL sel, VALUE val)
+node_start_update(VALUE rcv, SEL sel)
 {
-    NODE(rcv)->setVisible(RTEST(val));
-    return val;
+    NODE(rcv)->scheduleUpdate();
+    return rcv;
 }
+
+/// @method #stop_update
+/// Stops the update loop. The +#update+ method will no longer be called on
+/// this object.
+/// @return [Node] the receiver.
 
 static VALUE
-node_visible(VALUE rcv, SEL sel)
+node_stop_update(VALUE rcv, SEL sel)
 {
-    return NODE(rcv)->isVisible() ? Qtrue : Qfalse;
+    NODE(rcv)->unscheduleUpdate();
+    return rcv;
 }
 
-/// @method #intersects?(node)
-/// @param node [Node] a given Node object.
-/// @return [Boolean] whether the receiver's bounding box intersects with the given node's bounding box.
+/// @method #update
+/// The update loop method. Subclasses can provide a custom implementation of
+/// this method. The default implementation is empty.
+/// @return [Node] the receiver.
 
 static VALUE
-node_intersects(VALUE rcv, SEL sel, VALUE node)
+node_update(VALUE rcv, SEL sel)
 {
-    return NODE(rcv)->getBoundingBox().intersectsRect(
-	    NODE(node)->getBoundingBox()) ? Qtrue : Qfalse;
+    // Do nothing.
+    return rcv;
 }
+
+/// @group Actions
 
 static VALUE
 run_action(VALUE rcv, cocos2d::FiniteTimeAction *action)
@@ -247,6 +235,31 @@ node_blink(VALUE rcv, SEL sel, VALUE blinks, VALUE interval)
 		NUM2INT(blinks)));
 }
 
+/// @group Container
+
+/// @method #add(node, zpos=0)
+/// Adds a child node to the receiver with a local z-order.
+/// @param node [Node] the child to add.
+/// @param zpos [Integer] the local z-order.
+/// @return [Node] the receiver.
+
+static VALUE
+node_add(VALUE rcv, SEL sel, int argc, VALUE *argv)
+{
+    VALUE child = Qnil;
+    VALUE zpos = Qnil;
+    rb_scan_args(argc, argv, "11", &child, &zpos);
+
+    if (zpos == Qnil) {
+	NODE(rcv)->addChild(NODE(child));
+    }
+    else {
+	NODE(rcv)->addChild(NODE(child), NUM2LONG(zpos));
+    }
+    return rcv;
+}
+
+
 /// @method #clear(cleanup=true)
 /// Removes all children nodes from the receiver.
 /// @param cleanup [Boolean] cleans all running actions on children before
@@ -279,7 +292,7 @@ node_delete(VALUE rcv, SEL sel, int argc, VALUE *argv)
     return rcv;
 }
 
-/// @class ParallaxNode < Node
+/// @class Parallax < Node
 
 #define PNODE(obj) _COCOS_WRAP_GET(obj, cocos2d::ParallaxNode)
 
@@ -312,7 +325,9 @@ pnode_add(VALUE rcv, SEL sel, VALUE child, VALUE z, VALUE parallax_ratio,
 
 #define ACC(obj) _COCOS_WRAP_GET(obj, cocos2d::Acceleration)
 
-/// @property #x
+/// @group Properties
+
+/// @property-readonly #x
 /// @return [Float] the x coordinate of the acceleration event.
 
 static VALUE
@@ -321,7 +336,7 @@ acc_x(VALUE rcv, SEL sel)
     return DBL2NUM(ACC(rcv)->x);
 }
 
-/// @property #y
+/// @property-readonly #y
 /// @return [Float] the y coordinate of the acceleration event.
 
 static VALUE
@@ -330,7 +345,7 @@ acc_y(VALUE rcv, SEL sel)
     return DBL2NUM(ACC(rcv)->y);
 }
 
-/// @property #z
+/// @property-readonly #z
 /// @return [Float] the z coordinate of the acceleration event.
 
 static VALUE
@@ -339,7 +354,7 @@ acc_z(VALUE rcv, SEL sel)
     return DBL2NUM(ACC(rcv)->z);
 }
 
-/// @property #timestamp
+/// @property-readonly #timestamp
 /// @return [Float] the timestamp of the acceleration event.
 
 static VALUE
@@ -352,7 +367,9 @@ acc_timestamp(VALUE rcv, SEL sel)
 
 #define TOUCH(obj) _COCOS_WRAP_GET(obj, cocos2d::Touch)
 
-/// @method #location
+/// @group Properties
+
+/// @property-readonly #location
 /// @return [Point] the current location of the touch event.
 
 static VALUE
@@ -386,7 +403,7 @@ Init_Node(void)
     rb_define_method(rb_cNode, "clear", node_clear, -1);
     rb_define_method(rb_cNode, "delete", node_delete, -1);
 
-    rb_cParallaxNode = rb_define_class_under(rb_mMC, "ParallaxNode", rb_cNode);
+    rb_cParallaxNode = rb_define_class_under(rb_mMC, "Parallax", rb_cNode);
 
     rb_define_singleton_method(rb_cParallaxNode, "alloc", pnode_alloc, 0);
     rb_define_method(rb_cParallaxNode, "add", pnode_add, 4);

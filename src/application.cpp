@@ -32,6 +32,8 @@ class mc_Application : private cocos2d::Application {
     }
 };
 
+/// @group Constructors
+
 /// @method .shared
 /// @return [Application] the shared Application instance.
 
@@ -61,6 +63,8 @@ application_run(VALUE rcv, SEL sel)
     APPLICATION(rcv)->run();
     return rcv;
 }
+
+/// @group Callbacks
 
 /// @method #start
 /// This method is called when the application finished launching. This method

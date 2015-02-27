@@ -38,6 +38,8 @@ layer_alloc(VALUE rcv, SEL sel)
     return obj;
 }
 
+/// @group Constructors
+
 /// @method #initialize
 /// The default initializer. Subclasses can construct the scene interface in
 /// this method, as well as providing an implementation for {#update}, then

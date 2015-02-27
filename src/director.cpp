@@ -5,6 +5,8 @@
 VALUE rb_cDirector = Qnil;
 static VALUE mc_director_instance = Qnil;
 
+/// @group Constructors
+
 /// @method .shared
 /// @return [Director] the shared Director instance.
 
@@ -29,6 +31,8 @@ director_view_set(VALUE rcv, SEL sel, VALUE obj)
     return obj;
 }
 #endif
+
+/// @group Managing Scenes
 
 static cocos2d::Scene *
 obj_to_scene(VALUE obj)
@@ -68,7 +72,8 @@ director_replace(VALUE rcv, SEL sel, VALUE obj)
 }
 
 /// @method #end
-/// Ends the execution. This also has the effect of quitting the application.
+/// Ends the scene execution. This also has the effect of quitting the
+/// application.
 /// @return [Director] the receiver.
 
 static VALUE
@@ -79,7 +84,9 @@ director_end(VALUE rcv, SEL sel)
     return rcv;
 }
 
-/// @method #origin
+/// @group Properties
+
+/// @property-readonly #origin
 /// @return [Point] the visible origin of the director view in points.
 
 static VALUE
@@ -88,7 +95,7 @@ director_origin(VALUE rcv, SEL sel)
     return rb_ccvec2_to_obj(DIRECTOR(rcv)->getVisibleOrigin());
 }
 
-/// @method #size
+/// @property-readonly #size
 /// @return [Size] the visible size of the director view in points.
 
 static VALUE
@@ -97,16 +104,22 @@ director_size(VALUE rcv, SEL sel)
     return rb_ccsize_to_obj(DIRECTOR(rcv)->getVisibleSize());
 }
 
-/// @property #show_stats
+/// @property #show_stats?
 /// Controls whether the FPS (frame-per-second) statistic label is displayed
 /// in the bottom-left corner of the director view. By default it is hidden.
 /// @return [Boolean] whether the FPS label is displayed.
 
 static VALUE
-director_show_stats(VALUE rcv, SEL sel, VALUE val)
+director_show_stats_set(VALUE rcv, SEL sel, VALUE val)
 {
     DIRECTOR(rcv)->setDisplayStats(RTEST(val));
     return val;
+}
+
+static VALUE
+director_show_stats(VALUE rcv, SEL sel)
+{
+    return DIRECTOR(rcv)->isDisplayStats() ? Qtrue : Qfalse;
 }
 
 extern "C"
@@ -120,7 +133,8 @@ Init_Director(void)
     rb_define_method(rb_cDirector, "end", director_end, 0);
     rb_define_method(rb_cDirector, "origin", director_origin, 0);
     rb_define_method(rb_cDirector, "size", director_size, 0);
-    rb_define_method(rb_cDirector, "show_stats=", director_show_stats, 1);
+    rb_define_method(rb_cDirector, "show_stats=", director_show_stats_set, 1);
+    rb_define_method(rb_cDirector, "show_stats?", director_show_stats, 0);
 
     // Internal.
 #if CC_TARGET_OS_IPHONE

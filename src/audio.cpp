@@ -6,6 +6,8 @@
 VALUE rb_cAudio = Qnil;
 static VALUE mc_audio_instance = Qnil;
 
+/// @group Constructors
+
 /// @method .shared
 /// @return [Audio] the shared Audio instance.
 
@@ -33,12 +35,15 @@ audio_path(VALUE path)
     return str;
 }
 
+/// @group Audio Playback
+
 /// @method #background(file_name, loop=true)
-/// Plays a background music file.
-/// @param file_name [String] Name of the music file to play, without its file
-///   extension.
-/// @param loop [true, false] Whether the music file should loop.
-/// @return true
+/// Plays a background audio file.
+/// @param file_name [String] Name of the audio file to play, without its file
+///   extension. The file should reside in the application's resource
+///   directory.
+/// @param loop [true, false] Whether the audio file should loop.
+/// @return [Audio] the receiver.
 
 static VALUE
 audio_background(VALUE rcv, SEL sel, int argc, VALUE *argv)
@@ -53,10 +58,11 @@ audio_background(VALUE rcv, SEL sel, int argc, VALUE *argv)
 }
 
 /// @method #effect(file_name)
-/// Plays an effect music file.
-/// @param file_name [String] Name of the music file to play, without its file
-///   extension.
-/// @return true
+/// Plays an effect audio file.
+/// @param file_name [String] Name of the audio file to play, without its file
+///   extension. The file should reside in the application's resource
+///   directory
+/// @return [Audio] the receiver.
 
 static VALUE
 audio_effect(VALUE rcv, SEL sel, VALUE path)

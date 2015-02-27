@@ -18,6 +18,8 @@ point_alloc(VALUE rcv, SEL sel)
     return rb_ccvec2_to_obj(cocos2d::Vec2());
 }
 
+/// @group Properties
+
 /// @property #x
 /// @return [Float] the x coordinate of the point.
 
@@ -50,6 +52,8 @@ point_y_set(VALUE rcv, SEL sel, VALUE y)
     return y;
 }
 
+/// @group Helpers
+
 /// @method #+(point)
 /// Adds the coordinates of the receiver with the coordinates of the given
 /// point object.
@@ -79,6 +83,8 @@ size_alloc(VALUE rcv, SEL sel)
 {
     return rb_ccsize_to_obj(cocos2d::Size());
 }
+
+/// @group Properties
 
 /// @property #width
 /// @return [Float] the size width.

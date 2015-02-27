@@ -4,6 +4,8 @@
 
 VALUE rb_cLabel = Qnil;
 
+/// @group Constructors
+
 /// @method #initialize(text, font, font_size)
 /// Creates a new label object, with a given text and font attributes.
 /// @param text [String] the label title.
