@@ -21,7 +21,7 @@ audio_instance(VALUE rcv, SEL sel)
     return mc_audio_instance;
 }
 
-static const char *
+static std::string
 audio_path(VALUE path)
 {
     std::string str = RSTRING_PTR(path);
@@ -30,7 +30,7 @@ audio_path(VALUE path)
 #else  
     str.append(".wav");
 #endif
-    return str.c_str();
+    return str;
 }
 
 /// @method #background(file_name, loop=true)
@@ -48,8 +48,8 @@ audio_background(VALUE rcv, SEL sel, int argc, VALUE *argv)
 
     rb_scan_args(argc, argv, "11", &path, &loop);
    
-    AUDIO(rcv)->playBackgroundMusic(audio_path(path), RTEST(loop)); 
-    return Qtrue;
+    AUDIO(rcv)->playBackgroundMusic(audio_path(path).c_str(), RTEST(loop));
+    return rcv;
 }
 
 /// @method #effect(file_name)
@@ -61,8 +61,8 @@ audio_background(VALUE rcv, SEL sel, int argc, VALUE *argv)
 static VALUE
 audio_effect(VALUE rcv, SEL sel, VALUE path)
 {
-    AUDIO(rcv)->playEffect(audio_path(path)); 
-    return Qtrue;
+    AUDIO(rcv)->playEffect(audio_path(path).c_str());
+    return rcv;
 }
 
 extern "C"
