@@ -22,7 +22,7 @@ class GameLayer < MC::Scene
     @ship_y = @ship.position.y
 
     # Create the background node.
-    @background = MC::ParallaxNode.new
+    @background = MC::Parallax.new
     add @background, -1
 
     @space_dust1 = MC::Sprite.new('bg_front_spacedust.png')
