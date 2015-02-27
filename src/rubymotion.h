@@ -88,7 +88,7 @@ rb_class_wrap_new(void *ptr, VALUE klass)
     rb_define_static_method((jclass)klass, name, arity, (IMP)imp)
 
 #define rb_define_module_under(mod, name) \
-    (VALUE)rb_define_module((jclass)mod, name)
+    (VALUE)rb_define_module_under((jclass)mod, name)
 
 #define rb_define_class_under(module, name, super) \
     rb_retain(rb_vm_define_ruby_class(name, (VALUE)super, (VALUE)module))
