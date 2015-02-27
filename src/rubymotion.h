@@ -46,10 +46,25 @@ rb_class_wrap_new(void *ptr, VALUE klass)
 #define rb_class_wrap_get_ptr(obj) \
     ((struct rb_class_ptr *)obj)->ptr
     
-#define rb_retain(obj) (VALUE)rb_objc_retain((void *)obj)
-#define rb_release(obj) (VALUE)rb_objc_release((void *)obj)
+#define rb_retain(obj) \
+    ({ \
+	VALUE _obj = (VALUE)obj; \
+	rb_objc_retain((void *)_obj); \
+	_obj; \
+    })
+#define rb_release(obj) \
+    ({ \
+	VALUE _obj = (VALUE)obj; \
+	rb_objc_release((void *)_obj); \
+	_obj; \
+    })
 
-#define rb_current_block() (VALUE)rb_vm_current_block()
+#define rb_current_block() \
+    ({ \
+	VALUE _b = (VALUE)rb_vm_current_block(); \
+	_b == 0 ? Qnil : _b; \
+    })
+
 #define rb_block_call(block, argc, argv) \
     rb_vm_block_eval((rb_vm_block_t *)block, argc, argv)
 
