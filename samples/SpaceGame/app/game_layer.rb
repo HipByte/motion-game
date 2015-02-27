@@ -171,7 +171,7 @@ class GameLayer < MC::Scene
 
     label = MC::Label.new("Game Over!\nYour score is #{@score}\nTap to restart", 'Arial', 42)
     label.position = [win_size.width / 2, win_size.height / 2]
-    label.listen :on_touch_begin { restart }
+    label.listen :touch_begin { restart }
     add label
 
     stop_update
