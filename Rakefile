@@ -228,6 +228,10 @@ class DocAPIGen
         current_node = add_method(current_class, md[1])
       elsif md = line.match(/@property\s+(.+)/)
         current_node = add_property(current_class, md[1])
+      elsif md = line.match(/@property-readonly\s+(.+)/)
+        current_node = add_property(current_class, md[1], true)
+      elsif md = line.match(/@group\s+(.+)/)
+        current_node = add_group(current_class, md[1])
       else
         current_node[:doc] << line << "\n"
       end
@@ -242,20 +246,18 @@ class DocAPIGen
     @classes.each do |klass|
       io.puts doc_comment(klass, 0)
       io.puts "class #{klass[:def]}"
-      io.puts
-      klass[:properties].each do |property|
-        io.puts doc_comment(property, 2)
-        io.puts "  attr_accessor :#{property[:sel]}"
-        io.puts
-      end
-      klass[:cmethods].each do |method|
-        io.puts doc_comment(method, 2)
-        io.puts "  def self.#{method[:sel]}; end"
-        io.puts
-      end
-      klass[:imethods].each do |method|
-        io.puts doc_comment(method, 2)
-        io.puts "  def #{method[:sel]}; end"
+      klass[:nodes].each do |node|
+        io.puts doc_comment(node, 2)
+        case node[:type]
+          when :property
+            io.puts "  attr_#{node[:readonly] ? 'reader' : 'accessor'} :#{node[:sel]}"
+          when :cmethod
+            io.puts "  def self.#{node[:sel]}; end"
+          when :imethod
+            io.puts "  def #{node[:sel]}; end"
+          when :group
+            io.puts "  # @group #{node[:name]}"
+        end
         io.puts
       end
       io.puts "end"
@@ -267,35 +269,39 @@ class DocAPIGen
   private
 
   def add_class(definition)
-   klass = { :def => definition, :doc => '', :cmethods => [], :imethods => [], :properties => [] }
+   klass = { :def => definition, :doc => '', :nodes => [] }
    @classes << klass
    klass
   end
 
   def add_method(klass, definition)
     method = { :sel => definition[1..-1], :doc => '' }
-    ary = case definition[0]
+    type = case definition[0]
       when '.'
-        klass[:cmethods]
+        :cmethod
       when '#'
-        klass[:imethods]
+        :imethod
       else
         raise "expected method definition `#{definition}' to start with '.' or '#'" 
     end
-    ary << method
+    method[:type] = type
+    klass[:nodes] << method
     method
   end
 
-  def add_property(klass, definition)
-    property = { :sel => definition[1..-1], :doc => '' }
-    ary = case definition[0]
-      when '#'
-        klass[:properties]
-      else
-        raise "expected property definition `#{definition}' to start with '#'" 
+  def add_property(klass, definition, readonly = false)
+    if definition[0] != '#'
+      raise "expected property definition `#{definition}' to start with '#'"
     end
-    ary << property
+    property = { :type => :property, :sel => definition[1..-1], :readonly => readonly, :doc => '' }
+    klass[:nodes] << property
     property
+  end
+
+  def add_group(klass, definition)
+    group = { :type => :group, :name => definition, :doc => '' }
+    klass[:nodes] << group
+    group
   end
 
   def doc_comment(node, level)
