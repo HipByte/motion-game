@@ -203,12 +203,18 @@ task 'archive' do
   files = []
   files += Dir.glob('build/{ios,android}/*.{a,jar}')
   files += Dir.glob('lib/**/*.rb')
+  files += Dir.glob('doc/**/*').reject { |x| File.directory?(x) }
   files += Dir.glob('samples/**/*').reject { |x| x.include?('build') or File.directory?(x) }
   files.each do |path|
     dest = File.join(archive_dir, File.dirname(path))
     mkdir_p dest
     install path, dest
   end
+  Dir.chdir(File.dirname(archive_dir)) do
+    rm_rf 'motion-game.zip'
+    sh "/usr/bin/zip -r motion-game.zip #{File.basename(archive_dir)}"
+  end
+  mv File.join(File.dirname(archive_dir), 'motion-game.zip'), '.'
 end
 
 class DocAPIGen
@@ -243,6 +249,7 @@ class DocAPIGen
     io = StringIO.new
     io.puts "module MC"
     io.puts "module Events; end"
+    io.puts "module UI; end"
     @classes.each do |klass|
       io.puts doc_comment(klass, 0)
       io.puts "class #{klass[:def]}"

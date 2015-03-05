@@ -68,6 +68,8 @@ rb_class_wrap_new(void *ptr, VALUE klass)
 #define rb_block_call(block, argc, argv) \
     rb_vm_block_eval((rb_vm_block_t *)block, argc, argv)
 
+#define RSTRING_NEW(cstr) rb_str_new2(cstr)
+
 #elif CC_TARGET_OS_ANDROID
 
 #include "runtime.h"
@@ -105,6 +107,7 @@ rb_class_wrap_new(void *ptr, VALUE klass)
 	_local; \
     })
 
+#define RSTRING_NEW(cstr) rb_str_new2(cstr)
 #define RSTRING_PTR(str) rb_str_to_stdstring(str).c_str()
 
 #define rb_current_block() rb_vm_current_block_object()
@@ -116,6 +119,9 @@ rb_class_wrap_new(void *ptr, VALUE klass)
 #if defined(__cplusplus)
 extern "C" {
 #endif
+
+#define NUM2BYTE(val) (NUM2DBL(val) * 255)
+#define BYTE2NUM(val) (DBL2NUM(val * (100 / 255.0)))
 
 extern VALUE rb_mMC;
 extern VALUE rb_cDirector;
@@ -129,6 +135,7 @@ extern VALUE rb_cParticle;
 extern VALUE rb_cAudio;
 extern VALUE rb_cPoint;
 extern VALUE rb_cSize;
+extern VALUE rb_cColor;
 
 #define _COCOS_WRAP_GET(obj, type) ((type *)rb_class_wrap_get_ptr(obj))
 
@@ -141,6 +148,7 @@ extern VALUE rb_cSize;
 #define AUDIO(obj) _COCOS_WRAP_GET(obj, CocosDenshion::SimpleAudioEngine)
 #define VEC2(obj) _COCOS_WRAP_GET(obj, cocos2d::Vec2)
 #define SIZE(obj) _COCOS_WRAP_GET(obj, cocos2d::Size)
+#define COLOR(obj) _COCOS_WRAP_GET(obj, cocos2d::Color4B)
 
 static inline cocos2d::Vec2
 rb_any_to_ccvec2(VALUE obj)
@@ -177,6 +185,52 @@ rb_any_to_ccsize(VALUE obj)
 }
 
 VALUE rb_ccsize_to_obj(cocos2d::Size obj);
+
+static inline cocos2d::Color3B
+rb_any_to_cccolor3(VALUE obj)
+{
+    if (rb_obj_is_kind_of(obj, rb_cArray)) {
+	if (RARRAY_LEN(obj) != 3) {
+	    rb_raise(rb_eArgError, "expected Array of 3 elements");
+	}
+	return cocos2d::Color3B(
+		NUM2BYTE(RARRAY_AT(obj, 0)),
+		NUM2BYTE(RARRAY_AT(obj, 1)),
+		NUM2BYTE(RARRAY_AT(obj, 2)));
+    }
+    else if (rb_obj_is_kind_of(obj, rb_cColor)) {
+	cocos2d::Color4B *color = COLOR(obj);
+	return cocos2d::Color3B(color->r, color->g, color->b);
+    }
+    rb_raise(rb_eArgError, "expected Array or Color");
+}
+
+static inline cocos2d::Color4B
+rb_any_to_cccolor4(VALUE obj)
+{
+    if (rb_obj_is_kind_of(obj, rb_cArray)) {
+	if (RARRAY_LEN(obj) != 4) {
+	    rb_raise(rb_eArgError, "expected Array of 4 elements");
+	}
+	return cocos2d::Color4B(
+		NUM2BYTE(RARRAY_AT(obj, 0)),
+		NUM2BYTE(RARRAY_AT(obj, 1)),
+		NUM2BYTE(RARRAY_AT(obj, 2)),
+		NUM2BYTE(RARRAY_AT(obj, 3)));
+    }
+    else if (rb_obj_is_kind_of(obj, rb_cColor)) {
+	return *COLOR(obj);
+    }
+    rb_raise(rb_eArgError, "expected Array or Color");
+}
+
+VALUE rb_cccolor4_to_obj(cocos2d::Color4B obj);
+
+static inline VALUE
+rb_cccolor3_to_obj(cocos2d::Color3B obj)
+{
+    return rb_cccolor4_to_obj(cocos2d::Color4B(obj.r, obj.g, obj.b, 255)); 
+}
 
 #if defined(__cplusplus)
 }

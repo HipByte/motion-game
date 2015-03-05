@@ -82,6 +82,39 @@ node_visible(VALUE rcv, SEL sel)
     return NODE(rcv)->isVisible() ? Qtrue : Qfalse;
 }
 
+/// @property #opacity
+/// @return [Float] the opacity level of the node, as a Float from the
+///   +0.0+ to +1.0+ range.
+
+static VALUE
+node_opacity(VALUE rcv, SEL sel)
+{
+    return BYTE2NUM(NODE(rcv)->getOpacity());
+}
+
+static VALUE
+node_opacity_set(VALUE rcv, SEL sel, VALUE val)
+{
+    NODE(rcv)->setOpacity(NUM2BYTE(val));
+    return val;
+}
+
+/// @property #color
+/// @return [Color] the color of the node.
+
+static VALUE
+node_color(VALUE rcv, SEL sel)
+{
+    return rb_cccolor3_to_obj(NODE(rcv)->getColor());
+}
+
+static VALUE
+node_color_set(VALUE rcv, SEL sel, VALUE val)
+{
+    NODE(rcv)->setColor(rb_any_to_cccolor3(val));
+    return val;
+}
+
 /// @group Miscellaneous
 
 /// @method #intersects?(node)
@@ -390,6 +423,10 @@ Init_Node(void)
     rb_define_method(rb_cNode, "position=", node_position_set, 1);
     rb_define_method(rb_cNode, "size", node_size, 0);
     rb_define_method(rb_cNode, "size=", node_size_set, 0);
+    rb_define_method(rb_cNode, "opacity", node_opacity, 0);
+    rb_define_method(rb_cNode, "opacity=", node_opacity_set, 0);
+    rb_define_method(rb_cNode, "color", node_color, 0);
+    rb_define_method(rb_cNode, "color=", node_color_set, 0);
     rb_define_method(rb_cNode, "add", node_add, -1);
     rb_define_method(rb_cNode, "start_update", node_start_update, 0);
     rb_define_method(rb_cNode, "stop_update", node_stop_update, 0);

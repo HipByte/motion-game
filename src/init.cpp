@@ -61,6 +61,7 @@ Init_Fluency(void)
     INIT_MODULE(Particle)
     INIT_MODULE(Audio)
     INIT_MODULE(Types)
+    INIT_MODULE(UI)
 
 #undef INIT_MODULE
 }

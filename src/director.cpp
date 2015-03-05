@@ -127,6 +127,7 @@ void
 Init_Director(void)
 {
     rb_cDirector = rb_define_class_under(rb_mMC, "Director", rb_cObject);
+
     rb_define_singleton_method(rb_cDirector, "shared", director_instance, 0);
     rb_define_method(rb_cDirector, "run", director_run, 1);
     rb_define_method(rb_cDirector, "replace", director_replace, 1);
