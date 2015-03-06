@@ -317,10 +317,25 @@ class DocAPIGen
 end
 
 task 'doc' do
+  # Generate documentation in 'doc' directory.
   api_gen = DocAPIGen.new
   Dir.glob('src/*.cpp').each { |path| api_gen.parse(path) }
   rm_rf 'doc'
   mkdir_p 'doc'
   File.open('/tmp/fake.rb', 'w') { |io| io.write(api_gen.to_ruby.string) }
   sh "yard doc -o ./doc /tmp/fake.rb"
+
+  # Remove references to fake.rb.
+  Dir.glob('doc/**/*.html').each do |html|
+    txt = File.read(html)
+    txt.gsub!(/\/tmp\/fake\.rb/, 'motion-game')
+    File.open(html, 'w') { |io| io.write(txt) }
+  end
+
+  # Remove "show source" links.
+  txt = File.read('doc/js/app.js')
+  txt.sub!(/\$\(createSourceLinks\);/, '')
+  File.open('doc/js/app.js', 'w') do |io|
+    io.write(txt)
+  end
 end
