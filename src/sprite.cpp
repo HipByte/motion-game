@@ -53,6 +53,53 @@ sprite_new(VALUE rcv, SEL sel, VALUE name)
     return rb_class_wrap_new((void *)sprite, rcv);
 }
 
+/// @group Actions
+
+static VALUE
+run_action(VALUE rcv, cocos2d::FiniteTimeAction *action)
+{
+    VALUE block = rb_current_block();
+    if (block != Qnil) {
+	block = rb_retain(block); // FIXME need release...
+	auto call_funcn =
+	    cocos2d::CallFuncN::create([block](cocos2d::Node *node) {
+		rb_block_call(block, 0, NULL);
+	    });
+	action = cocos2d::Sequence::create(action, call_funcn, (void *)0);
+    }
+    SPRITE(rcv)->runAction(action);
+    return rcv;
+}
+
+/// @method #move_by(delta_location, interval)
+/// Moves the position of the receiver to a new location determined by the
+/// sum of the current location and the given +delta_location+ object.
+/// @param delta_location [Point] a point that will be added to the receiver's
+///   current location.
+/// @param interval [Float] the animation interval.
+/// @return [Sprite] the receiver.
+
+static VALUE
+sprite_move_by(VALUE rcv, SEL sel, VALUE position, VALUE interval)
+{
+    return run_action(rcv, cocos2d::MoveBy::create(NUM2DBL(interval),
+		rb_any_to_ccvec2(position)));
+}
+
+/// @method #blink(number_of_blinks, interval)
+/// Blinks the receiver.
+/// @param number_of_blinks [Integer] the number of times the receiver should
+///   blink.
+/// @param interval [Float] the animation interval.
+/// @return [Sprite] the receiver.
+
+static VALUE
+sprite_blink(VALUE rcv, SEL sel, VALUE blinks, VALUE interval)
+{
+    return run_action(rcv, cocos2d::Blink::create(NUM2DBL(interval),
+		NUM2INT(blinks)));
+}
+
 extern "C"
 void
 Init_Sprite(void)
@@ -61,4 +108,6 @@ Init_Sprite(void)
 
     rb_define_singleton_method(rb_cSprite, "load", sprite_load, 1);
     rb_define_singleton_method(rb_cSprite, "new", sprite_new, 1);
+    rb_define_method(rb_cSprite, "move_by", sprite_move_by, 2);
+    rb_define_method(rb_cSprite, "blink", sprite_blink, 2);
 }

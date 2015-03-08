@@ -2,8 +2,10 @@
 
 /// @class Scene < Node
 /// This class represents a scene, an independent screen or stage of the
-/// application workflow. An application must have at least one scene, and
-/// the +Scene+ class is designed to be subclassed. 
+/// application workflow. A scene is responsible for handling events from the
+/// device and also starting the game loop.
+/// An application must have at least one scene, and the +Scene+ class is
+/// designed to be subclassed.
 
 VALUE rb_cLayer = Qnil;
 
@@ -24,11 +26,6 @@ class mc_Layer : private cocos2d::Layer {
     virtual void update(float delta) {
 	VALUE arg = DBL2NUM(delta);
 	rb_send(obj, update_sel, 1, &arg);
-    }
-
-    virtual bool onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *event) {
-	printf("onTouchBegan\n");
-	return true;
     }
 };
 
@@ -95,6 +92,64 @@ layer_update(VALUE rcv, SEL sel, VALUE delta)
     return rcv;
 }
 
+/// @group Events
+
+/// @method #on_touch_begin
+/// Starts listening for touch begin events on the receiver.
+/// @yield [Events::Touch] the given block will be yield when a touch begin
+///   event is received.
+/// @return [Scene] the receiver.
+
+static VALUE
+layer_on_touch_begin(VALUE rcv, SEL sel)
+{
+    VALUE block = rb_current_block();
+    if (block == Qnil) {
+	rb_raise(rb_eArgError, "block not given");
+    }
+    block = rb_retain(block); // FIXME need release...
+
+    auto listener = cocos2d::EventListenerTouchOneByOne::create();
+    listener->onTouchBegan = [block](cocos2d::Touch *touch,
+		cocos2d::Event *event) -> bool {
+	VALUE touch_obj = rb_class_wrap_new((void *)touch,
+		rb_cTouch);
+	return RTEST(rb_block_call(block, 1, &touch_obj));
+    };
+
+    LAYER(rcv)->getEventDispatcher()->addEventListenerWithSceneGraphPriority(
+	    listener, LAYER(rcv));
+    return rcv;
+}
+
+/// @method #on_accelerate
+/// Starts listening for accelerometer events on the receiver.
+/// @yield [Events::Acceleration] the given block will be yield when an
+///   accelerometer event is received from the device.
+/// @return [Scene] the receiver.
+
+static VALUE
+layer_on_accelerate(VALUE rcv, SEL sel)
+{
+    VALUE block = rb_current_block();
+    if (block == Qnil) {
+	rb_raise(rb_eArgError, "block not given");
+    }
+    block = rb_retain(block); // FIXME need release...
+
+    cocos2d::Device::setAccelerometerEnabled(true);
+    auto listener = cocos2d::EventListenerAcceleration::create(
+	    [block](cocos2d::Acceleration *acc, cocos2d::Event *event) {
+	    VALUE acc_obj = rb_class_wrap_new((void *)acc,
+		    rb_cAcceleration);
+	    rb_block_call(block, 1, &acc_obj);
+	});
+
+    LAYER(rcv)->getEventDispatcher()->addEventListenerWithSceneGraphPriority(
+	    listener, LAYER(rcv));
+    return rcv;
+}
+
 extern "C"
 void
 Init_Layer(void)
@@ -106,4 +161,6 @@ Init_Layer(void)
     rb_define_method(rb_cLayer, "start_update", layer_start_update, 0);
     rb_define_method(rb_cLayer, "stop_update", layer_stop_update, 0);
     rb_define_method(rb_cLayer, "update", layer_update, 1);
+    rb_define_method(rb_cLayer, "on_touch_begin", layer_on_touch_begin, 0);
+    rb_define_method(rb_cLayer, "on_accelerate", layer_on_accelerate, 0);
 }
