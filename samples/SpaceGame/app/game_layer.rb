@@ -64,8 +64,8 @@ class GameLayer < MC::Scene
     @next_ship_laser = 0
 
     # Enable events.
-    listen :touch_begin { fire_ship_laser }
-    listen :accelerate { |acc| calculate_ship_position(acc) }
+    on_touch_begin { fire_ship_laser }
+    on_accelerate { |acc| calculate_ship_position(acc) }
 
     # Start background music.
     MC::Audio.shared.background 'background_music'
