@@ -1,6 +1,12 @@
 #include "rubymotion.h"
 
 /// @class Application < Object
+/// The application class. A proper subclass is generated for you by the
+/// project template with an empty {#start} method, in which you can create
+/// a scene and ask the director to run it:
+///   def start
+///     MC::Director.shared.run(MyScene.new)
+///   end
 
 VALUE rb_cApplication = Qnil;
 static VALUE mc_application_instance = Qnil;

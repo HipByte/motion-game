@@ -1,6 +1,9 @@
 #include "rubymotion.h"
 
 /// @class Scene < Node
+/// This class represents a scene, an independent screen or stage of the
+/// application workflow. An application must have at least one scene, and
+/// the +Scene+ class is designed to be subclassed. 
 
 VALUE rb_cLayer = Qnil;
 
@@ -52,6 +55,46 @@ layer_initialize(VALUE rcv, SEL sel)
     return rcv;
 }
 
+/// @group Update Loop
+
+/// @method #start_update
+/// Starts the update loop. The +#update+ method will be called on this object
+/// for every frame.
+/// @return [Scene] the receiver.
+
+static VALUE
+layer_start_update(VALUE rcv, SEL sel)
+{
+    LAYER(rcv)->scheduleUpdate();
+    return rcv;
+}
+
+/// @method #stop_update
+/// Stops the update loop. The +#update+ method will no longer be called on
+/// this object.
+/// @return [Scene] the receiver.
+
+static VALUE
+layer_stop_update(VALUE rcv, SEL sel)
+{
+    LAYER(rcv)->unscheduleUpdate();
+    return rcv;
+}
+
+/// @method #update(delta)
+/// The update loop method. Subclasses can provide a custom implementation of
+/// this method. The default implementation is empty.
+/// @param delta [Float] a value representing the amount of time, in seconds,
+///   since the last time this method was called.
+/// @return [Scene] the receiver.
+
+static VALUE
+layer_update(VALUE rcv, SEL sel, VALUE delta)
+{
+    // Do nothing.
+    return rcv;
+}
+
 extern "C"
 void
 Init_Layer(void)
@@ -60,4 +103,7 @@ Init_Layer(void)
 
     rb_define_singleton_method(rb_cLayer, "alloc", layer_alloc, 0);
     rb_define_method(rb_cLayer, "initialize", layer_initialize, 0);
+    rb_define_method(rb_cLayer, "start_update", layer_start_update, 0);
+    rb_define_method(rb_cLayer, "stop_update", layer_stop_update, 0);
+    rb_define_method(rb_cLayer, "update", layer_update, 1);
 }

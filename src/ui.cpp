@@ -10,6 +10,8 @@
 static VALUE rb_mUI = Qnil;
 
 /// @class UI::Widget < Node
+/// The base class for all UI widgets. You should not instantiate this class
+/// directly but use a subclass instead.
 
 static VALUE rb_cUIWidget = Qnil;
 
@@ -50,6 +52,31 @@ widget_highlighted_set(VALUE rcv, SEL sel, VALUE val)
 {
     WIDGET(rcv)->setHighlighted(RTEST(val));
     return val;
+}
+
+/// @group Events
+
+/// @method #on_touch
+/// Configures a block to be called when a touch event is received on the
+/// widget. 
+/// @yield the given block will be called when the event is received.
+/// @return [Widget] the receiver.
+
+static VALUE
+widget_on_touch(VALUE rcv, SEL sel)
+{
+    VALUE block = rb_current_block();
+    if (block == Qnil) {
+	rb_raise(rb_eArgError, "block not given");
+    }
+    block = rb_retain(block); // FIXME need release...
+
+    WIDGET(rcv)->addTouchEventListener(
+	    [block](cocos2d::Ref *ref,
+		    cocos2d::ui::Widget::TouchEventType event_type) {
+		rb_block_call(block, 0, NULL);
+	    });
+    return rcv;
 }
 
 /// @class UI::Text < UI::Widget
@@ -250,6 +277,10 @@ text_horizontal_align_set(VALUE rcv, SEL sel, VALUE val)
 }
 
 /// @class UI::Button < UI::Widget
+/// A button widget. The {#on_touch} method can be used to set a callback when
+/// the button is activated. Example:
+///   button = UI::Button.new("Touch me!")
+///   button.on_touch { puts "touched!" }
 
 /// @group Constructors
 
@@ -492,6 +523,7 @@ Init_UI(void)
     rb_define_method(rb_cUIWidget, "enabled=", widget_enabled_set, 1);
     rb_define_method(rb_cUIWidget, "highlighted?", widget_highlighted, 0);
     rb_define_method(rb_cUIWidget, "highlighted=", widget_highlighted_set, 1);
+    rb_define_method(rb_cUIWidget, "on_touch", widget_on_touch, 0);
 
     rb_cUIText = rb_define_class_under(rb_mUI, "Text", rb_cUIWidget);
 

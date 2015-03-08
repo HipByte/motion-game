@@ -121,7 +121,7 @@ extern "C" {
 #endif
 
 #define NUM2BYTE(val) (NUM2DBL(val) * 255)
-#define BYTE2NUM(val) (DBL2NUM(val * (100 / 255.0)))
+#define BYTE2NUM(val) (DBL2NUM(val / 255.0))
 
 extern VALUE rb_mMC;
 extern VALUE rb_cDirector;
@@ -187,6 +187,35 @@ rb_any_to_ccsize(VALUE obj)
 VALUE rb_ccsize_to_obj(cocos2d::Size obj);
 
 static inline cocos2d::Color3B
+rb_sym_to_cccolor3(VALUE sym)
+{
+    const char *str = rb_sym2name(sym);
+    int red = 0, green = 0, blue = 0;
+    if (strcmp(str, "white") == 0) {
+	red = green = blue = 255;
+    }
+    else if (strcmp(str, "black") == 0) {
+	red = green = blue = 0;
+    }
+    else if (strcmp(str, "red") == 0) {
+	red = 255;
+	green = blue = 0;
+    }
+    else if (strcmp(str, "green") == 0) {
+	green = 255;
+	blue = red = 0;
+    }
+    else if (strcmp(str, "blue") == 0) {
+	blue = 255;
+	green = red = 0;
+    }
+    else {
+	rb_raise(rb_eArgError, "invalid symbol `%s' for color", str);
+    }
+    return cocos2d::Color3B(red, green, blue);
+}
+
+static inline cocos2d::Color3B
 rb_any_to_cccolor3(VALUE obj)
 {
     if (rb_obj_is_kind_of(obj, rb_cArray)) {
@@ -198,11 +227,14 @@ rb_any_to_cccolor3(VALUE obj)
 		NUM2BYTE(RARRAY_AT(obj, 1)),
 		NUM2BYTE(RARRAY_AT(obj, 2)));
     }
+    else if (rb_obj_is_kind_of(obj, rb_cSymbol)) {
+	return rb_sym_to_cccolor3(obj);
+    }
     else if (rb_obj_is_kind_of(obj, rb_cColor)) {
-	cocos2d::Color4B *color = COLOR(obj);
+	auto color = COLOR(obj);
 	return cocos2d::Color3B(color->r, color->g, color->b);
     }
-    rb_raise(rb_eArgError, "expected Array or Color");
+    rb_raise(rb_eArgError, "expected Array, Symbol or Color");
 }
 
 static inline cocos2d::Color4B
@@ -218,10 +250,14 @@ rb_any_to_cccolor4(VALUE obj)
 		NUM2BYTE(RARRAY_AT(obj, 2)),
 		NUM2BYTE(RARRAY_AT(obj, 3)));
     }
+    else if (rb_obj_is_kind_of(obj, rb_cSymbol)) {
+	auto color = rb_sym_to_cccolor3(obj);
+	return cocos2d::Color4B(color.r, color.g, color.b, 255);
+    }
     else if (rb_obj_is_kind_of(obj, rb_cColor)) {
 	return *COLOR(obj);
     }
-    rb_raise(rb_eArgError, "expected Array or Color");
+    rb_raise(rb_eArgError, "expected Array, Symbol or Color");
 }
 
 VALUE rb_cccolor4_to_obj(cocos2d::Color4B obj);

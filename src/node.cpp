@@ -1,6 +1,8 @@
 #include "rubymotion.h"
 
 /// @class Node < Object
+/// Node is the base class of objects in the scene graph. You should not
+/// instantiate this class directly but use a subclass instead.
 
 VALUE rb_cNode = Qnil;
 static VALUE rb_cParallaxNode = Qnil;
@@ -183,44 +185,6 @@ node_listen(VALUE rcv, SEL sel, VALUE event)
     return rcv;
 }
 
-/// @group Update Loop
-
-/// @method #start_update
-/// Starts the update loop. The +#update+ method will be called on this object
-/// for every frame.
-/// @return [Node] the receiver.
-
-static VALUE
-node_start_update(VALUE rcv, SEL sel)
-{
-    NODE(rcv)->scheduleUpdate();
-    return rcv;
-}
-
-/// @method #stop_update
-/// Stops the update loop. The +#update+ method will no longer be called on
-/// this object.
-/// @return [Node] the receiver.
-
-static VALUE
-node_stop_update(VALUE rcv, SEL sel)
-{
-    NODE(rcv)->unscheduleUpdate();
-    return rcv;
-}
-
-/// @method #update
-/// The update loop method. Subclasses can provide a custom implementation of
-/// this method. The default implementation is empty.
-/// @return [Node] the receiver.
-
-static VALUE
-node_update(VALUE rcv, SEL sel)
-{
-    // Do nothing.
-    return rcv;
-}
-
 /// @group Actions
 
 static VALUE
@@ -325,6 +289,31 @@ node_delete(VALUE rcv, SEL sel, int argc, VALUE *argv)
     return rcv;
 }
 
+/// @method #parent
+/// @return [Node] the parent node, or +nil+ if there isn't one.
+
+static VALUE
+node_parent(VALUE rcv, SEL sel)
+{
+    auto parent = NODE(rcv)->getParent();
+    return parent == NULL ? Qnil : rb_class_wrap_new((void *)parent, rb_cNode);
+}
+
+/// @method #children
+/// @return [Array<Node>] an array of +Node+ objects that have been added to
+///   the receiver.
+
+static VALUE
+node_children(VALUE rcv, SEL sel)
+{
+    VALUE ary = rb_ary_new();
+    auto vector = NODE(rcv)->getChildren();
+    for (int i = 0, count = vector.size(); i < count; i++) {
+	rb_ary_push(ary, rb_class_wrap_new((void *)vector.at(i), rb_cNode));
+    }
+    return ary;
+}
+
 /// @class Parallax < Node
 
 #define PNODE(obj) _COCOS_WRAP_GET(obj, cocos2d::ParallaxNode)
@@ -422,15 +411,12 @@ Init_Node(void)
     rb_define_method(rb_cNode, "position", node_position, 0);
     rb_define_method(rb_cNode, "position=", node_position_set, 1);
     rb_define_method(rb_cNode, "size", node_size, 0);
-    rb_define_method(rb_cNode, "size=", node_size_set, 0);
+    rb_define_method(rb_cNode, "size=", node_size_set, 1);
     rb_define_method(rb_cNode, "opacity", node_opacity, 0);
-    rb_define_method(rb_cNode, "opacity=", node_opacity_set, 0);
+    rb_define_method(rb_cNode, "opacity=", node_opacity_set, 1);
     rb_define_method(rb_cNode, "color", node_color, 0);
-    rb_define_method(rb_cNode, "color=", node_color_set, 0);
+    rb_define_method(rb_cNode, "color=", node_color_set, 1);
     rb_define_method(rb_cNode, "add", node_add, -1);
-    rb_define_method(rb_cNode, "start_update", node_start_update, 0);
-    rb_define_method(rb_cNode, "stop_update", node_stop_update, 0);
-    rb_define_method(rb_cNode, "update", node_update, 0);
     rb_define_method(rb_cNode, "listen", node_listen, 1);
     rb_define_method(rb_cNode, "visible=", node_visible_set, 1);
     rb_define_method(rb_cNode, "visible?", node_visible, 0);
@@ -439,6 +425,8 @@ Init_Node(void)
     rb_define_method(rb_cNode, "blink", node_blink, 2);
     rb_define_method(rb_cNode, "clear", node_clear, -1);
     rb_define_method(rb_cNode, "delete", node_delete, -1);
+    rb_define_method(rb_cNode, "parent", node_parent, 0);
+    rb_define_method(rb_cNode, "children", node_children, 0);
 
     rb_cParallaxNode = rb_define_class_under(rb_mMC, "Parallax", rb_cNode);
 

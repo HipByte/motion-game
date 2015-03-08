@@ -1,6 +1,7 @@
 #include "rubymotion.h"
 
 /// @class Director < Object
+/// Director is a shared object that takes care of navigating between scenes.
 
 VALUE rb_cDirector = Qnil;
 static VALUE mc_director_instance = Qnil;

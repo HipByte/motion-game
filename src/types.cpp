@@ -1,7 +1,18 @@
 #include "rubymotion.h"
 
 /// @class Point < Object
-
+/// A point represents a location in a two-dimensional coordinate system using
+/// +x+ and +y+ variables.
+/// 
+/// When calling a method that expects a +Point+ object, a 2-element +Array+
+/// can be passed instead, as a convenience shortcut. For example,
+///   node.location = [10, 20]
+/// is the same as
+///   point = Point.new
+///   point.x = 10
+///   point.y = 20
+///   node.location = point
+ 
 VALUE rb_cPoint = Qnil;
 
 extern "C"
@@ -67,6 +78,16 @@ point_plus(VALUE rcv, SEL sel, VALUE obj)
 }
 
 /// @class Size < Object
+/// A size represents the dimensions of width and height of an object.
+/// 
+/// When calling a method that expects a +Size+ object, a 2-element +Array+
+/// can be passed instead, as a convenience shortcut. For example,
+///   node.size = [200, 400]
+/// is the same as
+///   size = Size.new
+///   size.x = 200
+///   size.y = 400
+///   node.size = size
 
 VALUE rb_cSize = Qnil;
 
@@ -119,6 +140,28 @@ size_height_set(VALUE rcv, SEL sel, VALUE obj)
 }
 
 /// @class Color < Object
+/// A color represents the color, and sometimes opacity (alpha) of an object.
+/// 
+/// When calling a method that expects a +Color+ object, a 3-element +Array+
+/// (red-green-blue) or 4-element +Array+ (red-green-blue-alpha) can be passed
+/// instead, as a convenience shortcut. For example,
+///   node.color = [0.2, 0.3, 0.4]
+/// is the same as
+///   color = Color.new
+///   color.red = 0.2
+///   color.green = 0.3
+///   color.blue = 0.4
+///   node.color = color
+/// Alternatively, a +Symbol+ corresponding to a basic color name can be
+/// provided. For example,
+///   node.color = :red
+/// is the same as
+///   color = Color.new
+///   color.red = 1.0
+///   color.green = color.blue = 0
+///   node.color = color
+/// Currently, the following symbols are supported: +:white+, +:black+, +:red+,
+/// +:green+ and +:blue+.
 
 VALUE rb_cColor = Qnil;
 
