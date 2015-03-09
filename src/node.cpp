@@ -98,6 +98,23 @@ node_opacity_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
+/// @property #z_index
+/// @return [Integer] the local z-order index of the receiver in the scene
+///   graph, which will determine its priority when rendering the scene.
+
+static VALUE
+node_z_index(VALUE rcv, SEL sel)
+{
+    return LONG2NUM(NODE(rcv)->getLocalZOrder());
+}
+
+static VALUE
+node_z_index_set(VALUE rcv, SEL sel, VALUE val)
+{
+    NODE(rcv)->setLocalZOrder(NUM2LONG(val));
+    return val;
+}
+
 /// @property #color
 /// @return [Color] the color of the node.
 
@@ -252,6 +269,8 @@ Init_Node(void)
     rb_define_method(rb_cNode, "size=", node_size_set, 1);
     rb_define_method(rb_cNode, "opacity", node_opacity, 0);
     rb_define_method(rb_cNode, "opacity=", node_opacity_set, 1);
+    rb_define_method(rb_cNode, "z_index", node_z_index, 0);
+    rb_define_method(rb_cNode, "z_index=", node_z_index_set, 1);
     rb_define_method(rb_cNode, "color", node_color, 0);
     rb_define_method(rb_cNode, "color=", node_color_set, 1);
     rb_define_method(rb_cNode, "add", node_add, -1);

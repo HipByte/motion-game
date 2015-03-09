@@ -59,7 +59,9 @@ widget_highlighted_set(VALUE rcv, SEL sel, VALUE val)
 /// @method #on_touch
 /// Configures a block to be called when a touch event is received on the
 /// widget. 
-/// @yield the given block will be called when the event is received.
+/// @yield [Symbol] the given block will be called when the event
+///   is received with a +Symbol+ that describes the type of event, which can
+///   be +:begin+, +:move+, +:end+ or +:cancel+.
 /// @return [Widget] the receiver.
 
 static VALUE
@@ -74,7 +76,22 @@ widget_on_touch(VALUE rcv, SEL sel)
     WIDGET(rcv)->addTouchEventListener(
 	    [block](cocos2d::Ref *ref,
 		    cocos2d::ui::Widget::TouchEventType event_type) {
-		rb_block_call(block, 0, NULL);
+		VALUE sym = Qnil;
+		switch (event_type) {
+		case cocos2d::ui::Widget::TouchEventType::BEGAN:
+		    sym = rb_name2sym("begin");
+		    break;
+		case cocos2d::ui::Widget::TouchEventType::MOVED:
+		    sym = rb_name2sym("move");
+		    break;
+		case cocos2d::ui::Widget::TouchEventType::ENDED:
+		    sym = rb_name2sym("end");
+		    break;
+		case cocos2d::ui::Widget::TouchEventType::CANCELED:
+		    sym = rb_name2sym("cancel");
+		    break;
+		}
+		rb_block_call(block, 1, &sym);
 	    });
     return rcv;
 }
@@ -374,6 +391,23 @@ button_font_size_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
+/// @property #zoom_scale
+/// @return [Float] the value with which the button will zoom when the user
+///   presses it.
+
+static VALUE
+button_zoom_scale(VALUE rcv, SEL sel)
+{
+    return DBL2NUM(BUTTON(rcv)->getZoomScale());
+}
+
+static VALUE
+button_zoom_scale_set(VALUE rcv, SEL sel, VALUE val)
+{
+    BUTTON(rcv)->setZoomScale(NUM2DBL(val));
+    return val;
+}
+
 /// @class UI::Slider < UI::Widget
 
 /// @group Constructors
@@ -410,7 +444,7 @@ slider_progress_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
-/// @class UI::Scroll < UI::Widget
+/// @class UI::Scroll < UI::Layout
 
 /// @group Constructors
 
@@ -511,6 +545,202 @@ list_new(VALUE rcv, SEL sel)
     return rb_class_wrap_new(cocos2d::ui::ListView::create(), rcv);
 }
 
+/// @group Managing Items
+
+/// @method #add_item(widget)
+/// Adds a new item to the end of the list.
+/// @param widget [Widget] the item to add.
+/// @return [List] the receiver.
+
+static VALUE
+list_add_item(VALUE rcv, SEL sel, VALUE widget)
+{
+    auto w = WIDGET(widget);
+    w->setTouchEnabled(true);
+    LIST(rcv)->pushBackCustomItem(w);
+    return rcv;
+}
+
+/// @method #insert_item(index, widget)
+/// Inserts a new item at the given index in the list.
+/// @param index [Integer] the index where to add the item.
+/// @param widget [Widget] the item to add.
+/// @return [List] the receiver.
+
+static VALUE
+list_insert_item(VALUE rcv, SEL sel, VALUE index, VALUE widget)
+{
+    auto w = WIDGET(widget);
+    w->setTouchEnabled(true);
+    LIST(rcv)->insertCustomItem(w, NUM2LONG(index));
+    return rcv;
+}
+
+/// @method #item_at(index)
+/// Retrieves the item at the given index.
+/// @param index [Integer] the index to look up.
+/// @return [Widget] the item at the given index, or +nil+ if there isn't any.
+
+static VALUE
+list_item_at(VALUE rcv, SEL sel, VALUE index)
+{
+    // TODO
+    return Qnil;
+}
+
+/// @method #delete_item(index)
+/// Deletes the item at the given index.
+/// @param index [Integer] the index to look up.
+/// @return [List] the receiver.
+
+static VALUE
+list_delete_item(VALUE rcv, SEL sel, VALUE index)
+{
+    LIST(rcv)->removeItem(NUM2LONG(index));
+    return rcv;
+}
+
+/// @method #clear_items
+/// Removes all items in the list.
+/// @return [List] the receiver.
+
+static VALUE
+list_clear_items(VALUE rcv, SEL sel)
+{
+    LIST(rcv)->removeAllItems();
+    return rcv;
+}
+
+/// @group Selection
+
+/// @method #on_selection
+/// Configures a block to be called when an item is selected in the list view.
+/// @yield [Integer] the given block will be called when an item is selected,
+///   passing the index of the selection as the argument.
+/// @return [List] the receiver.
+
+static VALUE
+list_on_selection(VALUE rcv, SEL sel)
+{
+    VALUE block = rb_current_block();
+    if (block == Qnil) {
+	rb_raise(rb_eArgError, "block not given");
+    }
+    block = rb_retain(block); // FIXME need release...
+
+    auto list = LIST(rcv);
+    list->addEventListener(
+	    [block, list](cocos2d::Ref *ref,
+		    cocos2d::ui::ListView::EventType event_type) {
+		if (event_type ==
+			cocos2d::ui::ListView::EventType::\
+			ON_SELECTED_ITEM_END) {
+		    VALUE index = LONG2NUM(list->getCurSelectedIndex());
+		    rb_block_call(block, 1, &index);
+		}
+	    });
+    return rcv;
+}
+
+/// @method #selected_item
+/// @return [Integer] the index of the currently selected item.
+
+static VALUE
+list_selected_item(VALUE rcv, SEL sel)
+{
+    return LONG2NUM(LIST(rcv)->getCurSelectedIndex());
+}
+
+/// @class UI::Layout < UI::Widget
+
+/// @group Constructors
+
+static VALUE rb_cUILayout = Qnil;
+
+#define LAYOUT(obj) _COCOS_WRAP_GET(obj, cocos2d::ui::Layout)
+
+/// @method #initialize
+/// Creates a new List widget.
+
+static VALUE
+layout_new(VALUE rcv, SEL sel)
+{
+    return rb_class_wrap_new(cocos2d::ui::Layout::create(), rcv);
+}
+
+/// @group Properties
+
+/// @property #type
+/// @return [:absolute, :vertical, :horizontal, :relative] the layout type.
+
+static VALUE sym_absolute = Qnil, sym_relative = Qnil;
+
+static VALUE
+layout_type(VALUE rcv, SEL sel)
+{
+    switch (LAYOUT(rcv)->getLayoutType()) {
+	case cocos2d::ui::Layout::Type::ABSOLUTE:
+	    return sym_absolute;
+	case cocos2d::ui::Layout::Type::VERTICAL:
+	    return sym_vertical;
+	case cocos2d::ui::Layout::Type::HORIZONTAL:
+	    return sym_horizontal;
+	case cocos2d::ui::Layout::Type::RELATIVE:
+	    return sym_relative;
+	default:
+	    abort();
+    }
+    return rcv;
+}
+
+static VALUE
+layout_type_set(VALUE rcv, SEL sel, VALUE arg)
+{
+    if (arg == sym_absolute) {
+	LAYOUT(rcv)->setLayoutType(cocos2d::ui::Layout::Type::ABSOLUTE);
+    }
+    else if (arg == sym_vertical) {
+	LAYOUT(rcv)->setLayoutType(cocos2d::ui::Layout::Type::VERTICAL);
+    }
+    else if (arg == sym_horizontal) {
+	LAYOUT(rcv)->setLayoutType(cocos2d::ui::Layout::Type::HORIZONTAL);
+    }
+    else if (arg == sym_relative) {
+	LAYOUT(rcv)->setLayoutType(cocos2d::ui::Layout::Type::RELATIVE);
+    }
+    else {
+	rb_raise(rb_eArgError, "expected :absolute, :vertical, :horizontal "\
+		"or :relative symbols");
+    }
+    return arg;
+}
+
+/// @property #background_color
+/// @return [Color] the background color of the widget.
+
+static VALUE
+layout_background_color(VALUE rcv, SEL sel)
+{
+    return rb_cccolor3_to_obj(LAYOUT(rcv)->getBackGroundColor());
+}
+
+static VALUE
+layout_background_color_set(VALUE rcv, SEL sel, VALUE color)
+{
+    auto layout = LAYOUT(rcv);
+    layout->setBackGroundColorType(
+	    cocos2d::ui::Layout::BackGroundColorType::SOLID);
+    layout->setBackGroundColor(rb_any_to_cccolor3(color));
+    return color;
+}
+
+static VALUE
+layout_add(VALUE rcv, SEL sel, VALUE widget)
+{
+    LAYOUT(rcv)->addChild(WIDGET(widget));
+    return widget;
+}
+
 extern "C"
 void
 Init_UI(void)
@@ -562,6 +792,8 @@ Init_UI(void)
     rb_define_method(rb_cUIButton, "font=", button_font_set, 1);
     rb_define_method(rb_cUIButton, "font_size", button_font_size, 0);
     rb_define_method(rb_cUIButton, "font_size=", button_font_size_set, 1);
+    rb_define_method(rb_cUIButton, "zoom_scale", button_zoom_scale, 0);
+    rb_define_method(rb_cUIButton, "zoom_scale=", button_zoom_scale_set, 1);
 
     rb_cUISlider = rb_define_class_under(rb_mUI, "Slider", rb_cUIWidget);
 
@@ -569,7 +801,21 @@ Init_UI(void)
     rb_define_method(rb_cUISlider, "progress", slider_progress, 0);
     rb_define_method(rb_cUISlider, "progress=", slider_progress_set, 1);
 
-    rb_cUIScroll = rb_define_class_under(rb_mUI, "Scroll", rb_cUIWidget);
+    rb_cUILayout = rb_define_class_under(rb_mUI, "Layout", rb_cUIWidget);
+
+    rb_define_singleton_method(rb_cUILayout, "new", layout_new, 0);
+    rb_define_method(rb_cUILayout, "type", layout_type, 0);
+    rb_define_method(rb_cUILayout, "type=", layout_type_set, 1);
+    rb_define_method(rb_cUILayout, "background_color",
+	    layout_background_color, 0);
+    rb_define_method(rb_cUILayout, "background_color=",
+	    layout_background_color_set, 1);
+    rb_define_method(rb_cUILayout, "add", layout_add, 1);
+
+    sym_absolute = rb_name2sym("absolute");
+    sym_relative = rb_name2sym("relative");
+
+    rb_cUIScroll = rb_define_class_under(rb_mUI, "Scroll", rb_cUILayout);
 
     rb_define_singleton_method(rb_cUIScroll, "new", scroll_new, 0);
     rb_define_method(rb_cUIScroll, "direction", scroll_direction, 0);
@@ -583,6 +829,13 @@ Init_UI(void)
     sym_both = rb_name2sym("both");
 
     rb_cUIList = rb_define_class_under(rb_mUI, "List", rb_cUIScroll);
-    rb_define_singleton_method(rb_cUIList, "new", list_new, 0);
 
+    rb_define_singleton_method(rb_cUIList, "new", list_new, 0);
+    rb_define_method(rb_cUIList, "add_item", list_add_item, 1);
+    rb_define_method(rb_cUIList, "insert_item", list_insert_item, 2);
+    rb_define_method(rb_cUIList, "item_at", list_item_at, 1);
+    rb_define_method(rb_cUIList, "delete_item", list_delete_item, 1);
+    rb_define_method(rb_cUIList, "clear_items", list_clear_items, 0);
+    rb_define_method(rb_cUIList, "on_selection", list_on_selection, 0);
+    rb_define_method(rb_cUIList, "selected_item", list_selected_item, 0);
 }

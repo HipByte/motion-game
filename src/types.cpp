@@ -77,6 +77,27 @@ point_plus(VALUE rcv, SEL sel, VALUE obj)
     return rb_ccvec2_to_obj(*VEC2(rcv) + rb_any_to_ccvec2(obj));
 }
 
+/// @method #-(point)
+/// Substracts the coordinates of the receiver with the coordinates of the given
+/// point object.
+/// @param point [Point]
+/// @return [Point] A new Point object.
+
+static VALUE
+point_minus(VALUE rcv, SEL sel, VALUE obj)
+{
+    return rb_ccvec2_to_obj(*VEC2(rcv) - rb_any_to_ccvec2(obj));
+}
+
+static VALUE
+point_inspect(VALUE rcv, SEL sel)
+{
+    auto vec = VEC2(rcv);
+    char buf[100];
+    snprintf(buf, sizeof buf, "[%f, %f]", vec->x, vec->y);
+    return RSTRING_NEW(buf);
+}
+
 /// @class Size < Object
 /// A size represents the dimensions of width and height of an object.
 /// 
@@ -137,6 +158,41 @@ size_height_set(VALUE rcv, SEL sel, VALUE obj)
 {
     SIZE(rcv)->height = NUM2DBL(obj);
     return obj;
+}
+
+/// @group Helpers
+
+/// @method #+(size)
+/// Adds the dimensions of the receiver with the dimensions of the given
+/// size object.
+/// @param size [Size]
+/// @return [Size] A new Size object.
+
+static VALUE
+size_plus(VALUE rcv, SEL sel, VALUE obj)
+{
+    return rb_ccsize_to_obj(*SIZE(rcv) + rb_any_to_ccsize(obj));
+}
+
+/// @method #-(size)
+/// Substracts the dimensions of the receiver with the dimensions of the given
+/// size object.
+/// @param size [Size]
+/// @return [Size] A new Size object.
+
+static VALUE
+size_minus(VALUE rcv, SEL sel, VALUE obj)
+{
+    return rb_ccsize_to_obj(*SIZE(rcv) - rb_any_to_ccsize(obj));
+}
+
+static VALUE
+size_inspect(VALUE rcv, SEL sel)
+{
+    auto vec = SIZE(rcv);
+    char buf[100];
+    snprintf(buf, sizeof buf, "[%f, %f]", vec->width, vec->height);
+    return RSTRING_NEW(buf);
 }
 
 /// @class Color < Object
@@ -245,6 +301,16 @@ color_alpha_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
+static VALUE
+color_inspect(VALUE rcv, SEL sel)
+{
+    auto color = COLOR(rcv);
+    char buf[100];
+    snprintf(buf, sizeof buf, "#<Color Red:%d Green:%d Blue:%d Alpha:%d>",
+	    color->r, color->g, color->b, color->a);
+    return RSTRING_NEW(buf);
+}
+
 extern "C"
 void
 Init_Types(void)
@@ -257,6 +323,8 @@ Init_Types(void)
     rb_define_method(rb_cPoint, "x=", point_x_set, 1);
     rb_define_method(rb_cPoint, "y=", point_y_set, 1);
     rb_define_method(rb_cPoint, "+", point_plus, 1);
+    rb_define_method(rb_cPoint, "-", point_minus, 1);
+    rb_define_method(rb_cPoint, "inspect", point_inspect, 0);
 
     rb_cSize = rb_define_class_under(rb_mMC, "Size", rb_cObject);
 
@@ -265,6 +333,9 @@ Init_Types(void)
     rb_define_method(rb_cSize, "height", size_height, 0);
     rb_define_method(rb_cSize, "width=", size_width_set, 1);
     rb_define_method(rb_cSize, "height=", size_height_set, 1);
+    rb_define_method(rb_cSize, "+", size_plus, 1);
+    rb_define_method(rb_cSize, "-", size_minus, 1);
+    rb_define_method(rb_cSize, "inspect", size_inspect, 0);
 
     rb_cColor = rb_define_class_under(rb_mMC, "Color", rb_cObject);
 
@@ -277,4 +348,5 @@ Init_Types(void)
     rb_define_method(rb_cColor, "green=", color_green_set, 1);
     rb_define_method(rb_cColor, "blue=", color_blue_set, 1);
     rb_define_method(rb_cColor, "alpha=", color_alpha_set, 1);
+    rb_define_method(rb_cColor, "inspect", color_inspect, 0);
 }
