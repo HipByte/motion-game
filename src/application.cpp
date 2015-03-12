@@ -70,7 +70,7 @@ application_run(VALUE rcv, SEL sel)
     return rcv;
 }
 
-/// @group Callbacks
+/// @group Entry Point
 
 /// @method #start
 /// This method is called when the application finished launching. This method

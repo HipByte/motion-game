@@ -6,10 +6,12 @@
 #include <ui/UISlider.h>
 #include <ui/UIScrollView.h>
 #include <ui/UIListView.h>
+#include <ui/UIWebView.h>
 
-static VALUE rb_mUI = Qnil;
+static VALUE sym_absolute = Qnil, sym_relative = Qnil, sym_none = Qnil,
+	     sym_vertical = Qnil, sym_horizontal = Qnil, sym_both = Qnil;
 
-/// @class UI::Widget < Node
+/// @class Widget < Node
 /// The base class for all UI widgets. You should not instantiate this class
 /// directly but use a subclass instead.
 
@@ -96,7 +98,22 @@ widget_on_touch(VALUE rcv, SEL sel)
     return rcv;
 }
 
-/// @class UI::Text < UI::Widget
+#if 0
+static VALUE
+widget_size(VALUE rcv, SEL sel)
+{
+    return rb_ccsize_to_obj(WIDGET(rcv)->getContentSize());
+}
+
+static VALUE
+widget_size_set(VALUE rcv, SEL sel, VALUE val)
+{
+    WIDGET(rcv)->setContentSize(rb_any_to_ccsize(val));
+    return val;
+}
+#endif
+
+/// @class Text < Widget
 
 /// @group Constructors
 
@@ -293,11 +310,11 @@ text_horizontal_align_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
-/// @class UI::Button < UI::Widget
+/// @class Button < Widget
 /// A button widget. The {#on_touch} method can be used to set a callback when
 /// the button is activated. Example:
-///   button = UI::Button.new("Touch me!")
-///   button.on_touch { puts "touched!" }
+///   button = Button.new("Touch me!")
+///   button.on_touch { |type| puts "touched!" if type == :end }
 
 /// @group Constructors
 
@@ -408,7 +425,7 @@ button_zoom_scale_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
-/// @class UI::Slider < UI::Widget
+/// @class Slider < Widget
 
 /// @group Constructors
 
@@ -444,7 +461,112 @@ slider_progress_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
-/// @class UI::Scroll < UI::Layout
+/// @class Layout < Widget
+
+/// @group Constructors
+
+static VALUE rb_cUILayout = Qnil;
+
+#define LAYOUT(obj) _COCOS_WRAP_GET(obj, cocos2d::ui::Layout)
+
+/// @method #initialize
+/// Creates a new List widget.
+
+static VALUE
+layout_new(VALUE rcv, SEL sel)
+{
+    return rb_class_wrap_new(cocos2d::ui::Layout::create(), rcv);
+}
+
+/// @group Properties
+
+/// @property #type
+/// @return [:absolute, :vertical, :horizontal, :relative] the layout type.
+
+static VALUE
+layout_type(VALUE rcv, SEL sel)
+{
+    switch (LAYOUT(rcv)->getLayoutType()) {
+	case cocos2d::ui::Layout::Type::ABSOLUTE:
+	    return sym_absolute;
+	case cocos2d::ui::Layout::Type::VERTICAL:
+	    return sym_vertical;
+	case cocos2d::ui::Layout::Type::HORIZONTAL:
+	    return sym_horizontal;
+	case cocos2d::ui::Layout::Type::RELATIVE:
+	    return sym_relative;
+	default:
+	    abort();
+    }
+    return rcv;
+}
+
+static VALUE
+layout_type_set(VALUE rcv, SEL sel, VALUE arg)
+{
+    if (arg == sym_absolute) {
+	LAYOUT(rcv)->setLayoutType(cocos2d::ui::Layout::Type::ABSOLUTE);
+    }
+    else if (arg == sym_vertical) {
+	LAYOUT(rcv)->setLayoutType(cocos2d::ui::Layout::Type::VERTICAL);
+    }
+    else if (arg == sym_horizontal) {
+	LAYOUT(rcv)->setLayoutType(cocos2d::ui::Layout::Type::HORIZONTAL);
+    }
+    else if (arg == sym_relative) {
+	LAYOUT(rcv)->setLayoutType(cocos2d::ui::Layout::Type::RELATIVE);
+    }
+    else {
+	rb_raise(rb_eArgError, "expected :absolute, :vertical, :horizontal "\
+		"or :relative symbols");
+    }
+    return arg;
+}
+
+/// @property #background_color
+/// @return [Color] the background color of the widget.
+
+static VALUE
+layout_background_color(VALUE rcv, SEL sel)
+{
+    return rb_cccolor3_to_obj(LAYOUT(rcv)->getBackGroundColor());
+}
+
+static VALUE
+layout_background_color_set(VALUE rcv, SEL sel, VALUE color)
+{
+    auto layout = LAYOUT(rcv);
+    layout->setBackGroundColorType(
+	    cocos2d::ui::Layout::BackGroundColorType::SOLID);
+    layout->setBackGroundColor(rb_any_to_cccolor3(color));
+    return color;
+}
+
+/// @property #clipping?
+/// @return [Boolean] whether the layout can clip its content and children
+///   (default is false).
+
+static VALUE
+layout_clipping(VALUE rcv, SEL sel)
+{
+    return LAYOUT(rcv)->isClippingEnabled() ? Qtrue : Qfalse;
+}
+
+static VALUE
+layout_clipping_set(VALUE rcv, SEL sel, VALUE arg)
+{
+    LAYOUT(rcv)->setClippingEnabled(RTEST(arg));
+    return arg;
+}
+
+static VALUE
+layout_add(VALUE rcv, SEL sel, VALUE widget)
+{
+    LAYOUT(rcv)->addChild(WIDGET(widget));
+    return widget;
+}
+
+/// @class Scroll < Layout
 
 /// @group Constructors
 
@@ -466,9 +588,6 @@ scroll_new(VALUE rcv, SEL sel)
 /// @property #direction
 /// @return [:none, :vertical, :horizontal, :both] the direction of the scroll
 ///   view.
-
-static VALUE sym_none = Qnil, sym_vertical = Qnil, sym_horizontal = Qnil,
-	     sym_both = Qnil;
 
 static VALUE
 scroll_direction(VALUE rcv, SEL sel)
@@ -528,7 +647,18 @@ scroll_inner_size_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
-/// @class UI::List < UI::Scroll
+/// @property-readonly #inner_container
+/// @return [Layout] the inner container of the scroll view.
+
+static VALUE
+scroll_inner_container(VALUE rcv, SEL sel)
+{
+    auto layout = SCROLL(rcv)->getInnerContainer();
+    return layout == NULL
+	? Qnil : rb_class_wrap_new((void *)layout, rb_cUILayout);
+}
+
+/// @class List < Scroll
 
 /// @group Constructors
 
@@ -651,111 +781,131 @@ list_selected_item(VALUE rcv, SEL sel)
     return LONG2NUM(LIST(rcv)->getCurSelectedIndex());
 }
 
-/// @class UI::Layout < UI::Widget
+/// @group Properties
+
+/// @property #items_margin
+/// @return [Float] the margin between items in the list.
+
+static VALUE
+list_items_margin(VALUE rcv, SEL sel)
+{
+    return DBL2NUM(LIST(rcv)->getItemsMargin());
+}
+
+static VALUE
+list_items_margin_set(VALUE rcv, SEL sel, VALUE margin)
+{
+    LIST(rcv)->setItemsMargin(NUM2DBL(margin));
+    return margin;
+}
+
+/// @class Web < Widget
 
 /// @group Constructors
 
-static VALUE rb_cUILayout = Qnil;
+static VALUE rb_cUIWeb = Qnil;
 
-#define LAYOUT(obj) _COCOS_WRAP_GET(obj, cocos2d::ui::Layout)
+#define WEB(obj) _COCOS_WRAP_GET(obj, cocos2d::experimental::ui::WebView)
 
 /// @method #initialize
-/// Creates a new List widget.
+/// Creates a new Web widget.
 
 static VALUE
-layout_new(VALUE rcv, SEL sel)
+web_new(VALUE rcv, SEL sel)
 {
-    return rb_class_wrap_new(cocos2d::ui::Layout::create(), rcv);
+    return rb_class_wrap_new(cocos2d::experimental::ui::WebView::create(), rcv);
 }
 
-/// @group Properties
+/// @group Loading Data
 
-/// @property #type
-/// @return [:absolute, :vertical, :horizontal, :relative] the layout type.
-
-static VALUE sym_absolute = Qnil, sym_relative = Qnil;
+/// @method #load_html(str, baseurl)
+/// Loads a given HTML data into the widget.
+/// @param str [String] the HTML string to load.
+/// @param baseurl [String] the base URL for the content.
+/// @return [Web] the receiver.
 
 static VALUE
-layout_type(VALUE rcv, SEL sel)
+web_load_html(VALUE rcv, SEL sel, VALUE str, VALUE baseurl)
 {
-    switch (LAYOUT(rcv)->getLayoutType()) {
-	case cocos2d::ui::Layout::Type::ABSOLUTE:
-	    return sym_absolute;
-	case cocos2d::ui::Layout::Type::VERTICAL:
-	    return sym_vertical;
-	case cocos2d::ui::Layout::Type::HORIZONTAL:
-	    return sym_horizontal;
-	case cocos2d::ui::Layout::Type::RELATIVE:
-	    return sym_relative;
-	default:
-	    abort();
-    }
+    WEB(rcv)->loadHTMLString(RSTRING_PTR(str), RSTRING_PTR(baseurl));
     return rcv;
 }
 
+/// @method #load_url(url)
+/// Loads a given URL into the widget.
+/// @param url [String] the URL to load.
+/// @return [Web] the receiver.
+
 static VALUE
-layout_type_set(VALUE rcv, SEL sel, VALUE arg)
+web_load_url(VALUE rcv, SEL sel, VALUE str)
 {
-    if (arg == sym_absolute) {
-	LAYOUT(rcv)->setLayoutType(cocos2d::ui::Layout::Type::ABSOLUTE);
-    }
-    else if (arg == sym_vertical) {
-	LAYOUT(rcv)->setLayoutType(cocos2d::ui::Layout::Type::VERTICAL);
-    }
-    else if (arg == sym_horizontal) {
-	LAYOUT(rcv)->setLayoutType(cocos2d::ui::Layout::Type::HORIZONTAL);
-    }
-    else if (arg == sym_relative) {
-	LAYOUT(rcv)->setLayoutType(cocos2d::ui::Layout::Type::RELATIVE);
-    }
-    else {
-	rb_raise(rb_eArgError, "expected :absolute, :vertical, :horizontal "\
-		"or :relative symbols");
-    }
-    return arg;
+    WEB(rcv)->loadURL(RSTRING_PTR(str));
+    return rcv;
 }
 
-/// @property #background_color
-/// @return [Color] the background color of the widget.
+/// @method #load_file(path)
+/// Loads a given file into the widget.
+/// @param path [String] the file to load.
+/// @return [Web] the receiver.
 
 static VALUE
-layout_background_color(VALUE rcv, SEL sel)
+web_load_file(VALUE rcv, SEL sel, VALUE str)
 {
-    return rb_cccolor3_to_obj(LAYOUT(rcv)->getBackGroundColor());
+    WEB(rcv)->loadFile(RSTRING_PTR(str));
+    return rcv;
 }
 
-static VALUE
-layout_background_color_set(VALUE rcv, SEL sel, VALUE color)
-{
-    auto layout = LAYOUT(rcv);
-    layout->setBackGroundColorType(
-	    cocos2d::ui::Layout::BackGroundColorType::SOLID);
-    layout->setBackGroundColor(rb_any_to_cccolor3(color));
-    return color;
-}
+/// @method #stop
+/// Stops the current loading.
+/// @return [Web] the receiver.
 
 static VALUE
-layout_add(VALUE rcv, SEL sel, VALUE widget)
+web_stop(VALUE rcv, SEL sel)
 {
-    LAYOUT(rcv)->addChild(WIDGET(widget));
-    return widget;
+    WEB(rcv)->stopLoading();
+    return rcv;
+}
+
+/// @method #reload
+/// Reloads the current context.
+/// @return [Web] the receiver.
+
+static VALUE
+web_reload(VALUE rcv, SEL sel)
+{
+    WEB(rcv)->reload();
+    return rcv;
+}
+
+/// @group JavaScript Interface
+
+/// @method #evaluate(expr)
+/// Evaluates the given JavaScript expression.
+/// @param expr [String] a JavaScript expression to evaluate.
+/// @return [Web] the receiver.
+
+static VALUE
+web_evaluate(VALUE rcv, SEL sel, VALUE expr)
+{
+    WEB(rcv)->evaluateJS(RSTRING_PTR(expr));
+    return rcv;
 }
 
 extern "C"
 void
 Init_UI(void)
 {
-    rb_mUI = rb_define_module_under(rb_mMC, "UI");
-
-    rb_cUIWidget = rb_define_class_under(rb_mUI, "Widget", rb_cNode);
+    rb_cUIWidget = rb_define_class_under(rb_mMC, "Widget", rb_cNode);
 
     rb_define_method(rb_cUIWidget, "enabled?", widget_enabled, 0);
     rb_define_method(rb_cUIWidget, "enabled=", widget_enabled_set, 1);
     rb_define_method(rb_cUIWidget, "highlighted?", widget_highlighted, 0);
     rb_define_method(rb_cUIWidget, "highlighted=", widget_highlighted_set, 1);
+    //rb_define_method(rb_cUIWidget, "size", widget_size, 0);
+    //rb_define_method(rb_cUIWidget, "size=", widget_size_set, 1);
     rb_define_method(rb_cUIWidget, "on_touch", widget_on_touch, 0);
 
-    rb_cUIText = rb_define_class_under(rb_mUI, "Text", rb_cUIWidget);
+    rb_cUIText = rb_define_class_under(rb_mMC, "Text", rb_cUIWidget);
 
     rb_define_singleton_method(rb_cUIText, "new", text_new, -1);
     rb_define_method(rb_cUIText, "text", text_text, 0);
@@ -781,7 +931,7 @@ Init_UI(void)
     sym_left = rb_name2sym("left");
     sym_right = rb_name2sym("right");
 
-    rb_cUIButton = rb_define_class_under(rb_mUI, "Button", rb_cUIWidget);
+    rb_cUIButton = rb_define_class_under(rb_mMC, "Button", rb_cUIWidget);
 
     rb_define_singleton_method(rb_cUIButton, "new", button_new, -1);
     rb_define_method(rb_cUIButton, "text", button_text, 0);
@@ -795,13 +945,13 @@ Init_UI(void)
     rb_define_method(rb_cUIButton, "zoom_scale", button_zoom_scale, 0);
     rb_define_method(rb_cUIButton, "zoom_scale=", button_zoom_scale_set, 1);
 
-    rb_cUISlider = rb_define_class_under(rb_mUI, "Slider", rb_cUIWidget);
+    rb_cUISlider = rb_define_class_under(rb_mMC, "Slider", rb_cUIWidget);
 
     rb_define_singleton_method(rb_cUISlider, "new", slider_new, 0);
     rb_define_method(rb_cUISlider, "progress", slider_progress, 0);
     rb_define_method(rb_cUISlider, "progress=", slider_progress_set, 1);
 
-    rb_cUILayout = rb_define_class_under(rb_mUI, "Layout", rb_cUIWidget);
+    rb_cUILayout = rb_define_class_under(rb_mMC, "Layout", rb_cUIWidget);
 
     rb_define_singleton_method(rb_cUILayout, "new", layout_new, 0);
     rb_define_method(rb_cUILayout, "type", layout_type, 0);
@@ -810,25 +960,29 @@ Init_UI(void)
 	    layout_background_color, 0);
     rb_define_method(rb_cUILayout, "background_color=",
 	    layout_background_color_set, 1);
+    rb_define_method(rb_cUILayout, "clipping=", layout_clipping_set, 1);
+    rb_define_method(rb_cUILayout, "clipping?", layout_clipping, 0);
     rb_define_method(rb_cUILayout, "add", layout_add, 1);
 
     sym_absolute = rb_name2sym("absolute");
     sym_relative = rb_name2sym("relative");
 
-    rb_cUIScroll = rb_define_class_under(rb_mUI, "Scroll", rb_cUILayout);
+    rb_cUIScroll = rb_define_class_under(rb_mMC, "Scroll", rb_cUILayout);
 
     rb_define_singleton_method(rb_cUIScroll, "new", scroll_new, 0);
     rb_define_method(rb_cUIScroll, "direction", scroll_direction, 0);
     rb_define_method(rb_cUIScroll, "direction=", scroll_direction_set, 1);
     rb_define_method(rb_cUIScroll, "inner_size", scroll_inner_size, 0);
     rb_define_method(rb_cUIScroll, "inner_size=", scroll_inner_size_set, 1);
+    rb_define_method(rb_cUIScroll, "inner_container",
+	    scroll_inner_container, 0);
 
     sym_none = rb_name2sym("none");
     sym_vertical = rb_name2sym("vertical");
     sym_horizontal = rb_name2sym("horizontal");
     sym_both = rb_name2sym("both");
 
-    rb_cUIList = rb_define_class_under(rb_mUI, "List", rb_cUIScroll);
+    rb_cUIList = rb_define_class_under(rb_mMC, "List", rb_cUIScroll);
 
     rb_define_singleton_method(rb_cUIList, "new", list_new, 0);
     rb_define_method(rb_cUIList, "add_item", list_add_item, 1);
@@ -838,4 +992,16 @@ Init_UI(void)
     rb_define_method(rb_cUIList, "clear_items", list_clear_items, 0);
     rb_define_method(rb_cUIList, "on_selection", list_on_selection, 0);
     rb_define_method(rb_cUIList, "selected_item", list_selected_item, 0);
+    rb_define_method(rb_cUIList, "items_margin", list_items_margin, 0);
+    rb_define_method(rb_cUIList, "items_margin=", list_items_margin_set, 1);
+
+    rb_cUIWeb = rb_define_class_under(rb_mMC, "Web", rb_cUIWidget);
+
+    rb_define_singleton_method(rb_cUIWeb, "new", web_new, 0);
+    rb_define_method(rb_cUIWeb, "load_html", web_load_html, 2);
+    rb_define_method(rb_cUIWeb, "load_url", web_load_url, 1);
+    rb_define_method(rb_cUIWeb, "load_file", web_load_file, 1);
+    rb_define_method(rb_cUIWeb, "stop", web_stop, 0);
+    rb_define_method(rb_cUIWeb, "reload", web_reload, 0);
+    rb_define_method(rb_cUIWeb, "evaluate", web_reload, 1);
 }

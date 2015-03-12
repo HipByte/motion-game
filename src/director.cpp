@@ -1,7 +1,7 @@
 #include "rubymotion.h"
 
 /// @class Director < Object
-/// Director is a shared object that takes care of navigating between scenes.
+/// Director is a shared object that takes care of the scene graph.
 
 VALUE rb_cDirector = Qnil;
 static VALUE mc_director_instance = Qnil;
@@ -72,16 +72,61 @@ director_replace(VALUE rcv, SEL sel, VALUE obj)
     return rcv;
 }
 
+/// @method #push(scene)
+/// Suspends the execution of the running scene, and starts running the given
+/// scene instead.
+/// @param scene [Scene] the new scene to run.
+/// @return [Director] the receiver.
+
+static VALUE
+director_push(VALUE rcv, SEL sel, VALUE obj)
+{
+    DIRECTOR(rcv)->pushScene(obj_to_scene(obj));
+    return rcv;
+}
+
+/// @method #pop
+/// Pops the running scene from the stack, and starts running the previous
+/// scene. If there are no more scenes to run, the execution will be stopped.
+/// @return [Director] the receiver.
+
+static VALUE
+director_pop(VALUE rcv, SEL sel)
+{
+    DIRECTOR(rcv)->popScene();
+    return rcv;
+}
+
 /// @method #end
-/// Ends the scene execution. This also has the effect of quitting the
-/// application.
+/// Ends the execution of the running scene.
 /// @return [Director] the receiver.
 
 static VALUE
 director_end(VALUE rcv, SEL sel)
 {
     DIRECTOR(rcv)->end();
-    exit(0);
+    return rcv;
+}
+
+/// @method #pause
+/// Pauses the execution of the running scene.
+/// @return [Director] the receiver.
+
+static VALUE
+director_pause(VALUE rcv, SEL sel)
+{
+    DIRECTOR(rcv)->pause();
+    return rcv;
+}
+
+/// @method #resume
+/// Resumes the execution of the current paused scene.
+/// @return [Director] the receiver.
+
+static VALUE
+director_resume(VALUE rcv, SEL sel)
+{
+    DIRECTOR(rcv)->resume();
     return rcv;
 }
 
@@ -132,7 +177,11 @@ Init_Director(void)
     rb_define_singleton_method(rb_cDirector, "shared", director_instance, 0);
     rb_define_method(rb_cDirector, "run", director_run, 1);
     rb_define_method(rb_cDirector, "replace", director_replace, 1);
+    rb_define_method(rb_cDirector, "push", director_push, 1);
+    rb_define_method(rb_cDirector, "pop", director_pop, 0);
     rb_define_method(rb_cDirector, "end", director_end, 0);
+    rb_define_method(rb_cDirector, "pause", director_pause, 0);
+    rb_define_method(rb_cDirector, "resume", director_resume, 0);
     rb_define_method(rb_cDirector, "origin", director_origin, 0);
     rb_define_method(rb_cDirector, "size", director_size, 0);
     rb_define_method(rb_cDirector, "show_stats=", director_show_stats_set, 1);

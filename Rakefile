@@ -249,7 +249,6 @@ class DocAPIGen
     io = StringIO.new
     io.puts "module MC"
     io.puts "module Events; end"
-    io.puts "module UI; end"
     @classes.each do |klass|
       io.puts doc_comment(klass, 0)
       io.puts "class #{klass[:def]}"

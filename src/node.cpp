@@ -131,11 +131,65 @@ node_color_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
+/// @property #rotation
+/// Returns the rotation of the node in degrees. 0 is the default angle.
+/// Positive values rotate node clockwise, and negative values for
+/// anti-clockwise
+/// @return [Float] the rotation of the node in degrees.
+
+static VALUE
+node_rotation(VALUE rcv, SEL sel)
+{
+    return DBL2NUM(NODE(rcv)->getRotation());
+}
+
+static VALUE
+node_rotation_set(VALUE rcv, SEL sel, VALUE val)
+{
+    NODE(rcv)->setRotation(NUM2DBL(val));
+    return val;
+}
+
+/// @property #scale
+/// Returns the scaling factor of the node, which multiplies its width, height
+/// and depth.
+/// @return [Float] the scaling factor.
+
+static VALUE
+node_scale(VALUE rcv, SEL sel)
+{
+    return DBL2NUM(NODE(rcv)->getScale());
+}
+
+static VALUE
+node_scale_set(VALUE rcv, SEL sel, VALUE val)
+{
+    NODE(rcv)->setScale(NUM2DBL(val));
+    return val;
+}
+
+/// @property #name
+/// @return [String] a name to easily identify the node in the graph.
+
+static VALUE
+node_name(VALUE rcv, SEL sel)
+{
+    return RSTRING_NEW(NODE(rcv)->getName().c_str());
+}
+
+static VALUE
+node_name_set(VALUE rcv, SEL sel, VALUE val)
+{
+    NODE(rcv)->setName(RSTRING_PTR(val));
+    return val;
+}
+
 /// @group Miscellaneous
 
 /// @method #intersects?(node)
 /// @param node [Node] a given Node object.
-/// @return [Boolean] whether the receiver's bounding box intersects with the given node's bounding box.
+/// @return [Boolean] whether the receiver's bounding box intersects with the
+///   given node's bounding box.
 
 static VALUE
 node_intersects(VALUE rcv, SEL sel, VALUE node)
@@ -226,6 +280,24 @@ node_children(VALUE rcv, SEL sel)
     return ary;
 }
 
+/// @method #delete_from_parent(cleanup=true)
+/// Removes the receiver node from its parent.
+/// Same as:
+///   node.parent.delete(node, cleanup)
+/// @param cleanup [Boolean] cleans all running actions on the receiver before
+///   removing it from the parent.
+/// @return [Node] the receiver.
+
+static VALUE
+node_delete_from_parent(VALUE rcv, SEL sel, int argc, VALUE *argv)
+{
+    VALUE cleanup = Qnil;
+    rb_scan_args(argc, argv, "01", &cleanup);
+
+    NODE(rcv)->removeFromParentAndCleanup(RTEST(cleanup));
+    return rcv;
+}
+
 /// @class Parallax < Node
 
 #define PNODE(obj) _COCOS_WRAP_GET(obj, cocos2d::ParallaxNode)
@@ -273,6 +345,12 @@ Init_Node(void)
     rb_define_method(rb_cNode, "z_index=", node_z_index_set, 1);
     rb_define_method(rb_cNode, "color", node_color, 0);
     rb_define_method(rb_cNode, "color=", node_color_set, 1);
+    rb_define_method(rb_cNode, "rotation", node_rotation, 0);
+    rb_define_method(rb_cNode, "rotation=", node_rotation_set, 1);
+    rb_define_method(rb_cNode, "scale", node_scale, 0);
+    rb_define_method(rb_cNode, "scale=", node_scale_set, 1);
+    rb_define_method(rb_cNode, "name", node_name, 0);
+    rb_define_method(rb_cNode, "name=", node_name_set, 1);
     rb_define_method(rb_cNode, "add", node_add, -1);
     rb_define_method(rb_cNode, "visible=", node_visible_set, 1);
     rb_define_method(rb_cNode, "visible?", node_visible, 0);
@@ -281,6 +359,8 @@ Init_Node(void)
     rb_define_method(rb_cNode, "delete", node_delete, -1);
     rb_define_method(rb_cNode, "parent", node_parent, 0);
     rb_define_method(rb_cNode, "children", node_children, 0);
+    rb_define_method(rb_cNode, "delete_from_parent", node_delete_from_parent,
+	    -1);
 
     rb_cParallaxNode = rb_define_class_under(rb_mMC, "Parallax", rb_cNode);
 
