@@ -1,4 +1,4 @@
-class GameLayer < MC::Scene
+class GameScene < MC::Scene
   def initialize
     @random = Random.new
 
