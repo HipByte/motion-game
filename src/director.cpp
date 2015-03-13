@@ -38,13 +38,10 @@ director_view_set(VALUE rcv, SEL sel, VALUE obj)
 static cocos2d::Scene *
 obj_to_scene(VALUE obj)
 {
-    cocos2d::Scene *scene = NULL;
-    if (rb_obj_is_kind_of(obj, rb_cLayer)) {
-	scene = cocos2d::Scene::create();
-	scene->addChild(LAYER(obj));
+    if (rb_obj_is_kind_of(obj, rb_cScene)) {
+	return SCENE(obj);
     }
-    assert(scene != NULL);
-    return scene;
+    rb_raise(rb_eArgError, "expected Scene object");
 }
 
 /// @method #run(scene)

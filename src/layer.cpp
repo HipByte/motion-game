@@ -3,18 +3,19 @@
 /// @class Scene < Node
 /// This class represents a scene, an independent screen or stage of the
 /// application workflow. A scene is responsible for handling events from the
-/// device and also starting the game loop.
+/// device, providing a physics world for the sprites, and also starting the
+/// game loop.
 /// An application must have at least one scene, and the +Scene+ class is
 /// designed to be subclassed.
 
-VALUE rb_cLayer = Qnil;
+VALUE rb_cScene = Qnil;
 
-class mc_Layer : private cocos2d::Layer {
+class mc_Scene : private cocos2d::Scene {
     public:
 	VALUE obj;
 	SEL update_sel;
 
-    mc_Layer() {
+    mc_Scene() {
 	obj = Qnil;
 #if CC_TARGET_OS_IPHONE
 	update_sel = rb_selector("update:");
@@ -23,18 +24,26 @@ class mc_Layer : private cocos2d::Layer {
 #endif
     }
 
+    static mc_Scene *create(void) {
+	auto scene = new mc_Scene();
+	scene->initWithPhysics();
+	scene->autorelease();
+	return scene;
+    }
+
     virtual void update(float delta) {
+	Scene::update(delta);
 	VALUE arg = DBL2NUM(delta);
 	rb_send(obj, update_sel, 1, &arg);
     }
 };
 
 static VALUE
-layer_alloc(VALUE rcv, SEL sel)
+scene_alloc(VALUE rcv, SEL sel)
 {
-    mc_Layer *layer = new mc_Layer();
-    VALUE obj = rb_class_wrap_new((void *)layer, rcv);
-    layer->obj = rb_retain(obj);
+    auto scene = mc_Scene::create();
+    VALUE obj = rb_class_wrap_new((void *)scene, rcv);
+    scene->obj = rb_retain(obj);
     return obj;
 }
 
@@ -47,7 +56,7 @@ layer_alloc(VALUE rcv, SEL sel)
 /// @return [Scene] the receiver.
 
 static VALUE
-layer_initialize(VALUE rcv, SEL sel)
+scene_initialize(VALUE rcv, SEL sel)
 {
     return rcv;
 }
@@ -60,9 +69,9 @@ layer_initialize(VALUE rcv, SEL sel)
 /// @return [Scene] the receiver.
 
 static VALUE
-layer_start_update(VALUE rcv, SEL sel)
+scene_start_update(VALUE rcv, SEL sel)
 {
-    LAYER(rcv)->scheduleUpdate();
+    SCENE(rcv)->scheduleUpdate();
     return rcv;
 }
 
@@ -72,9 +81,9 @@ layer_start_update(VALUE rcv, SEL sel)
 /// @return [Scene] the receiver.
 
 static VALUE
-layer_stop_update(VALUE rcv, SEL sel)
+scene_stop_update(VALUE rcv, SEL sel)
 {
-    LAYER(rcv)->unscheduleUpdate();
+    SCENE(rcv)->unscheduleUpdate();
     return rcv;
 }
 
@@ -86,13 +95,22 @@ layer_stop_update(VALUE rcv, SEL sel)
 /// @return [Scene] the receiver.
 
 static VALUE
-layer_update(VALUE rcv, SEL sel, VALUE delta)
+scene_update(VALUE rcv, SEL sel, VALUE delta)
 {
     // Do nothing.
     return rcv;
 }
 
 /// @group Events
+
+static VALUE
+scene_add_listener(VALUE rcv, cocos2d::EventListener *listener)
+{
+    auto scene = SCENE(rcv);
+    scene->getEventDispatcher()->addEventListenerWithSceneGraphPriority(
+	    listener, scene);
+    return rcv;
+}
 
 /// @method #on_touch_begin
 /// Starts listening for touch begin events on the receiver.
@@ -101,7 +119,7 @@ layer_update(VALUE rcv, SEL sel, VALUE delta)
 /// @return [Scene] the receiver.
 
 static VALUE
-layer_on_touch_begin(VALUE rcv, SEL sel)
+scene_on_touch_begin(VALUE rcv, SEL sel)
 {
     VALUE block = rb_current_block();
     if (block == Qnil) {
@@ -117,9 +135,7 @@ layer_on_touch_begin(VALUE rcv, SEL sel)
 	return RTEST(rb_block_call(block, 1, &touch_obj));
     };
 
-    LAYER(rcv)->getEventDispatcher()->addEventListenerWithSceneGraphPriority(
-	    listener, LAYER(rcv));
-    return rcv;
+    return scene_add_listener(rcv, listener);
 }
 
 /// @method #on_accelerate
@@ -129,7 +145,7 @@ layer_on_touch_begin(VALUE rcv, SEL sel)
 /// @return [Scene] the receiver.
 
 static VALUE
-layer_on_accelerate(VALUE rcv, SEL sel)
+scene_on_accelerate(VALUE rcv, SEL sel)
 {
     VALUE block = rb_current_block();
     if (block == Qnil) {
@@ -145,22 +161,88 @@ layer_on_accelerate(VALUE rcv, SEL sel)
 	    rb_block_call(block, 1, &acc_obj);
 	});
 
-    LAYER(rcv)->getEventDispatcher()->addEventListenerWithSceneGraphPriority(
-	    listener, LAYER(rcv));
+    return scene_add_listener(rcv, listener);
+}
+
+/// @method #on_contact_begin
+/// Starts listening for contact begin events from the physics engine.
+/// @yield [Events::PhysicsContact] the given block will be yield when a
+///   contact event is received from the physics engine.
+/// @return [Scene] the receiver.
+
+static VALUE
+scene_on_contact_begin(VALUE rcv, SEL sel)
+{
+    VALUE block = rb_current_block();
+    if (block == Qnil) {
+	rb_raise(rb_eArgError, "block not given");
+    }
+    block = rb_retain(block); // FIXME need release...
+
+    auto listener = cocos2d::EventListenerPhysicsContact::create();
+    listener->onContactBegin = [block](cocos2d::PhysicsContact &contact)
+	    -> bool {
+//	VALUE touch_obj = rb_class_wrap_new((void *)touch,
+//		rb_cTouch);
+	return RTEST(rb_block_call(block, 0, NULL));
+    };
+
+    return scene_add_listener(rcv, listener);
+}
+
+/// @group Properties
+
+/// @property #gravity
+/// @return [Point] the gravity of the scene's physics world.
+
+static VALUE
+scene_gravity(VALUE rcv, SEL sel)
+{
+    return rb_ccvec2_to_obj(SCENE(rcv)->getPhysicsWorld()->getGravity());
+}
+
+static VALUE
+scene_gravity_set(VALUE rcv, SEL sel, VALUE arg)
+{
+    SCENE(rcv)->getPhysicsWorld()->setGravity(rb_any_to_ccvec2(arg));
     return rcv;
+}
+
+/// @property #debug_physics?
+/// @return [Boolean] whether the physics engine should draw debug lines.
+
+static VALUE
+scene_debug_physics(VALUE rcv, SEL sel)
+{
+    return SCENE(rcv)->getPhysicsWorld()->getDebugDrawMask()
+	== cocos2d::PhysicsWorld::DEBUGDRAW_NONE ? Qfalse : Qtrue;
+}
+
+static VALUE
+scene_debug_physics_set(VALUE rcv, SEL sel, VALUE arg)
+{ 
+    SCENE(rcv)->getPhysicsWorld()->setDebugDrawMask(RTEST(arg)
+	    ? cocos2d::PhysicsWorld::DEBUGDRAW_ALL
+	    : cocos2d::PhysicsWorld::DEBUGDRAW_NONE);
+    return arg;
 }
 
 extern "C"
 void
 Init_Layer(void)
 {
-    rb_cLayer = rb_define_class_under(rb_mMC, "Scene", rb_cNode);
+    rb_cScene = rb_define_class_under(rb_mMC, "Scene", rb_cNode);
 
-    rb_define_singleton_method(rb_cLayer, "alloc", layer_alloc, 0);
-    rb_define_method(rb_cLayer, "initialize", layer_initialize, 0);
-    rb_define_method(rb_cLayer, "start_update", layer_start_update, 0);
-    rb_define_method(rb_cLayer, "stop_update", layer_stop_update, 0);
-    rb_define_method(rb_cLayer, "update", layer_update, 1);
-    rb_define_method(rb_cLayer, "on_touch_begin", layer_on_touch_begin, 0);
-    rb_define_method(rb_cLayer, "on_accelerate", layer_on_accelerate, 0);
+    rb_define_singleton_method(rb_cScene, "alloc", scene_alloc, 0);
+    rb_define_method(rb_cScene, "initialize", scene_initialize, 0);
+    rb_define_method(rb_cScene, "start_update", scene_start_update, 0);
+    rb_define_method(rb_cScene, "stop_update", scene_stop_update, 0);
+    rb_define_method(rb_cScene, "update", scene_update, 1);
+    rb_define_method(rb_cScene, "on_touch_begin", scene_on_touch_begin, 0);
+    rb_define_method(rb_cScene, "on_accelerate", scene_on_accelerate, 0);
+    rb_define_method(rb_cScene, "on_contact_begin", scene_on_contact_begin, 0);
+    rb_define_method(rb_cScene, "gravity", scene_gravity, 0);
+    rb_define_method(rb_cScene, "gravity=", scene_gravity_set, 1);
+    rb_define_method(rb_cScene, "debug_physics?", scene_debug_physics, 0);
+    rb_define_method(rb_cScene, "debug_physics=", scene_debug_physics_set, 1);
 }

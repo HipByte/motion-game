@@ -129,7 +129,7 @@ extern VALUE rb_cApplication;
 extern VALUE rb_cNode;
 extern VALUE rb_cTouch;
 extern VALUE rb_cAcceleration;
-extern VALUE rb_cLayer;
+extern VALUE rb_cScene;
 extern VALUE rb_cMenu;
 extern VALUE rb_cLabel;
 extern VALUE rb_cSprite;
@@ -144,7 +144,7 @@ extern VALUE rb_cColor;
 #define APPLICATION(obj) _COCOS_WRAP_GET(obj, cocos2d::Application)
 #define DIRECTOR(obj) _COCOS_WRAP_GET(obj, cocos2d::Director)
 #define NODE(obj) _COCOS_WRAP_GET(obj, cocos2d::Node)
-#define LAYER(obj) _COCOS_WRAP_GET(obj, cocos2d::Layer)
+#define SCENE(obj) _COCOS_WRAP_GET(obj, cocos2d::Scene)
 #define SPRITE(obj) _COCOS_WRAP_GET(obj, cocos2d::Sprite)
 #define SCENE(obj) _COCOS_WRAP_GET(obj, cocos2d::Scene)
 #define MENU(obj) _COCOS_WRAP_GET(obj, cocos2d::Menu)

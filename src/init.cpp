@@ -47,9 +47,19 @@ Init_Fluency(void)
 
     rb_mMC = rb_define_module("MC");
 
+#if CC_TARGET_OS_ANDROID
+# define ADD_FRAME JniFrame _frame
+#else
+# define ADD_FRAME
+#endif
+
 #define INIT_MODULE(x) \
     extern void Init_##x(void); \
-    Init_##x();
+    do { \
+	ADD_FRAME; \
+	Init_##x(); \
+    } \
+    while (0);
 
     INIT_MODULE(Application)
     INIT_MODULE(Director)
@@ -65,4 +75,5 @@ Init_Fluency(void)
     INIT_MODULE(UI)
 
 #undef INIT_MODULE
+#undef ADD_FRAME
 }

@@ -7,6 +7,12 @@
 VALUE rb_cNode = Qnil;
 static VALUE rb_cParallaxNode = Qnil;
 
+static VALUE
+node_alloc(VALUE rcv, SEL sel)
+{
+    return rb_class_wrap_new((void *)cocos2d::Node::create(), rcv);
+}
+
 /// @group Properties
 
 /// @property #anchor_point
@@ -333,6 +339,7 @@ Init_Node(void)
 {
     rb_cNode = rb_define_class_under(rb_mMC, "Node", rb_cObject);
 
+    rb_define_singleton_method(rb_cNode, "alloc", node_alloc, 0);
     rb_define_method(rb_cNode, "anchor_point", node_anchor_point, 0);
     rb_define_method(rb_cNode, "anchor_point=", node_anchor_point_set, 1);
     rb_define_method(rb_cNode, "position", node_position, 0);

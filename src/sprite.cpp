@@ -9,8 +9,8 @@ VALUE rb_cSprite = Qnil;
 /// @method .load(file_name)
 /// Loads all sprites from the content of +file_name+, which should be
 /// the name of a property list spritesheet file in the application's resource
-//  directory. Once a spritesheet file is loaded, its frames can be created
-/// using {Sprite#initialize}.
+/// directory. Once a spritesheet file is loaded, individual sprites can be
+/// created using {Sprite#initialize} by providing the name of the frame.
 /// Sprite frames files can be created with a visual editor such as
 /// TexturePacker.
 /// @param file_name [String] the name of the sprite frames property list file.
@@ -27,9 +27,10 @@ sprite_load(VALUE rcv, SEL sel, VALUE plist_path)
 /// @group Constructors
 
 /// @method #initialize(sprite_name)
-/// Creates a new sprite object from the name of +sprite_name+. The sprite
-/// must either exist as a standalone image file in the application's resource
-/// directory, or must have been loaded from a spritesheet using #{load}.
+/// Creates a new sprite object from +sprite_name+, which must be either the
+/// name of a standalone image file in the application's resource directory
+/// or the name of a sprite frame which was loaded from a spritesheet using
+/// {load}.
 /// @param sprite_name [String] the name of the sprite to create.
 
 static VALUE
@@ -117,8 +118,10 @@ sprite_blink(VALUE rcv, SEL sel, VALUE blinks, VALUE interval)
 /// Starts an animation where the sprite display frame will be changed to
 /// the given frames in +sprite_frames_names+ based on the given +delay+ and
 /// repeated +loops+ times.
-/// @param frame_names [Array<String>] an array of frame names to load and use
-///   for the animation.
+/// @param frame_names [Array<String>] an array of sprite frames to load and
+///   use for the animation, which can be either the names of standalone image
+///   files in the application's resource directory or the names of sprite
+///   frames loaded from a spritesheet using {load}.
 /// @param delay [Float] the delay in seconds between each frame animation.
 /// @param loops [Integer, Symbol] the number of times the animation should
 ///   loop. If given the +:forever+ symbol, the animation will loop forever.
@@ -163,6 +166,229 @@ sprite_animate(VALUE rcv, SEL sel, int argc, VALUE *argv)
     return run_action(rcv, action);
 }
 
+/// @group Physics
+
+static cocos2d::PhysicsBody *
+need_physics(VALUE rcv)
+{
+    auto physics = SPRITE(rcv)->getPhysicsBody();
+    if (physics == NULL) {
+	rb_raise(rb_eRuntimeError, "receiver does not have a physics body"); 
+    }
+    return physics;
+}
+
+/// @method #attach_physics_box(size=nil)
+/// Attaches a physics body box shape to the sprite.
+/// @param size [Size] the size of the box. If +nil+ is given, the size of the
+///   sprite, calculated with {#size}, will be passed.
+/// @return [Sprite] the receiver.
+
+static VALUE
+sprite_attach_physics_box(VALUE rcv, SEL sel, int argc, VALUE *argv)
+{
+    VALUE size = Qnil;
+    rb_scan_args(argc, argv, "01", &size);
+
+    auto sprite = SPRITE(rcv);
+    auto ccsize = sprite->getContentSize();
+    if (size != Qnil) {
+	ccsize = rb_any_to_ccsize(size);
+    }
+    auto physics = cocos2d::PhysicsBody::createBox(ccsize);
+    SPRITE(rcv)->setPhysicsBody(physics);
+    return rcv;
+}
+
+/// @method #apply_impulse(force)
+/// Applies a continuous force to the sprite body.
+/// @param force [Point] the force to apply.
+/// @return [Sprite] the receiver.
+
+static VALUE
+sprite_apply_impulse(VALUE rcv, SEL sel, VALUE force)
+{
+    need_physics(rcv)->applyImpulse(rb_any_to_ccvec2(force));
+    return rcv;
+}
+
+/// @method #apply_force(force)
+/// Applies an immediate force to the sprite body.
+/// @param force [Point] the force to apply.
+/// @return [Sprite] the receiver.
+
+static VALUE
+sprite_apply_force(VALUE rcv, SEL sel, VALUE force)
+{
+    need_physics(rcv)->applyForce(rb_any_to_ccvec2(force));
+    return rcv;
+}
+
+/// @group Properties
+
+/// @property #mass
+/// @return [Float] the body mass of the sprite.
+
+static VALUE
+sprite_mass(VALUE rcv, SEL sel)
+{
+    return DBL2NUM(need_physics(rcv)->getMass());
+}
+
+static VALUE
+sprite_mass_set(VALUE rcv, SEL sel, VALUE arg)
+{
+    need_physics(rcv)->setMass(NUM2DBL(arg));
+    return arg;
+}
+
+/// @property #gravitates?
+/// @return [Boolean] whether the sprite should be affected by the scene's
+///   gravitational force. The default is +true+.
+
+static VALUE
+sprite_gravitates(VALUE rcv, SEL sel)
+{
+    return need_physics(rcv)->isGravityEnabled() ? Qtrue : Qfalse;
+}
+
+static VALUE
+sprite_gravitates_set(VALUE rcv, SEL sel, VALUE arg)
+{
+    need_physics(rcv)->setGravityEnable(RTEST(arg));
+    return arg;
+}
+
+/// @property #dynamic?
+/// @return [Boolean] whether the sprite body should be dynamic or not in the
+///   physics world. The default is +true+, and a dynamic body will affect
+///   with gravity.
+
+static VALUE
+sprite_dynamic(VALUE rcv, SEL sel)
+{
+    return need_physics(rcv)->isDynamic() ? Qtrue : Qfalse;
+}
+
+static VALUE
+sprite_dynamic_set(VALUE rcv, SEL sel, VALUE arg)
+{
+    need_physics(rcv)->setDynamic(RTEST(arg));
+    return arg;
+}
+
+/// @property #friction
+/// @return [Float] the linear damping / air friction force on the sprite body.
+
+static VALUE
+sprite_friction(VALUE rcv, SEL sel)
+{
+    return DBL2NUM(need_physics(rcv)->getLinearDamping());
+}
+
+static VALUE
+sprite_friction_set(VALUE rcv, SEL sel, VALUE arg)
+{
+    need_physics(rcv)->setLinearDamping(NUM2DBL(arg));
+    return arg;
+}
+
+/// @property #velocity
+/// @return [Point] the velocity force on the sprite body.
+
+static VALUE
+sprite_velocity(VALUE rcv, SEL sel)
+{
+    return rb_ccvec2_to_obj(need_physics(rcv)->getVelocity());
+}
+
+static VALUE
+sprite_velocity_set(VALUE rcv, SEL sel, VALUE arg)
+{
+    need_physics(rcv)->setVelocity(rb_any_to_ccvec2(arg));
+    return arg;
+}
+
+/// @property #resting?
+/// @return [Boolean] whether the body is at rest.
+
+static VALUE
+sprite_resting(VALUE rcv, SEL sel)
+{
+    return need_physics(rcv)->isResting() ? Qtrue : Qfalse;
+}
+
+static VALUE
+sprite_resting_set(VALUE rcv, SEL sel, VALUE arg)
+{
+    need_physics(rcv)->setResting(RTEST(arg));
+    return arg;
+}
+
+/// @property #inertia_moment
+/// @return [Float] the moment of inertia of the body.
+
+static VALUE
+sprite_inertia_moment(VALUE rcv, SEL sel)
+{
+    return DBL2NUM(need_physics(rcv)->getMoment());
+}
+
+static VALUE
+sprite_inertia_moment_set(VALUE rcv, SEL sel, VALUE arg)
+{
+    need_physics(rcv)->setMoment(NUM2DBL(arg));
+    return arg;
+}
+
+/// @property #category_mask
+/// @return [Integer] Category mask.
+
+static VALUE
+sprite_category_mask(VALUE rcv, SEL sel)
+{
+    return LONG2NUM(need_physics(rcv)->getCategoryBitmask());
+}
+
+static VALUE
+sprite_category_mask_set(VALUE rcv, SEL sel, VALUE arg)
+{
+    need_physics(rcv)->setCategoryBitmask(NUM2LONG(arg));
+    return arg;
+}
+
+/// @property #contact_mask
+/// @return [Integer] Contact test mask.
+
+static VALUE
+sprite_contact_mask(VALUE rcv, SEL sel)
+{
+    return LONG2NUM(need_physics(rcv)->getContactTestBitmask());
+}
+
+static VALUE
+sprite_contact_mask_set(VALUE rcv, SEL sel, VALUE arg)
+{
+    need_physics(rcv)->setContactTestBitmask(NUM2LONG(arg));
+    return arg;
+}
+
+/// @property #collision_mask
+/// @return [Integer] Collision mask.
+
+static VALUE
+sprite_collision_mask(VALUE rcv, SEL sel)
+{
+    return LONG2NUM(need_physics(rcv)->getCollisionBitmask());
+}
+
+static VALUE
+sprite_collision_mask_set(VALUE rcv, SEL sel, VALUE arg)
+{
+    need_physics(rcv)->setCollisionBitmask(NUM2LONG(arg));
+    return arg;
+}
+
 extern "C"
 void
 Init_Sprite(void)
@@ -175,4 +401,31 @@ Init_Sprite(void)
     rb_define_method(rb_cSprite, "move_to", sprite_move_to, 2);
     rb_define_method(rb_cSprite, "blink", sprite_blink, 2);
     rb_define_method(rb_cSprite, "animate", sprite_animate, -1);
+    rb_define_method(rb_cSprite, "attach_physics_box",
+	    sprite_attach_physics_box, -1);
+    rb_define_method(rb_cSprite, "apply_impulse", sprite_apply_impulse, 1);
+    rb_define_method(rb_cSprite, "apply_force", sprite_apply_force, 1);
+    rb_define_method(rb_cSprite, "mass", sprite_mass, 0);
+    rb_define_method(rb_cSprite, "mass=", sprite_mass_set, 1);
+    rb_define_method(rb_cSprite, "gravitates?", sprite_gravitates, 0);
+    rb_define_method(rb_cSprite, "gravitates=", sprite_gravitates_set, 1);
+    rb_define_method(rb_cSprite, "dynamic?", sprite_dynamic, 0);
+    rb_define_method(rb_cSprite, "dynamic=", sprite_dynamic_set, 1);
+    rb_define_method(rb_cSprite, "friction", sprite_friction, 0);
+    rb_define_method(rb_cSprite, "friction=", sprite_friction_set, 1);
+    rb_define_method(rb_cSprite, "velocity", sprite_velocity, 0);
+    rb_define_method(rb_cSprite, "velocity=", sprite_velocity_set, 1);
+    rb_define_method(rb_cSprite, "resting?", sprite_resting, 0);
+    rb_define_method(rb_cSprite, "resting=", sprite_resting_set, 1);
+    rb_define_method(rb_cSprite, "inertia_moment", sprite_inertia_moment, 0);
+    rb_define_method(rb_cSprite, "inertia_moment=", sprite_inertia_moment_set,
+	    1);
+    rb_define_method(rb_cSprite, "category_mask", sprite_category_mask, 0);
+    rb_define_method(rb_cSprite, "category_mask=", sprite_category_mask_set,
+	    1);
+    rb_define_method(rb_cSprite, "collision_mask", sprite_collision_mask, 0);
+    rb_define_method(rb_cSprite, "collision_mask=", sprite_collision_mask_set,
+	    1);
+    rb_define_method(rb_cSprite, "contact_mask", sprite_contact_mask, 0);
+    rb_define_method(rb_cSprite, "contact_mask=", sprite_contact_mask_set, 1);
 }
