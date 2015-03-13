@@ -179,9 +179,9 @@ need_physics(VALUE rcv)
 }
 
 /// @method #attach_physics_box(size=nil)
-/// Attaches a physics body box shape to the sprite.
+/// Attaches a physics body with a box shape to the sprite.
 /// @param size [Size] the size of the box. If +nil+ is given, the size of the
-///   sprite, calculated with {#size}, will be passed.
+///   sprite, retrieved with {#size}, will be used instead.
 /// @return [Sprite] the receiver.
 
 static VALUE
@@ -342,7 +342,7 @@ sprite_inertia_moment_set(VALUE rcv, SEL sel, VALUE arg)
 }
 
 /// @property #category_mask
-/// @return [Integer] Category mask.
+/// @return [Integer] physics category mask.
 
 static VALUE
 sprite_category_mask(VALUE rcv, SEL sel)
@@ -358,7 +358,7 @@ sprite_category_mask_set(VALUE rcv, SEL sel, VALUE arg)
 }
 
 /// @property #contact_mask
-/// @return [Integer] Contact test mask.
+/// @return [Integer] physics contact test mask.
 
 static VALUE
 sprite_contact_mask(VALUE rcv, SEL sel)
@@ -374,7 +374,7 @@ sprite_contact_mask_set(VALUE rcv, SEL sel, VALUE arg)
 }
 
 /// @property #collision_mask
-/// @return [Integer] Collision mask.
+/// @return [Integer] physics collision mask.
 
 static VALUE
 sprite_collision_mask(VALUE rcv, SEL sel)
