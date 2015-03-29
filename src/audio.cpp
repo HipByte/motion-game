@@ -73,6 +73,25 @@ audio_effect(VALUE rcv, SEL sel, VALUE path)
     return rcv;
 }
 
+/// @group Properties
+
+/// @property #background_volume
+/// @return [Float] the volume of the background music within the range of 0.0
+///   as the minimum and 1.0 as the maximum.
+
+static VALUE
+audio_background_volume(VALUE rcv, SEL sel)
+{
+    return DBL2NUM(AUDIO(rcv)->getBackgroundMusicVolume());
+}
+
+static VALUE
+audio_background_volume_set(VALUE rcv, SEL sel, VALUE val)
+{
+    AUDIO(rcv)->setBackgroundMusicVolume(NUM2DBL(val));
+    return val;
+}
+
 extern "C"
 void
 Init_Audio(void)
@@ -81,5 +100,9 @@ Init_Audio(void)
 
     rb_define_singleton_method(rb_cAudio, "shared", audio_instance, 0);
     rb_define_method(rb_cAudio, "background", audio_background, -1);
+    rb_define_method(rb_cAudio, "background_volume", audio_background_volume,
+	    0);
+    rb_define_method(rb_cAudio, "background_volume=",
+	    audio_background_volume_set, 1);
     rb_define_method(rb_cAudio, "effect", audio_effect, 1);
 }
