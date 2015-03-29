@@ -6,6 +6,7 @@
 
 VALUE rb_cNode = Qnil;
 static VALUE rb_cParallaxNode = Qnil;
+static VALUE rb_cDrawNode = Qnil;
 
 static VALUE
 node_alloc(VALUE rcv, SEL sel)
@@ -322,6 +323,7 @@ pnode_alloc(VALUE rcv, SEL sel)
 /// @param zpos [Integer] the local z-order.
 /// @param parallax_ratio [Point]
 /// @param position_offset [Point]
+/// @return [Node] the child node.
 
 static VALUE
 pnode_add(VALUE rcv, SEL sel, VALUE child, VALUE z, VALUE parallax_ratio,
@@ -331,6 +333,62 @@ pnode_add(VALUE rcv, SEL sel, VALUE child, VALUE z, VALUE parallax_ratio,
 	    rb_any_to_ccvec2(parallax_ratio),
 	    rb_any_to_ccvec2(position_offset));
     return child;
+}
+
+/// @class Draw < Node
+
+#define DRAW(obj) _COCOS_WRAP_GET(obj, cocos2d::DrawNode)
+
+static VALUE
+draw_alloc(VALUE rcv, SEL sel)
+{
+    auto node = cocos2d::DrawNode::create();
+    return rb_class_wrap_new((void *)node, rcv);
+}
+
+/// @group Draw Operations
+
+/// @method #dot(pos, radius, color)
+/// Draws a filled circle at the given position with the given radius and color.
+/// @param pos [Point] the position where to draw.
+/// @param radius [Float] the radius of the circle to draw.
+/// @param color [Color] the color to use to fill the circle.
+/// @return [Draw] the receiver.
+
+static VALUE
+draw_dot(VALUE rcv, SEL sel, VALUE pos, VALUE radius, VALUE color)
+{
+    DRAW(rcv)->drawDot(rb_any_to_ccvec2(pos), NUM2DBL(radius),
+	    cocos2d::Color4F(rb_any_to_cccolor4(color)));
+    return rcv;
+}
+
+/// @method #rect(origin, destination, color, fill=false)
+/// Draws a rectangle at the given position with the given color.
+/// @param origin [Point] the position where to start drawing.
+/// @param destination [Point] the position where to end drawing.
+/// @param color [Color] the color to use to draw.
+/// @param fill [Boolean] whether the rectangle should be filled up.
+/// @return [Draw] the receiver.
+
+static VALUE
+draw_rect(VALUE rcv, SEL sel, int argc, VALUE *argv)
+{
+    VALUE origin = Qnil, destination = Qnil, color = Qnil, fill = Qnil;
+
+    rb_scan_args(argc, argv, "31", &origin, &destination, &color, &fill);
+
+    if (RTEST(fill)) {
+	DRAW(rcv)->drawSolidRect(rb_any_to_ccvec2(origin),
+		rb_any_to_ccvec2(destination),
+		cocos2d::Color4F(rb_any_to_cccolor4(color)));
+    }
+    else {
+	DRAW(rcv)->drawRect(rb_any_to_ccvec2(origin),
+		rb_any_to_ccvec2(destination),
+		cocos2d::Color4F(rb_any_to_cccolor4(color)));
+    }
+    return rcv;
 }
 
 extern "C"
@@ -373,4 +431,10 @@ Init_Node(void)
 
     rb_define_singleton_method(rb_cParallaxNode, "alloc", pnode_alloc, 0);
     rb_define_method(rb_cParallaxNode, "add", pnode_add, 4);
+
+    rb_cDrawNode = rb_define_class_under(rb_mMC, "Draw", rb_cNode);
+
+    rb_define_singleton_method(rb_cDrawNode, "alloc", draw_alloc, 0);
+    rb_define_method(rb_cDrawNode, "dot", draw_dot, 3);
+    rb_define_method(rb_cDrawNode, "rect", draw_rect, -1);
 }
