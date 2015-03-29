@@ -235,7 +235,9 @@ class DocAPIGen
       elsif md = line.match(/@property\s+(.+)/)
         current_node = add_property(current_class, md[1])
       elsif md = line.match(/@property-readonly\s+(.+)/)
-        current_node = add_property(current_class, md[1], true)
+        current_node = add_property(current_class, md[1], :reader)
+      elsif md = line.match(/@property-writeonly\s+(.+)/)
+        current_node = add_property(current_class, md[1], :writer)
       elsif md = line.match(/@group\s+(.+)/)
         current_node = add_group(current_class, md[1])
       else
@@ -256,7 +258,7 @@ class DocAPIGen
         io.puts doc_comment(node, 2)
         case node[:type]
           when :property
-            io.puts "  attr_#{node[:readonly] ? 'reader' : 'accessor'} :#{node[:sel]}"
+            io.puts "  attr_#{node[:mode]} :#{node[:sel]}"
           when :cmethod
             io.puts "  def self.#{node[:sel]}; end"
           when :imethod
@@ -295,11 +297,11 @@ class DocAPIGen
     method
   end
 
-  def add_property(klass, definition, readonly = false)
+  def add_property(klass, definition, mode = :accessor)
     if definition[0] != '#'
       raise "expected property definition `#{definition}' to start with '#'"
     end
-    property = { :type => :property, :sel => definition[1..-1], :readonly => readonly, :doc => '' }
+    property = { :type => :property, :sel => definition[1..-1], :mode => mode, :doc => '' }
     klass[:nodes] << property
     property
   end
