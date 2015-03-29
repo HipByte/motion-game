@@ -382,13 +382,13 @@ button_text_color_set(VALUE rcv, SEL sel, VALUE val)
 static VALUE
 button_font(VALUE rcv, SEL sel)
 {
-    return RSTRING_NEW(BUTTON(rcv)->getTitleText().c_str());
+    return RSTRING_NEW(BUTTON(rcv)->getTitleFontName().c_str());
 }
 
 static VALUE
 button_font_set(VALUE rcv, SEL sel, VALUE val)
 {
-    BUTTON(rcv)->setTitleText(RSTRING_PTR(val));
+    BUTTON(rcv)->setTitleFontName(RSTRING_PTR(val));
     return val;
 }
 
