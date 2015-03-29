@@ -166,7 +166,7 @@ size_height_set(VALUE rcv, SEL sel, VALUE obj)
 /// Adds the dimensions of the receiver with the dimensions of the given
 /// size object.
 /// @param size [Size]
-/// @return [Size] A new Size object.
+/// @return [Size] a new Size object.
 
 static VALUE
 size_plus(VALUE rcv, SEL sel, VALUE obj)
@@ -178,12 +178,34 @@ size_plus(VALUE rcv, SEL sel, VALUE obj)
 /// Substracts the dimensions of the receiver with the dimensions of the given
 /// size object.
 /// @param size [Size]
-/// @return [Size] A new Size object.
+/// @return [Size] a new Size object.
 
 static VALUE
 size_minus(VALUE rcv, SEL sel, VALUE obj)
 {
     return rb_ccsize_to_obj(*SIZE(rcv) - rb_any_to_ccsize(obj));
+}
+
+/// @method #/(delta)
+/// Divides the dimensions of the receiver with the given number.
+/// @param delta [Float] the number to divide the receiver with.
+/// @return [Size] a new Size object.
+
+static VALUE
+size_div(VALUE rcv, SEL sel, VALUE obj)
+{
+    return rb_ccsize_to_obj(*SIZE(rcv) / NUM2DBL(obj));
+}
+
+/// @method #*(delta)
+/// Multiplies the dimensions of the receiver with the given number.
+/// @param delta [Float] the number to multiply the receiver with.
+/// @return [Size] a new Size object.
+
+static VALUE
+size_mul(VALUE rcv, SEL sel, VALUE obj)
+{
+    return rb_ccsize_to_obj(*SIZE(rcv) * NUM2DBL(obj));
 }
 
 static VALUE
@@ -335,6 +357,8 @@ Init_Types(void)
     rb_define_method(rb_cSize, "height=", size_height_set, 1);
     rb_define_method(rb_cSize, "+", size_plus, 1);
     rb_define_method(rb_cSize, "-", size_minus, 1);
+    rb_define_method(rb_cSize, "/", size_div, 1);
+    rb_define_method(rb_cSize, "*", size_mul, 1);
     rb_define_method(rb_cSize, "inspect", size_inspect, 0);
 
     rb_cColor = rb_define_class_under(rb_mMC, "Color", rb_cObject);
