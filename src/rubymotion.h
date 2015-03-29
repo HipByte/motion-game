@@ -120,7 +120,11 @@ rb_class_wrap_new(void *ptr, VALUE klass)
 extern "C" {
 #endif
 
-#define NUM2BYTE(val) (NUM2DBL(val) * 255)
+#define NUM2BYTE(val) \
+    ({ \
+	int _byte = (NUM2DBL(val) * 255); \
+	std::min(std::max(_byte, 0), 255); \
+    })
 #define BYTE2NUM(val) (DBL2NUM(val / 255.0))
 
 extern VALUE rb_mMC;
