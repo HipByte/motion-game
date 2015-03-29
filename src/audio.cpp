@@ -27,18 +27,20 @@ static std::string
 audio_path(VALUE path)
 {
     std::string str = RSTRING_PTR(path);
+    if (str.find('.') == std::string::npos) {
 #if CC_TARGET_OS_IPHONE
-    str.append(".caf");
+	str.append(".caf");
 #else  
-    str.append(".wav");
+	str.append(".wav");
 #endif
+    }
     return str;
 }
 
 /// @group Audio Playback
 
 /// @method #background(file_name, loop=true)
-/// Plays a background audio file.
+/// Plays background music.
 /// @param file_name [String] Name of the audio file to play, without its file
 ///   extension. The file should reside in the application's resource
 ///   directory.
@@ -58,10 +60,10 @@ audio_background(VALUE rcv, SEL sel, int argc, VALUE *argv)
 }
 
 /// @method #effect(file_name)
-/// Plays an effect audio file.
+/// Plays a sound effect.
 /// @param file_name [String] Name of the audio file to play, without its file
 ///   extension. The file should reside in the application's resource
-///   directory
+///   directory.
 /// @return [Audio] the receiver.
 
 static VALUE
