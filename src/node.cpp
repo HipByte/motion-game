@@ -87,18 +87,18 @@ node_visible(VALUE rcv, SEL sel)
     return NODE(rcv)->isVisible() ? Qtrue : Qfalse;
 }
 
-/// @property #opacity
-/// @return [Float] the opacity level of the node, as a Float from the
+/// @property #alpha
+/// @return [Float] the opacity (alpha) level of the node, as a Float from the
 ///   +0.0+ to +1.0+ range.
 
 static VALUE
-node_opacity(VALUE rcv, SEL sel)
+node_alpha(VALUE rcv, SEL sel)
 {
     return BYTE2NUM(NODE(rcv)->getOpacity());
 }
 
 static VALUE
-node_opacity_set(VALUE rcv, SEL sel, VALUE val)
+node_alpha_set(VALUE rcv, SEL sel, VALUE val)
 {
     NODE(rcv)->setOpacity(NUM2BYTE(val));
     return val;
@@ -346,8 +346,8 @@ Init_Node(void)
     rb_define_method(rb_cNode, "position=", node_position_set, 1);
     rb_define_method(rb_cNode, "size", node_size, 0);
     rb_define_method(rb_cNode, "size=", node_size_set, 1);
-    rb_define_method(rb_cNode, "opacity", node_opacity, 0);
-    rb_define_method(rb_cNode, "opacity=", node_opacity_set, 1);
+    rb_define_method(rb_cNode, "alpha", node_alpha, 0);
+    rb_define_method(rb_cNode, "alpha=", node_alpha_set, 1);
     rb_define_method(rb_cNode, "z_index", node_z_index, 0);
     rb_define_method(rb_cNode, "z_index=", node_z_index_set, 1);
     rb_define_method(rb_cNode, "color", node_color, 0);
