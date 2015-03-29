@@ -148,9 +148,7 @@ extern VALUE rb_cColor;
 #define APPLICATION(obj) _COCOS_WRAP_GET(obj, cocos2d::Application)
 #define DIRECTOR(obj) _COCOS_WRAP_GET(obj, cocos2d::Director)
 #define NODE(obj) _COCOS_WRAP_GET(obj, cocos2d::Node)
-#define SCENE(obj) _COCOS_WRAP_GET(obj, cocos2d::Scene)
 #define SPRITE(obj) _COCOS_WRAP_GET(obj, cocos2d::Sprite)
-#define SCENE(obj) _COCOS_WRAP_GET(obj, cocos2d::Scene)
 #define MENU(obj) _COCOS_WRAP_GET(obj, cocos2d::Menu)
 #define AUDIO(obj) _COCOS_WRAP_GET(obj, CocosDenshion::SimpleAudioEngine)
 #define VEC2(obj) _COCOS_WRAP_GET(obj, cocos2d::Vec2)
@@ -274,6 +272,8 @@ rb_cccolor3_to_obj(cocos2d::Color3B obj)
 {
     return rb_cccolor4_to_obj(cocos2d::Color4B(obj.r, obj.g, obj.b, 255)); 
 }
+
+cocos2d::Scene *rb_any_to_scene(VALUE obj);
 
 #if defined(__cplusplus)
 }

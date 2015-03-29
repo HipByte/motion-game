@@ -10,8 +10,9 @@
 
 VALUE rb_cScene = Qnil;
 
-class mc_Scene : private cocos2d::Scene {
+class mc_Scene : public cocos2d::LayerColor {
     public:
+	cocos2d::Scene *scene;
 	VALUE obj;
 	SEL update_sel;
 
@@ -26,24 +27,45 @@ class mc_Scene : private cocos2d::Scene {
 
     static mc_Scene *create(void) {
 	auto scene = new mc_Scene();
-	scene->initWithPhysics();
-	scene->autorelease();
+	scene->initWithColor(cocos2d::Color4B::BLACK);
 	return scene;
     }
 
     virtual void update(float delta) {
-	Scene::update(delta);
+	LayerColor::update(delta);
 	VALUE arg = DBL2NUM(delta);
 	rb_send(obj, update_sel, 1, &arg);
     }
+
+    void setBackgroundColor(cocos2d::Color3B color) {
+	setColor(color);
+	updateColor();
+    }
 };
+
+#define SCENE(obj) _COCOS_WRAP_GET(obj, mc_Scene)
+
+extern "C"
+cocos2d::Scene *
+rb_any_to_scene(VALUE obj)
+{
+    if (rb_obj_is_kind_of(obj, rb_cScene)) {
+	return SCENE(obj)->scene;
+    }
+    rb_raise(rb_eArgError, "expected Scene object");
+}
 
 static VALUE
 scene_alloc(VALUE rcv, SEL sel)
 {
-    auto scene = mc_Scene::create();
-    VALUE obj = rb_class_wrap_new((void *)scene, rcv);
-    scene->obj = rb_retain(obj);
+    auto layer = mc_Scene::create();
+
+    auto scene = cocos2d::Scene::createWithPhysics();
+    scene->addChild(layer);
+    layer->scene = scene;
+
+    VALUE obj = rb_class_wrap_new((void *)layer, rcv);
+    layer->obj = rb_retain(obj);
     return obj;
 }
 
@@ -198,13 +220,13 @@ scene_on_contact_begin(VALUE rcv, SEL sel)
 static VALUE
 scene_gravity(VALUE rcv, SEL sel)
 {
-    return rb_ccvec2_to_obj(SCENE(rcv)->getPhysicsWorld()->getGravity());
+    return rb_ccvec2_to_obj(SCENE(rcv)->scene->getPhysicsWorld()->getGravity());
 }
 
 static VALUE
 scene_gravity_set(VALUE rcv, SEL sel, VALUE arg)
 {
-    SCENE(rcv)->getPhysicsWorld()->setGravity(rb_any_to_ccvec2(arg));
+    SCENE(rcv)->scene->getPhysicsWorld()->setGravity(rb_any_to_ccvec2(arg));
     return rcv;
 }
 
@@ -214,17 +236,24 @@ scene_gravity_set(VALUE rcv, SEL sel, VALUE arg)
 static VALUE
 scene_debug_physics(VALUE rcv, SEL sel)
 {
-    return SCENE(rcv)->getPhysicsWorld()->getDebugDrawMask()
+    return SCENE(rcv)->scene->getPhysicsWorld()->getDebugDrawMask()
 	== cocos2d::PhysicsWorld::DEBUGDRAW_NONE ? Qfalse : Qtrue;
 }
 
 static VALUE
 scene_debug_physics_set(VALUE rcv, SEL sel, VALUE arg)
 { 
-    SCENE(rcv)->getPhysicsWorld()->setDebugDrawMask(RTEST(arg)
+    SCENE(rcv)->scene->getPhysicsWorld()->setDebugDrawMask(RTEST(arg)
 	    ? cocos2d::PhysicsWorld::DEBUGDRAW_ALL
 	    : cocos2d::PhysicsWorld::DEBUGDRAW_NONE);
     return arg;
+}
+
+static VALUE
+scene_color_set(VALUE rcv, SEL sel, VALUE val)
+{
+    SCENE(rcv)->setBackgroundColor(rb_any_to_cccolor3(val));
+    return val;
 }
 
 extern "C"
@@ -245,4 +274,5 @@ Init_Layer(void)
     rb_define_method(rb_cScene, "gravity=", scene_gravity_set, 1);
     rb_define_method(rb_cScene, "debug_physics?", scene_debug_physics, 0);
     rb_define_method(rb_cScene, "debug_physics=", scene_debug_physics_set, 1);
+    rb_define_method(rb_cScene, "color=", scene_color_set, 1);
 }

@@ -35,15 +35,6 @@ director_view_set(VALUE rcv, SEL sel, VALUE obj)
 
 /// @group Managing Scenes
 
-static cocos2d::Scene *
-obj_to_scene(VALUE obj)
-{
-    if (rb_obj_is_kind_of(obj, rb_cScene)) {
-	return SCENE(obj);
-    }
-    rb_raise(rb_eArgError, "expected Scene object");
-}
-
 /// @method #run(scene)
 /// Runs the given scene object.
 /// @param scene [Scene] the scene to run.
@@ -52,7 +43,7 @@ obj_to_scene(VALUE obj)
 static VALUE
 director_run(VALUE rcv, SEL sel, VALUE obj)
 {
-    DIRECTOR(rcv)->runWithScene(obj_to_scene(obj));
+    DIRECTOR(rcv)->runWithScene(rb_any_to_scene(obj));
     return rcv;
 }
 
@@ -65,7 +56,7 @@ director_run(VALUE rcv, SEL sel, VALUE obj)
 static VALUE
 director_replace(VALUE rcv, SEL sel, VALUE obj)
 {
-    DIRECTOR(rcv)->replaceScene(obj_to_scene(obj));
+    DIRECTOR(rcv)->replaceScene(rb_any_to_scene(obj));
     return rcv;
 }
 
@@ -78,7 +69,7 @@ director_replace(VALUE rcv, SEL sel, VALUE obj)
 static VALUE
 director_push(VALUE rcv, SEL sel, VALUE obj)
 {
-    DIRECTOR(rcv)->pushScene(obj_to_scene(obj));
+    DIRECTOR(rcv)->pushScene(rb_any_to_scene(obj));
     return rcv;
 }
 
