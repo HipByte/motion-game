@@ -15,7 +15,7 @@ class GameScene < MC::Scene
     2.times do
       skyline = MC::Sprite.new('skyline.png')
       skyline.position = [x, MC::Director.shared.size.height / 2.0]
-      add skyline, -1
+      add skyline, 0
       x += skyline.size.width - 5
       @backgrounds.last << skyline 
     end
@@ -46,13 +46,13 @@ class GameScene < MC::Scene
 
     # On touch, the bird jumps.
     on_touch_begin do
-      MC::Audio.shared.effect('sfx_wing')
+      MC::Audio.play('sfx_wing')
       @bird.velocity = [0, 200]
     end
 
     # On collision contact, it's game over.
     on_contact_begin do
-      MC::Audio.shared.effect('sfx_hit')
+      MC::Audio.play('sfx_hit')
       puts "game over!"
       true
     end

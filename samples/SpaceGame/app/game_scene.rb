@@ -23,7 +23,7 @@ class GameScene < MC::Scene
 
     # Create the background node.
     @background = MC::Parallax.new
-    add @background, -1
+    add @background, 0
 
     @space_dust1 = MC::Sprite.new('bg_front_spacedust.png')
     @space_dust2 = MC::Sprite.new('bg_front_spacedust.png')
@@ -68,7 +68,7 @@ class GameScene < MC::Scene
     on_accelerate { |acc| calculate_ship_position(acc) }
 
     # Start background music.
-    MC::Audio.shared.background 'background_music'
+    MC::Audio.play 'background_music', true
 
     # Start the game loop.
     @lives = 3
@@ -124,7 +124,7 @@ class GameScene < MC::Scene
       @ship_lasers.each do |ship_laser|
         next unless ship_laser.visible?
         if ship_laser.intersects?(asteroid)
-          MC::Audio.shared.effect('explosion_large')
+          MC::Audio.play('explosion_large')
           ship_laser.visible = asteroid.visible = false
           @score += 1
         end
@@ -140,7 +140,7 @@ class GameScene < MC::Scene
   end
 
   def fire_ship_laser
-    MC::Audio.shared.effect 'laser_ship'
+    MC::Audio.play 'laser_ship'
 
     ship_laser = @ship_lasers[@next_ship_laser]
     @next_ship_laser += 1
@@ -169,15 +169,17 @@ class GameScene < MC::Scene
   def game_over
     win_size = MC::Director.shared.size
 
-    label = MC::Label.new("Game Over!\nYour score is #{@score}\nTap to restart", 'Arial', 42)
+    label = MC::Button.new("Game Over!\nYour score is #{@score}\nTap to restart")
+    label.font = 'Arial'
+    label.font_size = 42
     label.position = [win_size.width / 2, win_size.height / 2]
-    label.listen :touch_begin { restart }
+    label.on_touch { |type| restart if type == :end }
     add label
 
     stop_update
   end
 
   def restart
-    MC::Director.shared.replace GameLayer.new
+    MC::Director.shared.replace GameScene.new
   end
 end
