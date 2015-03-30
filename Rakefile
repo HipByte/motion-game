@@ -5,9 +5,9 @@ XCODE_PATH = '/Applications/Xcode.app'
 XCODE_IOS_SDK = '8.1'
 XCODE_IOS_DEPLOYMENT_TARGET = '7.0'
 
-ANDROID_NDK_PATH = '/Users/lrz/src/android-ndk-r10c'
-ANDROID_SDK_PATH = '/Users/lrz/src/android-sdk-macosx'
-ANDROID_API = '18'
+ANDROID_NDK_PATH = File.expand_path('~/.rubymotion-android/ndk')
+ANDROID_SDK_PATH = File.expand_path('~/.rubymotion-android/sdk')
+ANDROID_API = '16'
 
 BUILD_OPTIONS = {}
 begin
