@@ -365,8 +365,8 @@ draw_dot(VALUE rcv, SEL sel, VALUE pos, VALUE radius, VALUE color)
 
 /// @method #rect(origin, destination, color, fill=false)
 /// Draws a rectangle at the given position with the given color.
-/// @param origin [Point] the position where to start drawing.
-/// @param destination [Point] the position where to end drawing.
+/// @param origin [Point] the position where to start drawing (lower-left).
+/// @param destination [Point] the position where to end drawing (higher-right).
 /// @param color [Color] the color to use to draw.
 /// @param fill [Boolean] whether the rectangle should be filled up.
 /// @return [Draw] the receiver.
