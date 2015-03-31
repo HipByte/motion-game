@@ -130,7 +130,8 @@ scene_update(VALUE rcv, SEL sel, VALUE delta)
 /// @param interval [Float] the interval between repetitions, in seconds.
 /// @yield [Float] the given block will be yield with the delta value,
 ///   in seconds. 
-/// @return [Scene] the receiver.
+/// @return [String] a token representing the task that can be passed to
+///   {#unschedule} when needed.
 
 static VALUE
 scene_schedule(VALUE rcv, SEL sel, int argc, VALUE *argv)
@@ -147,14 +148,29 @@ scene_schedule(VALUE rcv, SEL sel, int argc, VALUE *argv)
     float interval_c  = RTEST(interval) ? NUM2DBL(interval) : 0;
     unsigned int repeat_c = RTEST(repeat) ? NUM2LONG(repeat) : 0;
     float delay_c = NUM2DBL(delay);
+    char key[100];
+    snprintf(key, sizeof key, "schedule_lambda_%p", (void *)block);
 
     SCENE(rcv)->schedule(
 	    [block](float delta) {
 		VALUE delta_obj = DBL2NUM(delta);
 		rb_block_call(block, 1, &delta_obj);
 	    },
-	    interval_c, repeat_c, delay_c, "my_schedule_lambda");
+	    interval_c, repeat_c, delay_c, key);
 
+    return rb_str_new2(key);
+}
+
+/// @method #unschedule(key)
+/// Unschedules a task that's currently running.
+/// @param key [String] a token representing the task to unschedule,
+///   returned by {#schedule}.
+/// @return [Scene] the receiver.
+
+static VALUE
+scene_unschedule(VALUE rcv, SEL sel, VALUE key)
+{
+    SCENE(rcv)->unschedule(RSTRING_PTR(key));
     return rcv;
 }
 
@@ -303,6 +319,7 @@ Init_Layer(void)
     rb_define_method(rb_cScene, "stop_update", scene_stop_update, 0);
     rb_define_method(rb_cScene, "update", scene_update, 1);
     rb_define_method(rb_cScene, "schedule", scene_schedule, -1);
+    rb_define_method(rb_cScene, "unschedule", scene_unschedule, 1);
     rb_define_method(rb_cScene, "on_touch_begin", scene_on_touch_begin, 0);
     rb_define_method(rb_cScene, "on_accelerate", scene_on_accelerate, 0);
     rb_define_method(rb_cScene, "on_contact_begin", scene_on_contact_begin, 0);
