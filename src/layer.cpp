@@ -1,4 +1,5 @@
 #include "rubymotion.h"
+#include <dlfcn.h>
 
 /// @class Scene < Node
 /// This class represents a scene, an independent screen or stage of the
@@ -9,6 +10,12 @@
 /// designed to be subclassed.
 
 VALUE rb_cScene = Qnil;
+
+#if CC_TARGET_OS_IPHONE && TARGET_IPHONE_SIMULATOR
+extern "C" {
+    void rb_repl_new(VALUE);
+}
+#endif
 
 class mc_Scene : public cocos2d::LayerColor {
     public:
@@ -41,6 +48,13 @@ class mc_Scene : public cocos2d::LayerColor {
 	setColor(color);
 	updateColor();
     }
+
+#if CC_TARGET_OS_IPHONE && TARGET_IPHONE_SIMULATOR
+    virtual void onEnter() {
+	cocos2d::LayerColor::onEnter();
+	rb_repl_new(this->obj);
+    }
+#endif
 };
 
 #define SCENE(obj) _COCOS_WRAP_GET(obj, mc_Scene)
