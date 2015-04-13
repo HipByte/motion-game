@@ -8,7 +8,7 @@ Motion::Project::App.setup do |app|
   app.resources_dirs = []
   app.files.concat(Dir.glob(File.join(File.dirname(__FILE__), 'android/*.rb')))
   app.vendor_project :jar => File.join(File.dirname(__FILE__), '../build/android/motion-cocos.jar')
-  app.libs += %w{motion-cocos chipmunk crypto curl freetype jpeg png ssl tiff webp websockets}.map { |x| File.join(File.dirname(__FILE__), "../build/android/lib#{x}.a") } + ['-lz', '-latomic', '-lEGL', '-lGLESv2', '-landroid'] # The order of these libraries is very important for the linker to find all symbols.
+  app.libs += %w{motion-cocos chipmunk crypto curl freetype jpeg png ssl tiff webp websockets}.map { |x| File.join(File.dirname(__FILE__), "../build/android/lib#{x}.a") } + ['-lz', '-latomic', '-lEGL', '-lGLESv2', '-lOpenSLES', '-landroid'] # The order of these libraries is very important for the linker to find all symbols.
   app.custom_init_funcs << 'Init_Fluency'
 
   app.manifest.add_child('uses-feature')['android:glEsVersion'] = '0x00020000'
