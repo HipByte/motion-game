@@ -31,16 +31,18 @@ begin
   end
 end
 begin
-  # Android
   toolchain_bin = File.join(ANDROID_NDK_PATH, 'toolchains/llvm-3.4/prebuilt/darwin-x86_64/bin')
+  # Android ARM
   cflags = "-no-canonical-prefixes -target armv5te-none-linux-androideabi -march=armv5te -mthumb -msoft-float -marm -gcc-toolchain \"#{ANDROID_NDK_PATH}/toolchains/arm-linux-androideabi-4.8/prebuilt/darwin-x86_64\" -mtune=xscale -MMD -MP -fpic -ffunction-sections -funwind-tables -fexceptions -fstack-protector -fno-strict-aliasing -fno-omit-frame-pointer -DANDROID -I\"#{ANDROID_NDK_PATH}/platforms/android-#{ANDROID_API}/arch-arm/usr/include\" -Wformat -Werror=format-security -DCC_TARGET_OS_ANDROID"
-  BUILD_OPTIONS['android'] = { :cc => File.join(toolchain_bin, 'clang'), :cxx => File.join(toolchain_bin, 'clang++'), :cflags => cflags, :cxxflags => cflags + " -std=c++11 -I\"#{ANDROID_NDK_PATH}/sources/cxx-stl/gnu-libstdc++/4.9/include\" -I\"#{ANDROID_NDK_PATH}/sources/cxx-stl/gnu-libstdc++/4.9/libs/armeabi/include\" -I\"#{ANDROID_NDK_PATH}/sources/cpufeatures\"" }
+  BUILD_OPTIONS['android-arm'] = { :cc => File.join(toolchain_bin, 'clang'), :cxx => File.join(toolchain_bin, 'clang++'), :cflags => cflags, :cxxflags => cflags + " -std=c++11 -I\"#{ANDROID_NDK_PATH}/sources/cxx-stl/gnu-libstdc++/4.9/include\" -I\"#{ANDROID_NDK_PATH}/sources/cxx-stl/gnu-libstdc++/4.9/libs/armeabi/include\" -I\"#{ANDROID_NDK_PATH}/sources/cpufeatures\"" }
+  # Android Intel
+  cflags = "-no-canonical-prefixes -msoft-float -target i686-none-linux-android -gcc-toolchain \"#{ANDROID_NDK_PATH}/toolchains/x86-4.8/prebuilt/darwin-x86_64\" -MMD -MP -fpic -ffunction-sections -funwind-tables -fexceptions -fstack-protector -fno-strict-aliasing -O0 -g3 -fno-omit-frame-pointer -DANDROID -I\"#{ANDROID_NDK_PATH}/platforms/android-#{ANDROID_API}/arch-x86/usr/include\" -Wformat -Werror=format-security -DCC_TARGET_OS_ANDROID"
+  BUILD_OPTIONS['android-x86'] = { :cc => File.join(toolchain_bin, 'clang'), :cxx => File.join(toolchain_bin, 'clang++'), :cflags => cflags, :cxxflags => cflags + " -std=c++11 -I\"#{ANDROID_NDK_PATH}/sources/cxx-stl/gnu-libstdc++/4.9/include\" -I\"#{ANDROID_NDK_PATH}/sources/cxx-stl/gnu-libstdc++/4.9/libs/x86/include\" -I\"#{ANDROID_NDK_PATH}/sources/cpufeatures\"" }
 end
 
 def build_project(platforms, platform_code, build_dir)
   build_dir = File.expand_path(build_dir)
   objs_dir = File.join(build_dir, 'objs')
-  objs = []
 
   compile_obj = lambda do |src_path, add_flags, platform|
     obj_path = File.join(objs_dir, platform, src_path + '.o')
@@ -63,6 +65,7 @@ def build_project(platforms, platform_code, build_dir)
   end
 
   platforms.each do |platform|
+    objs = []
     file_pattern = platform_code == 'android' ? '*.{c,cpp}' : '*.{c,cpp,m,mm}'
     cocos_platforms_pattern = platform_code == 'android' ? 'android' : 'apple,ios'
     Dir.chdir(File.join(COCOS2D_PATH, 'cocos')) do
@@ -119,30 +122,50 @@ def build_project(platforms, platform_code, build_dir)
         objs << compile_obj.call(src_path, add_flags, platform)
       end
     end
+
+    ar = '/usr/bin/ar'
+    ranlib = '/usr/bin/ranlib'
+    if platform_code == 'android'
+      toolchain_bin = "#{ANDROID_NDK_PATH}/toolchains/x86-4.9/prebuilt/darwin-x86_64/i686-linux-android/bin"
+      ar = toolchain_bin + "/ar"
+      ranlib = toolchain_bin + "/ranlib"
+    end
+  
+    lib_dir = 
+      if platform_code == 'android'
+        File.join(build_dir,
+          case platform
+            when 'android-x86'
+              'x86'
+            when 'android-arm'
+              'armeabi'
+          end)
+      else
+        build_dir
+      end
+    lib = File.join(lib_dir, 'libmotion-cocos.a')
+    if !File.exist?(lib) or objs.any? { |x| File.mtime(x) > File.mtime(lib) }
+      rm_rf lib
+      sh "#{ar} rcu #{lib} #{objs.join(' ')}"
+      sh "#{ranlib} #{lib}"
+    end
   end
 
-  ar = '/usr/bin/ar'
-  ranlib = '/usr/bin/ranlib'
+  prebuild_platforms = []
   if platform_code == 'android'
-    toolchain_bin = "#{ANDROID_NDK_PATH}/toolchains/x86-4.9/prebuilt/darwin-x86_64/i686-linux-android/bin"
-    ar = toolchain_bin + "/ar"
-    ranlib = toolchain_bin + "/ranlib"
+    prebuild_platforms += ['android/armeabi', 'android/x86']
+  else
+    prebuild_platforms += [platform_code]
   end
-
-  lib = File.join(build_dir, 'libmotion-cocos.a')
-  if !File.exist?(lib) or objs.any? { |x| File.mtime(x) > File.mtime(lib) }
-    rm_rf lib
-    sh "#{ar} rcu #{lib} #{objs.join(' ')}"
-    sh "#{ranlib} #{lib}"
-  end
-
-  prebuild_platform = platform_code
-  prebuild_platform += '/armeabi' if platform_code == 'android'
-  Dir.glob(File.join(COCOS2D_PATH, "external/**/prebuilt/#{prebuild_platform}/*.a")).each do |lib|
-    next if lib.include?('lua')
-    lib_dest = File.join(build_dir, File.basename(lib))
-    if !File.exist?(lib_dest) or File.mtime(lib) > File.mtime(lib_dest)
-      install lib, lib_dest
+  prebuild_platforms.each do |prebuild_platform|
+    Dir.glob(File.join(COCOS2D_PATH, "external/**/prebuilt/#{prebuild_platform}/*.a")).each do |lib|
+      next if lib.include?('lua')
+      prebuild_build_dir = File.join(build_dir, prebuild_platform.include?('/') ? File.basename(prebuild_platform) : '')
+      lib_dest = File.join(prebuild_build_dir, File.basename(lib))
+      if !File.exist?(lib_dest) or File.mtime(lib) > File.mtime(lib_dest)
+        mkdir_p File.dirname(lib_dest)
+        install lib, lib_dest
+      end
     end
   end
 
@@ -163,7 +186,7 @@ end
 namespace 'build' do
   desc 'Build for Android'
   task 'android' do
-    build_project(['android'], 'android', 'build/android')
+    build_project(['android-arm', 'android-x86'], 'android', 'build/android')
   end
 
   desc 'Build for iOS simulator and device'
