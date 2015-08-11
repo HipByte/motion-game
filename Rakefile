@@ -224,7 +224,7 @@ task 'archive' do
   rm_rf archive_dir
   mkdir_p archive_dir
   files = []
-  files += Dir.glob('build/{ios,android}/*.{a,jar}')
+  files += Dir.glob('build/{ios,android}/**/*.{a,jar}')
   files += Dir.glob('lib/**/*.rb')
   files += Dir.glob('doc/**/*').reject { |x| File.directory?(x) }
   files += Dir.glob('samples/**/*').reject { |x| x.include?('build') or File.directory?(x) }
@@ -362,4 +362,9 @@ task 'doc' do
   File.open('doc/js/app.js', 'w') do |io|
     io.write(txt)
   end
+end
+
+desc 'Create motion-game.gem file'
+task 'gem' do
+  sh "gem build motion-game.gemspec"
 end
