@@ -340,6 +340,7 @@ class DocAPIGen
   end
 end
 
+desc 'Generate API reference'
 task 'doc' do
   # Generate documentation in 'doc' directory.
   api_gen = DocAPIGen.new
