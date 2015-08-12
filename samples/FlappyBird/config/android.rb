@@ -5,4 +5,6 @@ Motion::Project::App.setup do |app|
   app.manifest.child('application').child('activity') do |main_activity|
     main_activity['android:screenOrientation'] = 'portrait'
   end
+
+  app.logs_components.delete "art:E"
 end

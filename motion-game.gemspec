@@ -8,5 +8,6 @@ Gem::Specification.new do |spec|
   spec.email       = 'lrz@hipbyte.com'
   spec.homepage    = 'http://www.rubymotion.com/game'
   spec.license     = 'Proprietary'
-  spec.files       = Dir.glob('lib/**/*.rb') + Dir.glob('build/ios/*.a') + Dir.glob('build/android/*.jar') + Dir.glob('build/android/{armeabi,x86}/*.a') + Dir.glob('doc/**/*')
+  spec.files       = Dir.glob('lib/**/*.rb') + Dir.glob('build/ios/*.a') + Dir.glob('build/android/*.jar') + Dir.glob('build/android/{armeabi,x86}/*.a') + Dir.glob('doc/**/*') + Dir.glob('template/**/*')
+  spec.metadata    = { "rubymotion_template_dir" => "template" }
 end
