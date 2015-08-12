@@ -272,7 +272,9 @@ class DocAPIGen
   def to_ruby
     require 'stringio'
     io = StringIO.new
-    io.puts "module MC"
+    io.puts "# MG stands for Motion Game. All classes part of the framework are defined under that module."
+    io.puts "module MG"
+    io.puts "# The MG::Events module contains classes that represent events received from the game engine. You typically never instantiate these classes yourself."
     io.puts "module Events; end"
     @classes.each do |klass|
       io.puts doc_comment(klass, 0)
