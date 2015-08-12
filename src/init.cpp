@@ -45,7 +45,7 @@ Init_Fluency(void)
 #undef USE_SYMBOL
 #endif
 
-    rb_mMC = rb_define_module("MC");
+    rb_mMC = rb_define_module("MG");
 
 #if CC_TARGET_OS_ANDROID
 # define ADD_FRAME JniFrame _frame
