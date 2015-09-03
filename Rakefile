@@ -64,8 +64,8 @@ def build_project(platforms, platform_code, build_dir)
     obj_path
   end
 
+  objs = []
   platforms.each do |platform|
-    objs = []
     file_pattern = platform_code == 'android' ? '*.{c,cpp}' : '*.{c,cpp,m,mm}'
     cocos_platforms_pattern = platform_code == 'android' ? 'android' : 'apple,ios'
     Dir.chdir(File.join(COCOS2D_PATH, 'cocos')) do
@@ -123,26 +123,34 @@ def build_project(platforms, platform_code, build_dir)
       end
     end
 
+    next unless platform_code == 'android'
+
+    toolchain_bin = "#{ANDROID_NDK_PATH}/toolchains/x86-4.9/prebuilt/darwin-x86_64/i686-linux-android/bin"
+    ar = toolchain_bin + "/ar"
+    ranlib = toolchain_bin + "/ranlib"
+  
+    lib_dir = File.join(build_dir,
+      case platform
+        when 'android-x86'
+          'x86'
+        when 'android-arm'
+          'armeabi'
+      end)
+    lib = File.join(lib_dir, 'libmotion-cocos.a')
+    if !File.exist?(lib) or objs.any? { |x| File.mtime(x) > File.mtime(lib) }
+      rm_rf lib
+      sh "#{ar} rcu #{lib} #{objs.join(' ')}"
+      sh "#{ranlib} #{lib}"
+    end
+
+    objs.clear
+  end
+
+  if platform_code != 'android'
     ar = '/usr/bin/ar'
     ranlib = '/usr/bin/ranlib'
-    if platform_code == 'android'
-      toolchain_bin = "#{ANDROID_NDK_PATH}/toolchains/x86-4.9/prebuilt/darwin-x86_64/i686-linux-android/bin"
-      ar = toolchain_bin + "/ar"
-      ranlib = toolchain_bin + "/ranlib"
-    end
-  
-    lib_dir = 
-      if platform_code == 'android'
-        File.join(build_dir,
-          case platform
-            when 'android-x86'
-              'x86'
-            when 'android-arm'
-              'armeabi'
-          end)
-      else
-        build_dir
-      end
+
+    lib_dir = build_dir
     lib = File.join(lib_dir, 'libmotion-cocos.a')
     if !File.exist?(lib) or objs.any? { |x| File.mtime(x) > File.mtime(lib) }
       rm_rf lib
