@@ -1,5 +1,5 @@
-class Application < MC::Application
+class Application < MG::Application
   def start
-    MC::Director.shared.run(MainScene.new)
+    MG::Director.shared.run(MainScene.new)
   end
 end
