@@ -5,7 +5,7 @@ class RootViewController < UIViewController
 
   def didRotateFromInterfaceOrientation(orientation)
     super
-    MC::Application.shared._screen_size_changed
+    MG::Application.shared._screen_size_changed
   end
 
   def prefersStatusBarHidden
