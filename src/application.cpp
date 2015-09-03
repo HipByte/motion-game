@@ -2,10 +2,12 @@
 
 /// @class Application < Object
 /// The application class. A proper subclass is generated for you by the
-/// project template with an empty {#start} method, in which you can create
-/// a scene and ask the director to run it:
-///   def start
-///     MC::Director.shared.run(MyScene.new)
+/// project template with a {#start} method, in which you are responsible
+/// to create a scene and ask the director to run it:
+///   class Application < MG::Application
+///     def start
+///       MG::Director.shared.run(MyScene.new)
+///     end
 ///   end
 
 VALUE rb_cApplication = Qnil;

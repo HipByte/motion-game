@@ -8,7 +8,7 @@
 /// can be passed instead, as a convenience shortcut. For example,
 ///   node.location = [10, 20]
 /// is the same as
-///   point = Point.new
+///   point = MG::Point.new
 ///   point.x = 10
 ///   point.y = 20
 ///   node.location = point
@@ -105,7 +105,7 @@ point_inspect(VALUE rcv, SEL sel)
 /// can be passed instead, as a convenience shortcut. For example,
 ///   node.size = [200, 400]
 /// is the same as
-///   size = Size.new
+///   size = MG::Size.new
 ///   size.x = 200
 ///   size.y = 400
 ///   node.size = size
@@ -225,7 +225,7 @@ size_inspect(VALUE rcv, SEL sel)
 /// instead, as a convenience shortcut. For example,
 ///   node.color = [0.2, 0.3, 0.4]
 /// is the same as
-///   color = Color.new
+///   color = MG::Color.new
 ///   color.red = 0.2
 ///   color.green = 0.3
 ///   color.blue = 0.4
@@ -234,7 +234,7 @@ size_inspect(VALUE rcv, SEL sel)
 /// provided. For example,
 ///   node.color = :red
 /// is the same as
-///   color = Color.new
+///   color = MG::Color.new
 ///   color.red = 1.0
 ///   color.green = color.blue = 0
 ///   node.color = color
