@@ -31,7 +31,7 @@ $ rake android:device
 
 ## Samples
 
-Check out the [HipByte/motion-game-samples](https://github.com/HipByte/motion-game-samples) GitHub repository for samples.
+Check out the [HipByte/RubyMotionSamples/game](https://github.com/HipByte/RubyMotionSamples/tree/master/game) GitHub repository for samples.
 
 ## About
 
