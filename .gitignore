@@ -1,5 +1,5 @@
 .DS_Store
 .*swp
-build
+/build
 .yardoc
 doc
