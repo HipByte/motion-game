@@ -23,14 +23,9 @@
  ****************************************************************************/
 #include "platform/CCPlatformConfig.h"
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 
 #include "UIWebViewImpl-android.h"
-
-#elif (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-
-#include "UIWebViewImpl-ios.h"
+#include "UIWebView-inl.h"
 
 #endif
-
-#include "UIWebView-inl.h"
