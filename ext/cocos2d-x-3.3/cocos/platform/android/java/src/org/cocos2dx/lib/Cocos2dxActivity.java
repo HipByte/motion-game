@@ -78,6 +78,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
     }
     
     protected void onLoadNativeLibraries() {
+/*
         try {
             ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
             Bundle bundle = ai.metaData;
@@ -86,6 +87,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
         } catch (Exception e) {
             e.printStackTrace();
         }
+*/
     }
     
     // ===========================================================

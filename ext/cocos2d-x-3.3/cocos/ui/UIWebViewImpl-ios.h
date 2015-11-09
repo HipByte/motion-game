@@ -26,6 +26,7 @@
 #define __COCOS2D_UI_WEBVIEWIMPL_IOS_H_
 
 #include <iosfwd>
+#import <Foundation/Foundation.h>
 
 @class UIWebViewWrapper;
 
