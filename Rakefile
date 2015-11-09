@@ -27,7 +27,7 @@ begin
   end
   %w{iPhoneSimulator iPhoneOS}.each do |platform|
     cflags = cflags_gen.call(platform)
-    BUILD_OPTIONS[platform] = { :cc => cc, :cxx => cxx, :cflags => cflags, :cxxflags => cflags + " -std=c++11" }
+    BUILD_OPTIONS[platform] = { :cc => cc, :cxx => cxx, :cflags => cflags, :cxxflags => cflags + " -std=c++11 -Wno-inconsistent-missing-override" }
   end
 end
 begin
