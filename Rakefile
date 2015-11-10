@@ -139,6 +139,7 @@ def build_project(platforms, platform_code, build_dir)
     lib = File.join(lib_dir, 'libmotion-cocos.a')
     if !File.exist?(lib) or objs.any? { |x| File.mtime(x) > File.mtime(lib) }
       rm_rf lib
+      mkdir_p lib_dir
       sh "#{ar} rcu #{lib} #{objs.join(' ')}"
       sh "#{ranlib} #{lib}"
     end
@@ -154,6 +155,7 @@ def build_project(platforms, platform_code, build_dir)
     lib = File.join(lib_dir, 'libmotion-cocos.a')
     if !File.exist?(lib) or objs.any? { |x| File.mtime(x) > File.mtime(lib) }
       rm_rf lib
+      mkdir_p lib_dir
       sh "#{ar} rcu #{lib} #{objs.join(' ')}"
       sh "#{ranlib} #{lib}"
     end
