@@ -31,7 +31,7 @@ begin
   end
 end
 begin
-  toolchain_bin = File.join(ANDROID_NDK_PATH, 'toolchains/llvm-3.4/prebuilt/darwin-x86_64/bin')
+  toolchain_bin = File.join(ANDROID_NDK_PATH, 'toolchains/llvm-3.5/prebuilt/darwin-x86_64/bin')
   # Android ARM
   cflags = "-no-canonical-prefixes -target armv5te-none-linux-androideabi -march=armv5te -mthumb -msoft-float -marm -gcc-toolchain \"#{ANDROID_NDK_PATH}/toolchains/arm-linux-androideabi-4.8/prebuilt/darwin-x86_64\" -mtune=xscale -MMD -MP -fpic -ffunction-sections -funwind-tables -fexceptions -fstack-protector -fno-strict-aliasing -fno-omit-frame-pointer -DANDROID -I\"#{ANDROID_NDK_PATH}/platforms/android-#{ANDROID_API}/arch-arm/usr/include\" -Wformat -Werror=format-security -DCC_TARGET_OS_ANDROID"
   BUILD_OPTIONS['android-arm'] = { :cc => File.join(toolchain_bin, 'clang'), :cxx => File.join(toolchain_bin, 'clang++'), :cflags => cflags, :cxxflags => cflags + " -std=c++11 -I\"#{ANDROID_NDK_PATH}/sources/cxx-stl/gnu-libstdc++/4.9/include\" -I\"#{ANDROID_NDK_PATH}/sources/cxx-stl/gnu-libstdc++/4.9/libs/armeabi/include\" -I\"#{ANDROID_NDK_PATH}/sources/cpufeatures\"" }
