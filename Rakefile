@@ -1,9 +1,11 @@
-COCOS2D_PATH = File.expand_path('ext/cocos2d-x-3.3')
-RM_VM_PATH = '/Users/lrz/src/RubyMotion/vm'
+COCOS2D_PATH = File.expand_path('ext/cocos2d-x')
+RM_VM_PATH = '/Users/mark/src/RubyMotion/vm'
 
 XCODE_PATH = '/Applications/Xcode.app'
-XCODE_IOS_SDK = '8.1'
+XCODE_IOS_SDK = '9.1'
+XCODE_TVOS_SDK = '9.0'
 XCODE_IOS_DEPLOYMENT_TARGET = '7.0'
+XCODE_TVOS_DEPLOYMENT_TARGET = '9.0'
 
 ANDROID_NDK_PATH = File.expand_path('~/.rubymotion-android/ndk')
 ANDROID_SDK_PATH = File.expand_path('~/.rubymotion-android/sdk')
@@ -16,16 +18,21 @@ begin
   cc = toolchain_bin + '/clang'
   cxx = toolchain_bin + '/clang++'
   cflags_gen = lambda do |platform_apple_str|
-    sdk_path = "#{XCODE_PATH}/Contents/Developer/Platforms/#{platform_apple_str}.platform/Developer/SDKs/#{platform_apple_str}#{XCODE_IOS_SDK}.sdk"
-    cflags = "-isysroot \"#{sdk_path}\" -F#{sdk_path}/System/Library/Frameworks -fobjc-legacy-dispatch -fobjc-abi-version=2 -DCC_TARGET_OS_IPHONE"
-    if platform_apple_str == 'iPhoneSimulator'
-      cflags << " -arch i386 -arch x86_64 -mios-simulator-version-min=#{XCODE_IOS_DEPLOYMENT_TARGET}"
-    else
-      cflags << " -arch armv7 -arch armv7s -arch arm64 -mios-version-min=#{XCODE_IOS_DEPLOYMENT_TARGET}"
+    sdk_path = "#{XCODE_PATH}/Contents/Developer/Platforms/#{platform_apple_str}.platform/Developer/SDKs/#{platform_apple_str}.sdk"
+    cflags = "-isysroot \"#{sdk_path}\" -F#{sdk_path}/System/Library/Frameworks -fobjc-legacy-dispatch -fobjc-abi-version=2 "
+    case platform_apple_str 
+    when 'iPhoneSimulator'
+      cflags << " -arch i386 -arch x86_64 -mios-simulator-version-min=#{XCODE_IOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_IPHONE -include platform/ios/cocos2d-prefix.pch"
+    when 'iPhoneOS'
+      cflags << " -arch armv7 -arch armv7s -arch arm64 -mios-version-min=#{XCODE_IOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_IPHONE -include platform/ios/cocos2d-prefix.pch"
+    when 'AppleTVSimulator'
+      cflags << " -arch i386 -arch x86_64 -mtvos-simulator-version-min=#{XCODE_TVOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_APPLETV -include platform/tvos/cocos2d-prefix.pch"
+    when 'AppleTVOS'
+      cflags << " -arch arm64 -mtvos-version-min=#{XCODE_TVOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_APPLETV -include platform/tvos/cocos2d-prefix.pch"
     end
    cflags
   end
-  %w{iPhoneSimulator iPhoneOS}.each do |platform|
+  %w{iPhoneSimulator iPhoneOS AppleTVSimulator AppleTVOS}.each do |platform|
     cflags = cflags_gen.call(platform)
     BUILD_OPTIONS[platform] = { :cc => cc, :cxx => cxx, :cflags => cflags, :cxxflags => cflags + " -std=c++11 -Wno-inconsistent-missing-override" }
   end
@@ -55,7 +62,7 @@ def build_project(platforms, platform_code, build_dir)
       cflags = platform_options[:cflags]
       cxxflags = platform_options[:cxxflags]
       case File.extname(src_path)
-        when '.cpp', '.mm'
+        when '.cpp', '.mm', '.cc'
           sh "#{cxx} #{cxxflags} #{add_flags} -c #{src_path} -o #{obj_path}"
         when '.c', '.m'
           sh "#{cc} #{cflags} #{add_flags} -c #{src_path} -o #{obj_path}"
@@ -66,30 +73,46 @@ def build_project(platforms, platform_code, build_dir)
 
   objs = []
   platforms.each do |platform|
-    file_pattern = platform_code == 'android' ? '*.{c,cpp}' : '*.{c,cpp,m,mm}'
-    cocos_platforms_pattern = platform_code == 'android' ? 'android' : 'apple,ios'
+    file_pattern = platform_code == 'android' ? '*.{c,cc,cpp}' : '*.{c,cc,cpp,m,mm}'
+    cocos_platforms_pattern = case platform_code
+      when 'android'
+        'android'
+      when 'ios'
+        'apple,ios'
+      when 'tvos'
+        'apple,tvos'
+      end
+
+    i_platform_code = platform_code
+    i_platform_code = 'ios' if platform_code == 'tvos'
     Dir.chdir(File.join(COCOS2D_PATH, 'cocos')) do
-      add_flags = "-I. -I.. -Ieditor-support -Iplatform -Ideprecated -I2d -I../extensions -I../external -I../external/edtaa3func -I../external/tinyxml2 -I../external/ConvertUTF -I../external/unzip -I../external/curl/include/#{platform_code} -I../external/websockets/include/#{platform_code} -I../external/chipmunk/include/chipmunk -I../external/xxhash -I../external/png/include/#{platform_code} -I../external/tiff/include/#{platform_code} -I../external/jpeg/include/#{platform_code} -I../external/webp/include/#{platform_code} -I../external/freetype2/include/#{platform_code}"
+      add_flags = "-I. -I.. -Ieditor-support -Iplatform -Ideprecated -I2d -Iui/UIEditBox -I../extensions -I../external -I../external/edtaa3func -I../external/tinyxml2 -I../external/ConvertUTF -I../external/unzip -I../external/curl/include/#{i_platform_code} -I../external/websockets/include/#{i_platform_code} -I../external/chipmunk/include/chipmunk -I../external/xxhash -I../external/png/include/#{i_platform_code} -I../external/tiff/include/#{i_platform_code} -I../external/jpeg/include/#{i_platform_code} -I../external/webp/include/#{i_platform_code} -I../external/freetype2/include/#{i_platform_code} -I../external/freetype2/include/#{i_platform_code}/freetype2"
       if platform_code == 'android'
         add_flags << " -I../external/freetype2/include/android/freetype2"
         add_flags << " -Iplatform/android"
         add_flags << " -Iaudio/include -Iaudio/android"
       end
-      pats = %w{2d 3d base editor-support math network physics renderer storage ui deprecated}.map { |x| "#{x}/**/#{file_pattern}" }
+      pats = %w{2d 3d base editor-support math navmesh network physics physics3d renderer storage ui deprecated}.map { |x| "#{x}/**/#{file_pattern}" }
       pats << "#{file_pattern}"
       pats << "audio/#{file_pattern}"
       pats << "audio/{#{cocos_platforms_pattern}}/**/#{file_pattern}"
+      pats << "audio/ios/**/#{file_pattern}" if platform_code == 'tvos'
       pats << "platform/#{file_pattern}"
       pats << "platform/{#{cocos_platforms_pattern}}/**/#{file_pattern}"
       files = pats.map { |x| Dir.glob(x) }.flatten.uniq
       files.each do |src_path|
         case platform_code
-          when 'ios'
-            next if src_path == 'base/CCUserDefault-android.cpp'
-            next if src_path == 'base/CCController-android.cpp'
-            next if src_path == 'ui/UIVideoPlayer-android.cpp'
-            next if src_path == 'ui/UIWebViewImpl-android.cpp'
+          when 'ios', 'tvos'
+            next if src_path =~ /.*-android.cpp$/
+            next if src_path =~ /.*-win32.cpp$/
+            next if src_path =~ /.*-winrt.cpp$/
+            next if src_path =~ /.*-linux.cpp$/
             next if src_path == 'ui/UIWebView.cpp'
+            next if src_path == 'network/WebSocket.cpp'
+            next if src_path == 'network/SocketIO.cpp'
+            next if src_path == 'network/HttpClient.cpp'
+            next if src_path == 'platform/CCThread.cpp' if platform_code == 'tvos'
+            next if src_path.include?('ui/UIEditBox/iOS') && platform_code == 'tvos'
           when 'android'
         end
 
@@ -97,14 +120,18 @@ def build_project(platforms, platform_code, build_dir)
       end
     end
   
-    ['external/xxhash', 'external/ConvertUTF', 'external/tinyxml2', 'external/unzip', 'external/edtaa3func', 'extensions/GUI/CCControlExtension', 'extensions/GUI/CCScrollView'].each do |dir|
+    ['external/bullet','external/xxhash', 'external/ConvertUTF', 'external/tinyxml2', 'external/unzip', 'external/edtaa3func', 'extensions/GUI/CCControlExtension', 'extensions/GUI/CCScrollView', 'external/clipper', 'external/poly2tri', 'extensions/Particle3D', 'external/recast'].each do |dir|
       Dir.chdir(File.join(COCOS2D_PATH , dir)) do
         add_flags = '-DUSE_FILE32API -I.'
         base_headers = '-I' + (0...dir.split('/').size).to_a.map { '..' }.join('/')
         add_flags << ' ' + base_headers
         add_flags << ' ' + base_headers + '/cocos'
         add_flags << ' ' + base_headers + '/cocos/platform'
-        Dir.glob(file_pattern).each do |src_path|
+        add_flags << ' -I../../'
+        add_flags << ' -I../'
+        Dir.glob(File.join('**',file_pattern)).each do |src_path|
+          next if src_path.include?('DX11')
+          next if src_path.include?('OpenCL')
           objs << compile_obj.call(src_path, add_flags, platform)
         end
       end
@@ -113,7 +140,7 @@ def build_project(platforms, platform_code, build_dir)
     Dir.chdir('src') do
       add_flags = "-I. -Werror -I#{COCOS2D_PATH}/cocos -I#{COCOS2D_PATH}/cocos/audio/include -I#{RM_VM_PATH}"
       case platform_code
-        when 'ios'
+        when 'ios', 'tvos'
           add_flags << " -I#{RM_VM_PATH}/include -DMACRUBY_STATIC -DNO_LIBAUTO"
         when 'android'
           add_flags << " -I#{RM_VM_PATH}/java"
@@ -168,8 +195,11 @@ def build_project(platforms, platform_code, build_dir)
     prebuild_platforms += [platform_code]
   end
   prebuild_platforms.each do |prebuild_platform|
+    prebuild_platform = 'ios' if prebuild_platform == 'tvos'
     Dir.glob(File.join(COCOS2D_PATH, "external/**/prebuilt/#{prebuild_platform}/*.a")).each do |lib|
       next if lib.include?('lua')
+      next if lib.include?('js_static')
+      next if lib.include?('websocket')
       prebuild_build_dir = File.join(build_dir, prebuild_platform.include?('/') ? File.basename(prebuild_platform) : '')
       lib_dest = File.join(prebuild_build_dir, File.basename(lib))
       if !File.exist?(lib_dest) or File.mtime(lib) > File.mtime(lib_dest)
@@ -181,11 +211,14 @@ def build_project(platforms, platform_code, build_dir)
 
   if platform_code == 'android'
     classes_dir = File.join(build_dir, 'classes')
-    Dir.chdir(File.join(COCOS2D_PATH, 'cocos/platform/android/java/src')) do
+    Dir.chdir(File.join(COCOS2D_PATH, 'cocos/platform/android/java')) do
       java_src_files = Dir.glob('*/**/*.java')
+      jar_files = Dir.glob('*/**/*.jar')
+      # TODO: Process AIDL files with the aidl tool, and compile with java sources
+      aidl_files = Dir.glob('*/**/*.aidl')
       android_jar = "#{ANDROID_SDK_PATH}/platforms/android-#{ANDROID_API}/android.jar"
       mkdir_p classes_dir unless File.exist? classes_dir
-      sh "/usr/bin/javac -d \"#{classes_dir}\" -bootclasspath \"#{android_jar}\" #{java_src_files.join(' ')}"
+      sh "/usr/bin/javac -cp \"#{jar_files.join(';')}\" -d \"#{classes_dir}\" -bootclasspath \"#{android_jar}\" #{java_src_files.join(' ')}"
     end
     Dir.chdir(classes_dir) do
       sh "/usr/bin/jar cvf ../motion-cocos.jar ."
@@ -204,19 +237,24 @@ namespace 'build' do
     build_project(['iPhoneSimulator', 'iPhoneOS'], 'ios', 'build/ios')
   end
 
+  desc 'Build for TVOS simulator and device'
+  task 'tvos' do
+    build_project(['AppleTVSimulator', 'AppleTVOS'], 'tvos', 'build/tvos')
+  end
+
   desc 'Build everything'
-  task 'all' => ['build:ios', 'build:android']
+  task 'all' => ['build:ios', 'build:tvos', 'build:android']
 end
 
-desc 'Generate lib/shortcuts.rb'
+desc 'Generate lib/motion-game/shortcuts.rb'
 task 'gen_tasks_shortcuts' do
-  File.open('lib/shortcuts.rb', 'w') do |io|
+  File.open('lib/motion-game/shortcuts.rb', 'w') do |io|
     io.puts "# This file has been generated, do not edit by hand.\n"
     io.puts "def invoke_rake(platform, task)"
     io.puts "  trace = Rake.application.options.trace == true"
     io.puts "  system \"/usr/bin/rake -r \\\"#\{File.dirname(__FILE__)\}/#\{platform\}.rb\\\" -f \\\"config/#\{platform\}.rb\\\" \\\"#\{task\}\\\" #\{trace ? '--trace' : ''\}\" or exit 1"
     io.puts "end"
-    %w{ios android}.each do |platform|
+    %w{ios tvos android}.each do |platform|
       io.puts "namespace '#{platform}' do"
       `/usr/bin/rake -I /Library/RubyMotion/lib -f /Library/RubyMotion/lib/motion/project/template/#{platform}.rb -T`.scan(/rake\s([^\s]+)\s+#\s([^\n]+)/).each do |plat_task, plat_desc|
         io.puts "  desc \"#{plat_desc}\""

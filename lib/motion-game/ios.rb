@@ -6,7 +6,7 @@ Motion::Project::App.setup do |app|
   app.deployment_target = '7.0' unless Motion::Project::Config.starter?
   app.files.concat(Dir.glob(File.join(File.dirname(__FILE__), 'ios/*.rb')))
   app.frameworks += ['CoreMotion', 'AVFoundation', 'GameController', 'MediaPlayer', 'OpenAL']
-  app.libs += ['-lz', '-lsqlite3']
+  app.libs += ['-lz', '-lsqlite3', '-liconv']
   app.vendor_project File.join(File.dirname(__FILE__), '../../build/ios'), :static, :force_load => true
   app.custom_init_funcs << 'Init_Fluency'
 

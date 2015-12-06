@@ -34,7 +34,7 @@ audio_play(VALUE rcv, SEL sel, int argc, VALUE *argv)
 
     std::string str = RSTRING_PTR(path);
     if (str.find('.') == std::string::npos) {
-#if CC_TARGET_OS_IPHONE
+#if CC_TARGET_OS_IPHONE || CC_TARGET_OS_APPLETV
 	str.append(".caf");
 #else  
 	str.append(".wav");

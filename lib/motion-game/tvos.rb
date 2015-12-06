@@ -1,0 +1,12 @@
+$:.unshift("/Library/RubyMotion/lib")
+require 'motion/project/template/tvos'
+
+Motion::Project::App.setup do |app|
+  app.build_dir = 'build/ios'
+  app.deployment_target = '9.0' unless Motion::Project::Config.starter?
+  app.files.concat(Dir.glob(File.join(File.dirname(__FILE__), 'tvos/*.rb')))
+  app.frameworks += ['CoreMotion', 'AVFoundation', 'GameController', 'MediaPlayer', 'OpenAL']
+  app.libs += ['-lz', '-lsqlite3', '-liconv']
+  app.vendor_project File.join(File.dirname(__FILE__), '../../build/tvos'), :static, :force_load => true
+  app.custom_init_funcs << 'Init_Fluency'
+end

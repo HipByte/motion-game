@@ -22,7 +22,7 @@ director_instance(VALUE rcv, SEL sel)
     return mc_director_instance;
 }
 
-#if CC_TARGET_OS_IPHONE
+#if CC_TARGET_OS_IPHONE || CC_TARGET_OS_APPLETV
 static VALUE
 director_view_set(VALUE rcv, SEL sel, VALUE obj)
 {
@@ -30,6 +30,12 @@ director_view_set(VALUE rcv, SEL sel, VALUE obj)
 	cocos2d::GLViewImpl::createWithEAGLView((void *)obj);
     DIRECTOR(rcv)->setOpenGLView(glview);
     return obj;
+}
+
+static VALUE
+director_view_get(VALUE rcv, SEL sel)
+{
+    return (VALUE)DIRECTOR(rcv)->getOpenGLView()->getEAGLView();
 }
 #endif
 
@@ -176,7 +182,8 @@ Init_Director(void)
     rb_define_method(rb_cDirector, "show_stats?", director_show_stats, 0);
 
     // Internal.
-#if CC_TARGET_OS_IPHONE
+#if CC_TARGET_OS_IPHONE || CC_TARGET_OS_APPLETV
     rb_define_method(rb_cDirector, "_set_glview", director_view_set, 1);
+    rb_define_method(rb_cDirector, "_get_glview", director_view_get, 0);
 #endif
 }

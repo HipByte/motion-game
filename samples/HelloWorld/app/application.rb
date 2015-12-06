@@ -1,6 +1,6 @@
-class Application < MC::Application
+class Application < MG::Application
   def start
-    director = MC::Director.shared
+    director = MG::Director.shared
     director.run(HelloWorld.new)
   end
 end

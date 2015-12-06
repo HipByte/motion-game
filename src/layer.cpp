@@ -25,7 +25,7 @@ class mc_Scene : public cocos2d::LayerColor {
 
     mc_Scene() {
 	obj = Qnil;
-#if CC_TARGET_OS_IPHONE
+#if CC_TARGET_OS_IPHONE || CC_TARGET_OS_APPLETV
 	update_sel = rb_selector("update:");
 #else
 	update_sel = rb_selector("update");
@@ -234,6 +234,9 @@ scene_on_touch_begin(VALUE rcv, SEL sel)
 static VALUE
 scene_on_accelerate(VALUE rcv, SEL sel)
 {
+#if CC_TARGET_OS_APPLETV
+    rb_raise(rb_eRuntimeError, "Not supported in tvOS");
+#else
     VALUE block = rb_current_block();
     if (block == Qnil) {
 	rb_raise(rb_eArgError, "block not given");
@@ -249,6 +252,7 @@ scene_on_accelerate(VALUE rcv, SEL sel)
 	});
 
     return scene_add_listener(rcv, listener);
+#endif
 }
 
 /// @method #on_contact_begin

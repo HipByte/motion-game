@@ -799,6 +799,8 @@ list_items_margin_set(VALUE rcv, SEL sel, VALUE margin)
     return margin;
 }
 
+#if !CC_TARGET_OS_APPLETV
+
 /// @class Web < Widget
 
 /// @group Constructors
@@ -890,6 +892,7 @@ web_evaluate(VALUE rcv, SEL sel, VALUE expr)
     WEB(rcv)->evaluateJS(RSTRING_PTR(expr));
     return rcv;
 }
+#endif
 
 extern "C"
 void
@@ -995,6 +998,7 @@ Init_UI(void)
     rb_define_method(rb_cUIList, "items_margin", list_items_margin, 0);
     rb_define_method(rb_cUIList, "items_margin=", list_items_margin_set, 1);
 
+#if !CC_TARGET_OS_APPLETV
     rb_cUIWeb = rb_define_class_under(rb_mMC, "Web", rb_cUIWidget);
 
     rb_define_singleton_method(rb_cUIWeb, "new", web_new, 0);
@@ -1004,4 +1008,5 @@ Init_UI(void)
     rb_define_method(rb_cUIWeb, "stop", web_stop, 0);
     rb_define_method(rb_cUIWeb, "reload", web_reload, 0);
     rb_define_method(rb_cUIWeb, "evaluate", web_reload, 1);
+#endif
 }

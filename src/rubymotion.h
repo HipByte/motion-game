@@ -3,7 +3,7 @@
 
 #include "cocos2d.h"
 
-#if CC_TARGET_OS_IPHONE
+#if CC_TARGET_OS_IPHONE || CC_TARGET_OS_APPLETV
 
 #include <objc/runtime.h>
 #include "macruby_internal.h"

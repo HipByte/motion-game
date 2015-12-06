@@ -37,7 +37,7 @@ Init_Fluency(void)
     USE_SYMBOL(Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeOnPause)
     USE_SYMBOL(Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeOnResume)
     USE_SYMBOL(Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeRender)
-    USE_SYMBOL(Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeKeyDown)
+    /* USE_SYMBOL(Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeKeyDown) */
     USE_SYMBOL(Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeTouchesBegin)
     USE_SYMBOL(Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeTouchesCancel)
     USE_SYMBOL(Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeTouchesEnd)
