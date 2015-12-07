@@ -232,6 +232,15 @@ def build_project(platforms, platform_code, build_dir)
 end
 
 namespace 'build' do
+  desc 'Setup development environment'
+  task 'setup' do
+    sh "git submodule update --init"
+    sh "python ext/cocos2d-x/download-deps.py --remove-download no"
+    Dir.chdir('ext/cocos2d-x') do
+      sh "git apply ../../cocos2d-x.patch"
+    end
+  end
+
   desc 'Build for Android'
   task 'android' do
     build_project(['android-arm', 'android-x86'], 'android', 'build/android')

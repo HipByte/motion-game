@@ -1,0 +1,3 @@
+[submodule "ext/cocos2d-x"]
+	path = ext/cocos2d-x
+	url = https://github.com/MarkVillacampa/cocos2d-x

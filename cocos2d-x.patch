@@ -1,0 +1,55 @@
+diff --git a/cocos/platform/android/java/src/org/cocos2dx/lib/Cocos2dxActivity.java b/cocos/platform/android/java/src/org/cocos2dx/lib/Cocos2dxActivity.java
+index 851e1b4..5425c24 100644
+--- a/cocos/platform/android/java/src/org/cocos2dx/lib/Cocos2dxActivity.java
++++ b/cocos/platform/android/java/src/org/cocos2dx/lib/Cocos2dxActivity.java
+@@ -241,14 +241,14 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
+     }
+     
+     protected void onLoadNativeLibraries() {
+-        try {
+-            ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+-            Bundle bundle = ai.metaData;
+-            String libName = bundle.getString("android.app.lib_name");
+-            System.loadLibrary(libName);
+-        } catch (Exception e) {
+-            e.printStackTrace();
+-        }
++        // try {
++        //     ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
++        //     Bundle bundle = ai.metaData;
++        //     String libName = bundle.getString("android.app.lib_name");
++        //     System.loadLibrary(libName);
++        // } catch (Exception e) {
++        //     e.printStackTrace();
++        // }
+     }
+     
+     // ===========================================================
+diff --git a/cocos/platform/android/javaactivity-android.cpp b/cocos/platform/android/javaactivity-android.cpp
+index 6e826c6..b7602a0 100644
+--- a/cocos/platform/android/javaactivity-android.cpp
++++ b/cocos/platform/android/javaactivity-android.cpp
+@@ -50,6 +50,7 @@ using namespace cocos2d;
+ extern "C"
+ {
+ 
++#if 0
+ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
+ {
+     JniHelper::setJavaVM(vm);
+@@ -58,6 +59,7 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
+ 
+     return JNI_VERSION_1_4;
+ }
++#endif
+ 
+ JNIEXPORT void Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeInit(JNIEnv*  env, jobject thiz, jint w, jint h)
+ {
+@@ -87,6 +89,7 @@ JNIEXPORT void Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeInit(JNIEnv*  env, j
+ 
+ JNIEXPORT jintArray Java_org_cocos2dx_lib_Cocos2dxActivity_getGLContextAttrs(JNIEnv*  env, jobject thiz)
+ {
++    cocos_android_app_init(env);
+     cocos2d::Application::getInstance()->initGLContextAttrs(); 
+     GLContextAttrs _glContextAttrs = GLView::getGLContextAttrs();
+     
