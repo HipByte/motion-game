@@ -119,7 +119,7 @@ Init_Application(void)
 #if CC_TARGET_OS_ANDROID
 // extern C++
 void
-cocos_android_app_init(JNIEnv* env, jobject thiz)
+cocos_android_app_init(JNIEnv* env)
 {
     JniFrame frame;
 
