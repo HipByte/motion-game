@@ -212,10 +212,15 @@ def build_project(platforms, platform_code, build_dir)
   if platform_code == 'android'
     classes_dir = File.join(build_dir, 'classes')
     Dir.chdir(File.join(COCOS2D_PATH, 'cocos/platform/android/java')) do
+      build_tools_dir = Dir.glob(ANDROID_SDK_PATH + '/build-tools/*').sort { |x, y| File.basename(x) <=> File.basename(y) }.max
+      aidl_tool = File.join(build_tools_dir, 'aidl')
+      aidl_files = Dir.glob('*/**/*.aidl')
+      aidl_files.each do |aidl_file|
+        sh "#{aidl_tool} #{aidl_file} #{File.dirname(aidl_file)}/#{File.basename(aidl_file,'.*')}.java"
+      end
+
       java_src_files = Dir.glob('*/**/*.java')
       jar_files = Dir.glob('*/**/*.jar')
-      # TODO: Process AIDL files with the aidl tool, and compile with java sources
-      aidl_files = Dir.glob('*/**/*.aidl')
       android_jar = "#{ANDROID_SDK_PATH}/platforms/android-#{ANDROID_API}/android.jar"
       mkdir_p classes_dir unless File.exist? classes_dir
       sh "/usr/bin/javac -cp \"#{jar_files.join(';')}\" -d \"#{classes_dir}\" -bootclasspath \"#{android_jar}\" #{java_src_files.join(' ')}"
