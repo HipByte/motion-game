@@ -172,7 +172,7 @@ scene_schedule(VALUE rcv, SEL sel, int argc, VALUE *argv)
 	    },
 	    interval_c, repeat_c, delay_c, key);
 
-    return rb_str_new2(key);
+    return RSTRING_NEW(key);
 }
 
 /// @method #unschedule(key)
