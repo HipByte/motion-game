@@ -121,8 +121,6 @@ Init_Application(void)
 void
 cocos_android_app_init(JNIEnv* env)
 {
-    JniFrame frame;
-
     // Create the app instance here.
     VALUE app_klass = rb_const_get(rb_cObject, "Application");
     assert(app_klass != Qnil);

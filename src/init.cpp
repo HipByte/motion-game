@@ -10,8 +10,9 @@ void
 Init_Fluency(void)
 {
 #if CC_TARGET_OS_ANDROID
-    assert(RubyVM::java_vm != NULL);
-    cocos2d::JniHelper::setJavaVM(RubyVM::java_vm);
+    auto java_vm = VM_JAVA_VM();
+    assert(java_vm != NULL);
+    cocos2d::JniHelper::setJavaVM(java_vm);
 
 #define USE_SYMBOL(x) { extern void *x; void *_sym = x; }
     USE_SYMBOL(Java_org_cocos2dx_lib_GameControllerAdapter_nativeControllerAxisEvent)
@@ -48,7 +49,7 @@ Init_Fluency(void)
     rb_mMC = rb_define_module("MG");
 
 #if CC_TARGET_OS_ANDROID
-# define ADD_FRAME JniFrame _frame
+# define ADD_FRAME Frame _frame
 #else
 # define ADD_FRAME
 #endif
