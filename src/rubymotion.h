@@ -3,6 +3,10 @@
 
 #include "cocos2d.h"
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 #define VALUE		unsigned long
 #define SIGNED_VALUE	long
 #define ID		unsigned long
@@ -61,8 +65,8 @@ VALUE rb_define_module_under(VALUE, const char *);
 
 #define rb_selector(str) sel_registerName(str)
 
-VALUE rb_vm_call(VALUE self, SEL sel, int argc, const VALUE *argv);
-#define rb_send(rcv, sel, argc, argv) rb_vm_call(rcv, sel, argc, argv)
+VALUE rb_vm_call_s(VALUE self, SEL sel, int argc, const VALUE *argv);
+#define rb_send(rcv, sel, argc, argv) rb_vm_call_s(rcv, sel, argc, argv)
 
 struct rb_class_ptr {
     VALUE klass;
@@ -115,6 +119,8 @@ VALUE rb_vm_block_eval(void *block, int argc, const VALUE *argv);
 #define rb_block_call(block, argc, argv) rb_vm_block_eval
 
 VALUE rb_define_class_under(VALUE, const char*, VALUE);
+
+const char *rb_sym2name(VALUE sym);
 
 #elif CC_TARGET_OS_ANDROID
 
@@ -235,8 +241,8 @@ VALUE rb_object_new(jclass klass, void *ptr);
 void *rb_object_ptr(VALUE obj);
 #define rb_class_wrap_get_ptr(obj) rb_object_ptr(obj)
 
-std::string rb_str_to_stdstring(VALUE obj);
-#define RSTRING_PTR(str) rb_str_to_stdstring(str).c_str()
+const char *rb_str_to_cstr(VALUE obj);
+#define RSTRING_PTR(str) rb_str_to_cstr(str)
 
 VALUE rb_vm_current_block_object(void);
 #define rb_current_block() rb_vm_current_block_object()
@@ -303,6 +309,9 @@ class Frame {
         }
 };
 
+SEL rb_sym_to_sel(VALUE sym);
+#define rb_sym2name(sym) (const char *)rb_sym_to_sel(sym)
+
 #endif
 
 extern VALUE rb_cArray;
@@ -313,7 +322,6 @@ extern VALUE rb_eArgError;
 extern VALUE rb_eRuntimeError;
 
 void rb_raise(VALUE exc, const char *fmt, ...) __attribute__ ((noreturn));
-const char *rb_sym2name(VALUE sym);
 int rb_scan_args(int, const VALUE*, const char*, ...);
 VALUE rb_ary_new(void);
 VALUE rb_ary_push(VALUE, VALUE);
@@ -327,10 +335,6 @@ VALUE rb_name2sym(const char *);
 
 VALUE rb_str_new2(const char *);
 #define RSTRING_NEW(cstr) rb_str_new2(cstr)
-
-#if defined(__cplusplus)
-extern "C" {
-#endif
 
 #define NUM2BYTE(val) \
     ({ \
