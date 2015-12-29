@@ -1,5 +1,4 @@
 COCOS2D_PATH = File.expand_path('ext/cocos2d-x')
-RM_VM_PATH = '/Users/mark/src/RubyMotion/vm'
 
 XCODE_PATH = '/Applications/Xcode.app'
 XCODE_IOS_SDK = '9.1'
@@ -138,13 +137,7 @@ def build_project(platforms, platform_code, build_dir)
     end
   
     Dir.chdir('src') do
-      add_flags = "-I. -Werror -I#{COCOS2D_PATH}/cocos -I#{COCOS2D_PATH}/cocos/audio/include -I#{RM_VM_PATH}"
-      case platform_code
-        when 'ios', 'tvos'
-          add_flags << " -I#{RM_VM_PATH}/include -DMACRUBY_STATIC -DNO_LIBAUTO"
-        when 'android'
-          add_flags << " -I#{RM_VM_PATH}/java"
-      end
+      add_flags = "-I. -Werror -I#{COCOS2D_PATH}/cocos -I#{COCOS2D_PATH}/cocos/audio/include"
       Dir.glob(file_pattern).each do |src_path|
         objs << compile_obj.call(src_path, add_flags, platform)
       end
