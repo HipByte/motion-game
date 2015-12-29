@@ -1,4 +1,7 @@
-= How to build
+How to build the project
+========================
 
+```
 $ rake build:setup
-$ rake build
+$ rake build:all
+```
