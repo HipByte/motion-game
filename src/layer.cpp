@@ -209,14 +209,6 @@ scene_add_listener(VALUE rcv, cocos2d::EventListener *listener)
 }
 
 static VALUE
-scene_remove_listener(VALUE rcv, cocos2d::EventListener *listener)
-{
-    auto scene = SCENE(rcv);
-    scene->getEventDispatcher()->removeEventListener(listener);
-    return rcv;
-}
-
-static VALUE
 scene_on_touch_event(VALUE rcv, SEL sel, mc_Scene_EventType type)
 {
     VALUE block = rb_current_block();
@@ -230,7 +222,7 @@ scene_on_touch_event(VALUE rcv, SEL sel, mc_Scene_EventType type)
         scene->touch_listener = cocos2d::EventListenerTouchOneByOne::create();
     } 
     else {
-        scene_remove_listener(rcv, scene->touch_listener);
+        scene->getEventDispatcher()->removeEventListener(scene->touch_listener);
     }
     auto lambda = [block](cocos2d::Touch *touch,
         cocos2d::Event *event) -> bool {
