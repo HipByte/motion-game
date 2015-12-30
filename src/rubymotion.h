@@ -116,7 +116,8 @@ void *rb_vm_current_block(void);
     })
 
 VALUE rb_vm_block_eval(void *block, int argc, const VALUE *argv);
-#define rb_block_call(block, argc, argv) rb_vm_block_eval
+#define rb_block_call(block, argc, argv) \
+    rb_vm_block_eval((void *)block, argc, argv)
 
 VALUE rb_define_class_under(VALUE, const char*, VALUE);
 
