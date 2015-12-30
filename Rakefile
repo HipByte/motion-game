@@ -244,7 +244,7 @@ namespace 'build' do
     build_project(['iPhoneSimulator', 'iPhoneOS'], 'ios', 'build/ios')
   end
 
-  desc 'Build for TVOS simulator and device'
+  desc 'Build for tvOS simulator and device'
   task 'tvos' do
     build_project(['AppleTVSimulator', 'AppleTVOS'], 'tvos', 'build/tvos')
   end
