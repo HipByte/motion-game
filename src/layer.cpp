@@ -17,6 +17,13 @@ extern "C" {
 }
 #endif
 
+enum mc_Scene_EventType {
+    ON_BEGIN,
+    ON_MOVE,
+    ON_END,
+    ON_CANCEL
+};
+
 class mc_Scene : public cocos2d::LayerColor {
     public:
 	cocos2d::Scene *scene;
@@ -26,6 +33,7 @@ class mc_Scene : public cocos2d::LayerColor {
 
     mc_Scene() {
 	obj = Qnil;
+    touch_listener = NULL;
 #if CC_TARGET_OS_IPHONE || CC_TARGET_OS_APPLETV
 	update_sel = rb_selector("update:");
 #else
@@ -208,6 +216,38 @@ scene_remove_listener(VALUE rcv, cocos2d::EventListener *listener)
     return rcv;
 }
 
+static VALUE
+scene_on_touch_event(VALUE rcv, SEL sel, mc_Scene_EventType type)
+{
+    VALUE block = rb_current_block();
+    if (block == Qnil) {
+    rb_raise(rb_eArgError, "block not given");
+    }
+    block = rb_retain(block); // FIXME need release...
+
+    auto scene = SCENE(rcv);
+    if (scene->touch_listener == NULL) {
+        scene->touch_listener = cocos2d::EventListenerTouchOneByOne::create();
+    } 
+    else {
+        scene_remove_listener(rcv, scene->touch_listener);
+    }
+    auto lambda = [block](cocos2d::Touch *touch,
+        cocos2d::Event *event) -> bool {
+    VALUE touch_obj = rb_class_wrap_new((void *)touch,
+        rb_cTouch);
+    return RTEST(rb_block_call(block, 1, &touch_obj));
+    };
+    switch (type) {
+        case ON_BEGIN: scene->touch_listener->onTouchBegan = lambda; break;
+        case ON_MOVE: scene->touch_listener->onTouchMoved = lambda; break;
+        case ON_END: scene->touch_listener->onTouchEnded = lambda; break;
+        case ON_CANCEL: scene->touch_listener->onTouchCancelled = lambda; break;
+    }
+
+    return scene_add_listener(rcv, scene->touch_listener);
+}
+
 /// @method #on_touch_begin
 /// Starts listening for touch begin events on the receiver.
 /// @yield [Events::Touch] the given block will be yield when a touch begin
@@ -217,26 +257,7 @@ scene_remove_listener(VALUE rcv, cocos2d::EventListener *listener)
 static VALUE
 scene_on_touch_begin(VALUE rcv, SEL sel)
 {
-    VALUE block = rb_current_block();
-    if (block == Qnil) {
-	rb_raise(rb_eArgError, "block not given");
-    }
-    block = rb_retain(block); // FIXME need release...
-
-    auto scene = SCENE(rcv);
-    if (!RTEST(scene->touch_listener)) {
-        scene->touch_listener = cocos2d::EventListenerTouchOneByOne::create();
-    } else {
-        scene_remove_listener(rcv, scene->touch_listener);
-    }
-    scene->touch_listener->onTouchBegan = [block](cocos2d::Touch *touch,
-		cocos2d::Event *event) -> bool {
-	VALUE touch_obj = rb_class_wrap_new((void *)touch,
-		rb_cTouch);
-	return RTEST(rb_block_call(block, 1, &touch_obj));
-    };
-
-    return scene_add_listener(rcv, scene->touch_listener);
+    return scene_on_touch_event(rcv, sel, mc_Scene_EventType::ON_BEGIN);
 }
 
 /// @method #on_touch_end
@@ -248,26 +269,7 @@ scene_on_touch_begin(VALUE rcv, SEL sel)
 static VALUE
 scene_on_touch_end(VALUE rcv, SEL sel)
 {
-    VALUE block = rb_current_block();
-    if (block == Qnil) {
-    rb_raise(rb_eArgError, "block not given");
-    }
-    block = rb_retain(block); // FIXME need release...
-
-    auto scene = SCENE(rcv);
-    if (!RTEST(scene->touch_listener)) {
-        scene->touch_listener = cocos2d::EventListenerTouchOneByOne::create();
-    } else {
-        scene_remove_listener(rcv, scene->touch_listener);
-    }
-    scene->touch_listener->onTouchEnded = [block](cocos2d::Touch *touch,
-        cocos2d::Event *event) -> bool {
-    VALUE touch_obj = rb_class_wrap_new((void *)touch,
-        rb_cTouch);
-    return RTEST(rb_block_call(block, 1, &touch_obj));
-    };
-
-    return scene_add_listener(rcv, scene->touch_listener);
+    return scene_on_touch_event(rcv, sel, mc_Scene_EventType::ON_END);
 }
 
 /// @method #on_touch_move
@@ -279,26 +281,7 @@ scene_on_touch_end(VALUE rcv, SEL sel)
 static VALUE
 scene_on_touch_move(VALUE rcv, SEL sel)
 {
-    VALUE block = rb_current_block();
-    if (block == Qnil) {
-    rb_raise(rb_eArgError, "block not given");
-    }
-    block = rb_retain(block); // FIXME need release...
-
-    auto scene = SCENE(rcv);
-    if (!RTEST(scene->touch_listener)) {
-        scene->touch_listener = cocos2d::EventListenerTouchOneByOne::create();
-    } else {
-        scene_remove_listener(rcv, scene->touch_listener);
-    }
-    scene->touch_listener->onTouchMoved = [block](cocos2d::Touch *touch,
-        cocos2d::Event *event) -> bool {
-    VALUE touch_obj = rb_class_wrap_new((void *)touch,
-        rb_cTouch);
-    return RTEST(rb_block_call(block, 1, &touch_obj));
-    };
-
-    return scene_add_listener(rcv, scene->touch_listener);
+    return scene_on_touch_event(rcv, sel, mc_Scene_EventType::ON_MOVE);
 }
 
 /// @method #on_touch_cancel
@@ -310,26 +293,7 @@ scene_on_touch_move(VALUE rcv, SEL sel)
 static VALUE
 scene_on_touch_cancel(VALUE rcv, SEL sel)
 {
-    VALUE block = rb_current_block();
-    if (block == Qnil) {
-    rb_raise(rb_eArgError, "block not given");
-    }
-    block = rb_retain(block); // FIXME need release...
-
-    auto scene = SCENE(rcv);
-    if (!RTEST(scene->touch_listener)) {
-        scene->touch_listener = cocos2d::EventListenerTouchOneByOne::create();
-    } else {
-        scene_remove_listener(rcv, scene->touch_listener);
-    }
-    scene->touch_listener->onTouchCancelled = [block](cocos2d::Touch *touch,
-        cocos2d::Event *event) -> bool {
-    VALUE touch_obj = rb_class_wrap_new((void *)touch,
-        rb_cTouch);
-    return RTEST(rb_block_call(block, 1, &touch_obj));
-    };
-
-    return scene_add_listener(rcv, scene->touch_listener);
+    return scene_on_touch_event(rcv, sel, mc_Scene_EventType::ON_CANCEL);
 }
 /// @method #on_accelerate
 /// Starts listening for accelerometer events on the receiver.
