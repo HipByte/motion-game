@@ -1,10 +1,10 @@
 #include "rubymotion.h"
 
-/// @class FileUtils
+/// @class File
 
 VALUE rb_cFileUtils = Qnil;
 
-/// @method #read
+/// @method .read
 /// Open a file and return its content
 /// @return [String] the content.
 
@@ -20,7 +20,7 @@ extern "C"
 void
 Init_FileUtils(void)
 {
-    rb_cFileUtils = rb_define_class_under(rb_mMC, "FileUtils", rb_cObject);
+    rb_cFileUtils = rb_define_class_under(rb_mMC, "File", rb_cObject);
 
     rb_define_singleton_method(rb_cFileUtils, "read", file_read, 1);
 }
