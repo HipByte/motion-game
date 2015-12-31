@@ -11,9 +11,9 @@ VALUE rb_cFileUtils = Qnil;
 static VALUE
 file_read(VALUE rcv, SEL sel, VALUE val)
 {
-	std::string filename = RSTRING_PTR(val);
-  auto content = cocos2d::FileUtils::getInstance()->getStringFromFile(filename);
-  return RSTRING_NEW(content.c_str());
+    std::string filename = RSTRING_PTR(val);
+    auto content = cocos2d::FileUtils::getInstance()->getStringFromFile(filename);
+    return RSTRING_NEW(content.c_str());
 }
 
 extern "C"
