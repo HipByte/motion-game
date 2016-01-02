@@ -73,6 +73,7 @@ Init_Fluency(void)
     INIT_MODULE(Audio)
     INIT_MODULE(Types)
     INIT_MODULE(UI)
+    INIT_MODULE(FileUtils)
 
 #undef INIT_MODULE
 #undef ADD_FRAME

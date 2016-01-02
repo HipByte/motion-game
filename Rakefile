@@ -6,8 +6,8 @@ XCODE_TVOS_SDK = '9.0'
 XCODE_IOS_DEPLOYMENT_TARGET = '7.0'
 XCODE_TVOS_DEPLOYMENT_TARGET = '9.0'
 
-ANDROID_NDK_PATH = File.expand_path('~/.rubymotion-android/ndk')
-ANDROID_SDK_PATH = File.expand_path('~/.rubymotion-android/sdk')
+ANDROID_NDK_PATH = File.expand_path(ENV['RUBYMOTION_ANDROID_NDK'] || '~/.rubymotion-android/ndk')
+ANDROID_SDK_PATH = File.expand_path(ENV['RUBYMOTION_ANDROID_SDK'] || '~/.rubymotion-android/sdk')
 ANDROID_API = '16'
 
 BUILD_OPTIONS = {}

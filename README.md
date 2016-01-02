@@ -15,25 +15,71 @@ motion-game is currently in **beta**. Please give it a try and report problems y
 
 ## Getting Started
 
- * [RubyMotion](http://rubymotion.com) is required. A starter version can be downloaded for free. You also need to set up your computer for mobile development (iOS and/or tvOS and/or Android). Follow the [Getting Started](http://rubymotion.com/developers) guides after installation.
- * Install motion-game: `$ gem install motion-game`
+### Installing RubyMotion
 
-## Hello World
+[RubyMotion](http://rubymotion.com) is required. A starter version can be downloaded for free. You also need to set up your computer for mobile development (iOS and/or tvOS and/or Android). Follow the [Getting Started](http://rubymotion.com/developers) guides after installation.
+
+### Installing motion-game
+
+#### Binaries
+
+motion-game is available as a gem:
+
+```
+$ gem install motion-game
+```
+
+#### Source
+
+You can build your own copy of motion-game:
+
+```
+$ rake build:setup
+$ rake build:all
+```
+
+### Hello World
 
 ```
 $ motion create --template=motion-game HelloWorld
 $ cd HelloWorld
+```
+
+#### iOS
+
+```
 $ rake ios:simulator
 $ rake ios:device
+```
+
+#### tvOS
+
+```
 $ rake tvos:simulator
 $ rake tvos:device
+```
+
+#### Android
+
+```
 $ rake android:emulator
 $ rake android:device
 ```
 
-## Samples
+### API reference
 
-Check out the [HipByte/RubyMotionSamples/game](https://github.com/HipByte/RubyMotionSamples/tree/master/game) GitHub repository for samples.
+The whole framework API is documented. The [API reference](http://www.rubymotion.com/developers/motion-game/_index.html) is available online.
+
+You can also build the API reference locally:
+
+```
+$ rake doc
+$ open doc/index.html
+```
+
+### Samples
+
+The [samples](https://github.com/HipByte/motion-game/tree/master/samples) directory contains sample projects.
 
 ## License
 
