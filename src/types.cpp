@@ -240,6 +240,7 @@ size_inspect(VALUE rcv, SEL sel)
 ///   node.color = color
 /// Currently, the following symbols are supported: +:white+, +:black+, +:red+,
 /// +:green+ and +:blue+.
+/// The +MG::Color.new+ constructor will return the black color.
 
 VALUE rb_cColor = Qnil;
 
@@ -254,7 +255,7 @@ rb_cccolor4_to_obj(cocos2d::Color4B _color)
 static VALUE
 color_alloc(VALUE rcv, SEL sel)
 {
-    return rb_cccolor4_to_obj(cocos2d::Color4B());
+    return rb_cccolor4_to_obj(cocos2d::Color4B::BLACK);
 }
 
 /// @group Properties
