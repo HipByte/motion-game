@@ -229,9 +229,6 @@ namespace 'build' do
   task 'setup' do
     sh "git submodule update --init"
     sh "python ext/cocos2d-x/download-deps.py --remove-download no"
-    Dir.chdir('ext/cocos2d-x') do
-      sh "git apply ../../cocos2d-x.patch"
-    end
   end
 
   desc 'Build for Android'
