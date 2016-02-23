@@ -17,7 +17,7 @@ motion-game is currently in **beta**. Please give it a try and report problems y
 
 ### Installing RubyMotion
 
-[RubyMotion](http://rubymotion.com) is required. A starter version can be downloaded for free. You also need to set up your computer for mobile development (iOS and/or tvOS and/or Android). Follow the [Getting Started](http://rubymotion.com/developers) guides after installation.
+[RubyMotion 4.7+](http://rubymotion.com) is required. A starter version can be downloaded for free. You also need to set up your computer for mobile development (iOS and/or tvOS and/or Android). Follow the [Getting Started](http://rubymotion.com/developers) guides after installation.
 
 ### Installing motion-game
 
