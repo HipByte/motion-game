@@ -110,7 +110,7 @@ def build_project(platforms, platform_code, build_dir)
             next if src_path == 'network/WebSocket.cpp'
             next if src_path == 'network/SocketIO.cpp'
             next if src_path == 'network/HttpClient.cpp'
-            next if src_path == 'platform/CCThread.cpp' if platform_code == 'tvos'
+            next if src_path == 'platform/CCThread.cpp' && platform_code == 'tvos'
             next if src_path.include?('ui/UIEditBox/iOS') && platform_code == 'tvos'
           when 'android'
         end
