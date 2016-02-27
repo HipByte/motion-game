@@ -1,3 +1,5 @@
+require_relative 'paralel_builder'
+
 COCOS2D_PATH = File.expand_path('ext/cocos2d-x')
 
 XCODE_PATH = '/Applications/Xcode.app'
@@ -99,24 +101,30 @@ def build_project(platforms, platform_code, build_dir)
       pats << "platform/#{file_pattern}"
       pats << "platform/{#{cocos_platforms_pattern}}/**/#{file_pattern}"
       files = pats.map { |x| Dir.glob(x) }.flatten.uniq
-      files.each do |src_path|
+      files.delete_if do |src_path|
+        skip = false
         case platform_code
           when 'ios', 'tvos'
-            next if src_path =~ /.*-android.cpp$/
-            next if src_path =~ /.*-win32.cpp$/
-            next if src_path =~ /.*-winrt.cpp$/
-            next if src_path =~ /.*-linux.cpp$/
-            next if src_path == 'ui/UIWebView.cpp'
-            next if src_path == 'network/WebSocket.cpp'
-            next if src_path == 'network/SocketIO.cpp'
-            next if src_path == 'network/HttpClient.cpp'
-            next if src_path == 'platform/CCThread.cpp' && platform_code == 'tvos'
-            next if src_path.include?('ui/UIEditBox/iOS') && platform_code == 'tvos'
+            (skip = true) if (src_path =~ /.*-android.cpp$/)
+            (skip = true) if (src_path =~ /.*-win32.cpp$/)
+            (skip = true) if (src_path =~ /.*-winrt.cpp$/)
+            (skip = true) if (src_path =~ /.*-linux.cpp$/)
+            (skip = true) if (src_path == 'ui/UIWebView.cpp')
+            (skip = true) if (src_path == 'network/WebSocket.cpp')
+            (skip = true) if (src_path == 'network/SocketIO.cpp')
+            (skip = true) if (src_path == 'network/HttpClient.cpp')
+            (skip = true) if (src_path == 'platform/CCThread.cpp' && platform_code == 'tvos')
+            (skip = true) if (src_path.include?('ui/UIEditBox/iOS') && platform_code == 'tvos')
           when 'android'
         end
-
-        objs << compile_obj.call(src_path, add_flags, platform)
+        skip
       end
+
+      parallel = ParallelBuilder.new(compile_obj, platform, add_flags)
+      parallel.files = files
+      parallel.run
+      objs += parallel.objects
+      objs.flatten!
     end
   
     ['external/bullet','external/xxhash', 'external/ConvertUTF', 'external/tinyxml2', 'external/unzip', 'external/edtaa3func', 'extensions/GUI/CCControlExtension', 'extensions/GUI/CCScrollView', 'external/clipper', 'external/poly2tri', 'extensions/Particle3D', 'external/recast'].each do |dir|
@@ -128,19 +136,30 @@ def build_project(platforms, platform_code, build_dir)
         add_flags << ' ' + base_headers + '/cocos/platform'
         add_flags << ' -I../../'
         add_flags << ' -I../'
-        Dir.glob(File.join('**',file_pattern)).each do |src_path|
-          next if src_path.include?('DX11')
-          next if src_path.include?('OpenCL')
-          objs << compile_obj.call(src_path, add_flags, platform)
+        files = Dir.glob(File.join('**',file_pattern))
+        files.delete_if do |src_path|
+          skip = false
+          (skip = true) if src_path.include?('DX11')
+          (skip = true) if src_path.include?('OpenCL')
+          skip
         end
+
+        parallel = ParallelBuilder.new(compile_obj, platform, add_flags)
+        parallel.files = files
+        parallel.run
+        objs += parallel.objects
+        objs.flatten!
       end
     end
   
     Dir.chdir('src') do
       add_flags = "-I. -Werror -I#{COCOS2D_PATH}/cocos -I#{COCOS2D_PATH}/cocos/audio/include"
-      Dir.glob(file_pattern).each do |src_path|
-        objs << compile_obj.call(src_path, add_flags, platform)
-      end
+      files = Dir.glob(file_pattern)
+      parallel = ParallelBuilder.new(compile_obj, platform, add_flags)
+      parallel.files = files
+      parallel.run
+      objs += parallel.objects
+      objs.flatten!
     end
 
     next unless platform_code == 'android'
