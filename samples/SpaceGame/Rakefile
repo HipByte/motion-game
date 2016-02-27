@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-require '../../lib/project.rb'
-# require 'motion-game/project.rb'
+require 'motion-game/project.rb'
+# require '../../lib/project.rb'
 
 # This file is empty on purpose. Please refer to config/ios.rb for iOS project
 # settings and config/android.rb for Android project settings.
