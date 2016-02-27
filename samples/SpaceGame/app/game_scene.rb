@@ -1,36 +1,36 @@
-class GameScene < MC::Scene
+class GameScene < MG::Scene
   def initialize
     @random = Random.new
 
-    director = MC::Director.shared
+    director = MG::Director.shared
     visible_size = director.size
     visible_origin = director.origin  
  
     # Add a 'close' icon to exit the game. 
-    menu = MC::Menu.new
+    menu = MG::Menu.new
     menu.image_item('CloseNormal.png', 'CloseSelected.png') { director.end }
     menu.position = [visible_origin.x + visible_size.width - 25, visible_origin.y + 25]
     add menu, 1
 
     # Load the sprites sheet.
-    MC::Sprite.load('Sprites.plist')
+    MG::Sprite.load('Sprites.plist')
 
     # Create the ship sprite.
-    @ship = MC::Sprite.new('SpaceFlier_sm_1.png')
+    @ship = MG::Sprite.new('SpaceFlier_sm_1.png')
     @ship.position = [visible_size.width * 0.1, visible_size.height * 0.5]
     add @ship, 1
     @ship_y = @ship.position.y
 
     # Create the background node.
-    @background = MC::Parallax.new
+    @background = MG::Parallax.new
     add @background, 0
 
-    @space_dust1 = MC::Sprite.new('bg_front_spacedust.png')
-    @space_dust2 = MC::Sprite.new('bg_front_spacedust.png')
-    planetSunrise = MC::Sprite.new('bg_planetsunrise.png')
-    galaxy = MC::Sprite.new('bg_galaxy.png')
-    spatialAnomaly1 = MC::Sprite.new('bg_spacialanomaly.png')
-    spatialAnomaly2 = MC::Sprite.new('bg_spacialanomaly2.png')
+    @space_dust1 = MG::Sprite.new('bg_front_spacedust.png')
+    @space_dust2 = MG::Sprite.new('bg_front_spacedust.png')
+    planetSunrise = MG::Sprite.new('bg_planetsunrise.png')
+    galaxy = MG::Sprite.new('bg_galaxy.png')
+    spatialAnomaly1 = MG::Sprite.new('bg_spacialanomaly.png')
+    spatialAnomaly2 = MG::Sprite.new('bg_spacialanomaly2.png')
 
     dust_speed = [0.1, 0.1]
     bg_speed = [0.05, 0.05]
@@ -41,12 +41,12 @@ class GameScene < MC::Scene
     @background.add spatialAnomaly1, -1, bg_speed, [900, visible_size.height * 0.3]
     @background.add spatialAnomaly2, -1, bg_speed, [1500, visible_size.height * 0.9]
 
-    %w{Stars1.plist Stars2.plist Stars3.plist}.each { |path| add MC::Particle.new(path) }
+    %w{Stars1.plist Stars2.plist Stars3.plist}.each { |path| add MG::Particle.new(path) }
 
     # Asteroids.
     @asteroids = []
     15.times do
-      asteroid = MC::Sprite.new('asteroid.png')
+      asteroid = MG::Sprite.new('asteroid.png')
       asteroid.visible = false
       @asteroids << asteroid
       add asteroid
@@ -56,7 +56,7 @@ class GameScene < MC::Scene
     # Ship lasers.
     @ship_lasers = []
     5.times do
-      ship_laser = MC::Sprite.new('laserbeam_blue.png')
+      ship_laser = MG::Sprite.new('laserbeam_blue.png')
       ship_laser.visible = false
       @ship_lasers << ship_laser
       add ship_laser
@@ -68,7 +68,7 @@ class GameScene < MC::Scene
     on_accelerate { |acc| calculate_ship_position(acc) }
 
     # Start background music.
-    MC::Audio.play 'background_music', true
+    MG::Audio.play 'background_music', true
 
     # Start the game loop.
     @lives = 3
@@ -77,7 +77,7 @@ class GameScene < MC::Scene
   end
 
   def update(delta)
-    win_size = MC::Director.shared.size
+    win_size = MG::Director.shared.size
 
     # Move background space dusts.
     width = @space_dust1.size.width
@@ -124,7 +124,7 @@ class GameScene < MC::Scene
       @ship_lasers.each do |ship_laser|
         next unless ship_laser.visible?
         if ship_laser.intersects?(asteroid)
-          MC::Audio.play('explosion_large')
+          MG::Audio.play('explosion_large')
           ship_laser.visible = asteroid.visible = false
           @score += 1
         end
@@ -140,7 +140,7 @@ class GameScene < MC::Scene
   end
 
   def fire_ship_laser
-    MC::Audio.play 'laser_ship'
+    MG::Audio.play 'laser_ship'
 
     ship_laser = @ship_lasers[@next_ship_laser]
     @next_ship_laser += 1
@@ -148,13 +148,13 @@ class GameScene < MC::Scene
 
     ship_laser.position = @ship.position + [ship_laser.size.width / 2.0, 0]
     ship_laser.visible = true
-    ship_laser.move_by [MC::Director.shared.size.width, 0], 0.5 { ship_laser.visible = false }
+    ship_laser.move_by [MG::Director.shared.size.width, 0], 0.5 { ship_laser.visible = false }
   end
 
   def calculate_ship_position(acc)
     filtering_factor = 0.1
     rest_accel_x = -0.6
-    ship_max_points_per_sec = MC::Director.shared.size.height * 0.5
+    ship_max_points_per_sec = MG::Director.shared.size.height * 0.5
     max_diff_x = 0.2
 
     x = acc.y
@@ -167,9 +167,9 @@ class GameScene < MC::Scene
   end
 
   def game_over
-    win_size = MC::Director.shared.size
+    win_size = MG::Director.shared.size
 
-    label = MC::Button.new("Game Over!\nYour score is #{@score}\nTap to restart")
+    label = MG::Button.new("Game Over!\nYour score is #{@score}\nTap to restart")
     label.font = 'Arial'
     label.font_size = 42
     label.position = [win_size.width / 2, win_size.height / 2]
@@ -180,6 +180,6 @@ class GameScene < MC::Scene
   end
 
   def restart
-    MC::Director.shared.replace GameScene.new
+    MG::Director.shared.replace GameScene.new
   end
 end
