@@ -3,7 +3,6 @@ class GameScene < MG::Scene
   WORLD = 1 << 1
 
   def initialize
-    p self.class.ancestors
     self.gravity = [0, -900]
 
     @backgrounds = []
@@ -27,10 +26,6 @@ class GameScene < MG::Scene
       puts "game over!11!!!1!!1!1!!1111!!!!!11!!!eleven"
       true
     end
-
-    @tapRecognizer = UITapGestureRecognizer.alloc.initWithTarget(self, action: "fly")
-    @tapRecognizer.allowedPressTypes = [UIPressTypePlayPause]
-    MG::Director.shared._get_glview.addGestureRecognizer(@tapRecognizer)
 
     start_update
   end
