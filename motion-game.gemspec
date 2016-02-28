@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name        = 'motion-game'
-  spec.version     = '1.1'
+  spec.version     = '1.1.1'
   spec.date        = Date.today
   spec.summary     = 'Cross-platform mobile game engine for RubyMotion'
   spec.description = "motion-game allows you to write cross-platform native mobile games in Ruby."
