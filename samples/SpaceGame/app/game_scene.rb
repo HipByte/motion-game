@@ -65,7 +65,8 @@ class GameScene < MG::Scene
 
     # Enable events.
     on_touch_begin { fire_ship_laser }
-    on_accelerate { |acc| calculate_ship_position(acc) }
+    # FIXME : the below line does not work on tvOS
+    # on_accelerate { |acc| calculate_ship_position(acc) }
 
     # Start background music.
     MG::Audio.play 'background_music', true
