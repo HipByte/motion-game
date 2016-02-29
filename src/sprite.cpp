@@ -139,11 +139,18 @@ sprite_animate(VALUE rcv, SEL sel, int argc, VALUE *argv)
     for (int i = 0, count = RARRAY_LEN(frame_names); i < count; i++) {
 	std::string frame_name = RSTRING_PTR(RARRAY_AT(frame_names, i));
 	auto texture = texture_cache->addImage(frame_name);
-	assert(texture != NULL);
-	cocos2d::Rect rect = cocos2d::Rect::ZERO;
-	rect.size = texture->getContentSize();
-	frames.pushBack(cocos2d::SpriteFrame::createWithTexture(texture,
-		    rect));
+	cocos2d::SpriteFrame *frame = NULL;
+	if (texture != NULL) {
+	    cocos2d::Rect rect = cocos2d::Rect::ZERO;
+	    rect.size = texture->getContentSize();
+	    frame = cocos2d::SpriteFrame::createWithTexture(texture,
+		    rect);
+	}
+	else {
+	    frame = cocos2d::SpriteFrameCache::getInstance()->getSpriteFrameByName(frame_name);
+	}
+	assert(frame != NULL);
+	frames.pushBack(frame);
     }
 
     int loops_i = 1;
