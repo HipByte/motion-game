@@ -391,6 +391,26 @@ draw_rect(VALUE rcv, SEL sel, int argc, VALUE *argv)
     return rcv;
 }
 
+/// @method #line(origin, destination, thickness, color)
+/// Draws a line at the given position with the given color.
+/// @param origin [Point] the position where to start drawing (lower-left).
+/// @param destination [Point] the position where to end drawing (higher-right).
+/// @param thickness [Float] the line thickness.
+/// @param color [Color] the color to use to draw.
+/// @return [Draw] the receiver.
+
+static VALUE
+draw_line(VALUE rcv, SEL sel, int argc, VALUE *argv)
+{
+    VALUE origin = Qnil, destination = Qnil, thickness = Qnil, color = Qnil;
+    rb_scan_args(argc, argv, "4", &origin, &destination, &thickness, &color);
+    DRAW(rcv)->drawSegment(rb_any_to_ccvec2(origin),
+	    rb_any_to_ccvec2(destination),
+	    NUM2DBL(thickness),
+	    cocos2d::Color4F(rb_any_to_cccolor4(color)));
+    return rcv;
+}
+
 extern "C"
 void
 Init_Node(void)
@@ -437,4 +457,5 @@ Init_Node(void)
     rb_define_singleton_method(rb_cDrawNode, "alloc", draw_alloc, 0);
     rb_define_method(rb_cDrawNode, "dot", draw_dot, 3);
     rb_define_method(rb_cDrawNode, "rect", draw_rect, -1);
+    rb_define_method(rb_cDrawNode, "line", draw_line, -1);
 }
