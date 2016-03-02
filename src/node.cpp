@@ -348,6 +348,17 @@ draw_alloc(VALUE rcv, SEL sel)
 
 /// @group Draw Operations
 
+/// @method #clear
+/// Clears drew shapes.
+/// @return [Draw] the receiver.
+
+static VALUE
+draw_clear(VALUE rcv, SEL sel)
+{
+    DRAW(rcv)->clear();
+    return rcv;
+}
+
 /// @method #dot(pos, radius, color)
 /// Draws a filled circle at the given position with the given radius and color.
 /// @param pos [Point] the position where to draw.
@@ -455,6 +466,7 @@ Init_Node(void)
     rb_cDrawNode = rb_define_class_under(rb_mMC, "Draw", rb_cNode);
 
     rb_define_singleton_method(rb_cDrawNode, "alloc", draw_alloc, 0);
+    rb_define_method(rb_cDrawNode, "clear", draw_clear, 0);
     rb_define_method(rb_cDrawNode, "dot", draw_dot, 3);
     rb_define_method(rb_cDrawNode, "rect", draw_rect, -1);
     rb_define_method(rb_cDrawNode, "line", draw_line, -1);
