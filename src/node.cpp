@@ -422,6 +422,26 @@ draw_line(VALUE rcv, SEL sel, int argc, VALUE *argv)
     return rcv;
 }
 
+/// @method #triangle(position1, position2, position3, color)
+/// Draws a triangle at the given positions with the given color.
+/// @param position1 [Point] The triangle vertex point.
+/// @param position2 [Point] The triangle vertex point.
+/// @param position3 [Point] The triangle vertex point.
+/// @param color [Color] the color to use to draw.
+/// @return [Draw] the receiver.
+
+static VALUE
+draw_triangle(VALUE rcv, SEL sel, int argc, VALUE *argv)
+{
+    VALUE position1 = Qnil, position2 = Qnil, position3 = Qnil, color = Qnil;
+    rb_scan_args(argc, argv, "4", &position1, &position2, &position3, &color);
+    DRAW(rcv)->drawTriangle(rb_any_to_ccvec2(position1),
+	    rb_any_to_ccvec2(position2),
+	    rb_any_to_ccvec2(position3),
+	    cocos2d::Color4F(rb_any_to_cccolor4(color)));
+    return rcv;
+}
+
 extern "C"
 void
 Init_Node(void)
@@ -470,4 +490,5 @@ Init_Node(void)
     rb_define_method(rb_cDrawNode, "dot", draw_dot, 3);
     rb_define_method(rb_cDrawNode, "rect", draw_rect, -1);
     rb_define_method(rb_cDrawNode, "line", draw_line, -1);
+    rb_define_method(rb_cDrawNode, "triangle", draw_triangle, -1);
 }
