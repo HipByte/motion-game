@@ -37,9 +37,7 @@ You can build your own copy of motion-game:
 $ git clone https://github.com/HipByte/motion-game.git && cd motion-game
 $ git submodule update --init
 $ rake build:setup
-$ rake build:all
 
-$ rake doc
 $ rake gem
 $ gem install motion-game-x.x.gem
 ```

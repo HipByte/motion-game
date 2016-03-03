@@ -440,5 +440,7 @@ end
 
 desc 'Create motion-game.gem file'
 task 'gem' do
+  Rake::Task[:"build:all"].invoke
+  Rake::Task[:doc].invoke  
   sh "gem build motion-game.gemspec"
 end
