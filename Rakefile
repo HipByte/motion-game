@@ -39,12 +39,12 @@ begin
   end
 end
 begin
-  toolchain_bin = File.join(ANDROID_NDK_PATH, 'toolchains/llvm-3.5/prebuilt/darwin-x86_64/bin')
+  toolchain_bin = File.join(ANDROID_NDK_PATH, 'toolchains/llvm/prebuilt/darwin-x86_64/bin')
   # Android ARM
-  cflags = "-no-canonical-prefixes -target armv5te-none-linux-androideabi -march=armv5te -mthumb -msoft-float -marm -gcc-toolchain \"#{ANDROID_NDK_PATH}/toolchains/arm-linux-androideabi-4.8/prebuilt/darwin-x86_64\" -mtune=xscale -MMD -MP -fpic -ffunction-sections -funwind-tables -fexceptions -fstack-protector -fno-strict-aliasing -fno-omit-frame-pointer -DANDROID -I\"#{ANDROID_NDK_PATH}/platforms/android-#{ANDROID_API}/arch-arm/usr/include\" -Wformat -Werror=format-security -DCC_TARGET_OS_ANDROID"
+  cflags = "-no-canonical-prefixes -target armv5te-none-linux-androideabi -march=armv5te -mthumb -msoft-float -marm -gcc-toolchain \"#{ANDROID_NDK_PATH}/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64\" -mtune=xscale -MMD -MP -fpic -ffunction-sections -funwind-tables -fexceptions -fstack-protector -fno-strict-aliasing -fno-omit-frame-pointer -DANDROID -I\"#{ANDROID_NDK_PATH}/platforms/android-#{ANDROID_API}/arch-arm/usr/include\" -I\"#{ANDROID_NDK_PATH}/platforms/android-#{ANDROID_API}/arch-arm/usr/include/machine\" -Wno-inconsistent-missing-override -Wno-macro-redefined -Wformat -Werror=format-security -DCC_TARGET_OS_ANDROID"
   BUILD_OPTIONS['android-arm'] = { :cc => File.join(toolchain_bin, 'clang'), :cxx => File.join(toolchain_bin, 'clang++'), :cflags => cflags, :cxxflags => cflags + " -std=c++11 -I\"#{ANDROID_NDK_PATH}/sources/cxx-stl/gnu-libstdc++/4.9/include\" -I\"#{ANDROID_NDK_PATH}/sources/cxx-stl/gnu-libstdc++/4.9/libs/armeabi/include\" -I\"#{ANDROID_NDK_PATH}/sources/cpufeatures\"" }
   # Android Intel
-  cflags = "-mno-sse -mno-mmx -no-canonical-prefixes -msoft-float -target i686-none-linux-android -gcc-toolchain \"#{ANDROID_NDK_PATH}/toolchains/x86-4.8/prebuilt/darwin-x86_64\" -MMD -MP -fpic -ffunction-sections -funwind-tables -fexceptions -fstack-protector -fno-strict-aliasing -O0 -fno-omit-frame-pointer -DANDROID -I\"#{ANDROID_NDK_PATH}/platforms/android-#{ANDROID_API}/arch-x86/usr/include\" -Wformat -Werror=format-security -DCC_TARGET_OS_ANDROID"
+  cflags = "-mno-sse -mno-mmx -no-canonical-prefixes -msoft-float -target i686-none-linux-android -gcc-toolchain \"#{ANDROID_NDK_PATH}/toolchains/x86-4.9/prebuilt/darwin-x86_64\" -MMD -MP -fpic -ffunction-sections -funwind-tables -fexceptions -fstack-protector -fno-strict-aliasing -O0 -fno-omit-frame-pointer -DANDROID -I\"#{ANDROID_NDK_PATH}/platforms/android-#{ANDROID_API}/arch-x86/usr/include\" -Wno-inconsistent-missing-override -Wno-macro-redefined -Wformat -Werror=format-security -DCC_TARGET_OS_ANDROID"
   BUILD_OPTIONS['android-x86'] = { :cc => File.join(toolchain_bin, 'clang'), :cxx => File.join(toolchain_bin, 'clang++'), :cflags => cflags, :cxxflags => cflags + " -std=c++11 -I\"#{ANDROID_NDK_PATH}/sources/cxx-stl/gnu-libstdc++/4.9/include\" -I\"#{ANDROID_NDK_PATH}/sources/cxx-stl/gnu-libstdc++/4.9/libs/x86/include\" -I\"#{ANDROID_NDK_PATH}/sources/cpufeatures\"" }
 end
 
