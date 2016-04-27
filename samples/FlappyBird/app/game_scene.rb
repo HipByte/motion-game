@@ -106,7 +106,7 @@ class GameScene < MG::Scene
         pos2.x = pos1.x + width - 5
       elsif pos3.x <= -(width / 2.0)
         pos3.x = pos2.x + width - 5
-      elsif pos3.x <= -(width / 2.0)
+      elsif pos4.x <= -(width / 2.0)
         pos4.x = pos3.x + width - 5
       end
       sprite1.position = pos1
