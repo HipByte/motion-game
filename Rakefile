@@ -29,7 +29,7 @@ begin
     when 'AppleTVSimulator'
       cflags << " -arch i386 -arch x86_64 -mtvos-simulator-version-min=#{XCODE_TVOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_APPLETV -include platform/tvos/cocos2d-prefix.pch"
     when 'AppleTVOS'
-      cflags << " -arch arm64 -mtvos-version-min=#{XCODE_TVOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_APPLETV -include platform/tvos/cocos2d-prefix.pch"
+      cflags << " -arch arm64 -fembed-bitcode -mtvos-version-min=#{XCODE_TVOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_APPLETV -include platform/tvos/cocos2d-prefix.pch"
     end
    cflags
   end
