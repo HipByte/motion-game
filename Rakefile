@@ -207,7 +207,6 @@ def build_project(platforms, platform_code, build_dir)
     prebuild_platforms += [platform_code]
   end
   prebuild_platforms.each do |prebuild_platform|
-    prebuild_platform = 'ios' if prebuild_platform == 'tvos'
     Dir.glob(File.join(COCOS2D_PATH, "external/**/prebuilt/#{prebuild_platform}/*.a")).each do |lib|
       next if lib.include?('lua')
       next if lib.include?('js_static')
@@ -247,6 +246,10 @@ namespace 'build' do
   desc 'Setup development environment'
   task 'setup' do
     sh "git submodule update --init"
+    unless File.exist?("v3-deps-78.zip")
+      # Download .zip file from https://github.com/HipByte/cocos2d-x-3rd-party-libs-bin/releases/tag/RubyMotion-v3-deps-78
+      sh "curl 'https://github-cloud.s3.amazonaws.com/releases/58326432/88f72f8a-15a0-11e6-81ac-da33e00647f6.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAISTNZFOVBIJMK3TQ%2F20160508%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20160508T194544Z&X-Amz-Expires=300&X-Amz-Signature=d6f90cd38ccb2afb779f37655d737174bbfa6117471d8e17616bbb3264b9493e&X-Amz-SignedHeaders=host&actor_id=199156&response-content-disposition=attachment%3B%20filename%3Dv3-deps-78.zip&response-content-type=application%2Foctet-stream' -o v3-deps-78.zip"
+    end
     sh "python ext/cocos2d-x/download-deps.py --remove-download no"
   end
 
