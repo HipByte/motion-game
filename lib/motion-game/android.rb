@@ -4,7 +4,7 @@ require 'motion/project/template/android'
 Motion::Project::App.setup do |app|
   app.api_version = '16' unless Motion::Project::Config.starter?
   app.build_dir = 'build/android'
-  app.assets_dirs = ['resources']
+  app.assets_dirs << 'resources'
   app.resources_dirs = []
   app.files.concat(Dir.glob(File.join(File.dirname(__FILE__), 'android/*.rb')))
   app.vendor_project :jar => File.join(File.dirname(__FILE__), '../../build/android/motion-cocos.jar')
