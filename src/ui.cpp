@@ -39,6 +39,24 @@ widget_enabled_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
+/// @property #touch_enabled?
+/// Whether the widget is touch enabled. When touch enabled, a widget supports
+/// on_touch. By default, a widget is not touch enabled.
+/// @return [Boolean] whether the widget is touch enabled.
+
+static VALUE
+widget_touch_enabled(VALUE rcv, SEL sel)
+{
+    return WIDGET(rcv)->isTouchEnabled() ? Qtrue : Qfalse;
+}
+
+static VALUE
+widget_touch_enabled_set(VALUE rcv, SEL sel, VALUE val)
+{
+    WIDGET(rcv)->setTouchEnabled(RTEST(val));
+    return val;
+}
+
 /// @property #highlighted?
 /// Whether the widget is highlighted. By default, a widget is not highlighted.
 /// @return [Boolean] whether the widget is highlighted.
@@ -902,6 +920,8 @@ Init_UI(void)
 
     rb_define_method(rb_cUIWidget, "enabled?", widget_enabled, 0);
     rb_define_method(rb_cUIWidget, "enabled=", widget_enabled_set, 1);
+    rb_define_method(rb_cUIWidget, "touch_enabled?", widget_touch_enabled, 0);
+    rb_define_method(rb_cUIWidget, "touch_enabled=", widget_touch_enabled_set, 1);
     rb_define_method(rb_cUIWidget, "highlighted?", widget_highlighted, 0);
     rb_define_method(rb_cUIWidget, "highlighted=", widget_highlighted_set, 1);
     //rb_define_method(rb_cUIWidget, "size", widget_size, 0);
