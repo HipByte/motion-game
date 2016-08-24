@@ -457,6 +457,13 @@ button_load_texture_pressed(VALUE rcv, SEL sel, VALUE val)
   return val;
 }
 
+static VALUE
+button_load_texture_disabled(VALUE rcv, SEL sel, VALUE val)
+{
+  BUTTON(rcv)->loadTextureDisabled(RSTRING_PTR(val));
+  return val;
+}
+
 /// @class Slider < Widget
 
 /// @group Constructors
@@ -983,6 +990,7 @@ Init_UI(void)
     rb_define_method(rb_cUIButton, "zoom_scale=", button_zoom_scale_set, 1);
     rb_define_method(rb_cUIButton, "load_texture_normal", button_load_texture_normal, 1);
     rb_define_method(rb_cUIButton, "load_texture_pressed", button_load_texture_pressed, 1);
+    rb_define_method(rb_cUIButton, "load_texture_disabled", button_load_texture_disabled, 1);
 
     rb_cUISlider = rb_define_class_under(rb_mMC, "Slider", rb_cUIWidget);
 
