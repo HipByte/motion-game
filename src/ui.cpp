@@ -425,6 +425,13 @@ button_zoom_scale_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
+static VALUE
+button_load_texture_normal(VALUE rcv, SEL sel, VALUE val)
+{
+  BUTTON(rcv)->loadTextureNormal(RSTRING_PTR(val));
+  return val;
+}
+
 /// @class Slider < Widget
 
 /// @group Constructors
@@ -947,6 +954,7 @@ Init_UI(void)
     rb_define_method(rb_cUIButton, "font_size=", button_font_size_set, 1);
     rb_define_method(rb_cUIButton, "zoom_scale", button_zoom_scale, 0);
     rb_define_method(rb_cUIButton, "zoom_scale=", button_zoom_scale_set, 1);
+    rb_define_method(rb_cUIButton, "load_texture_normal", button_load_texture_normal, 1);
 
     rb_cUISlider = rb_define_class_under(rb_mMC, "Slider", rb_cUIWidget);
 
