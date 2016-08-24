@@ -187,8 +187,8 @@ def build_project(platforms, platform_code, build_dir)
   end
 
   if platform_code != 'android'
-    ar = '/usr/bin/ar'
-    ranlib = '/usr/bin/ranlib'
+    ar = 'ar'
+    ranlib = 'ranlib'
 
     lib_dir = build_dir
     lib = File.join(lib_dir, 'libmotion-cocos.a')
@@ -234,10 +234,10 @@ def build_project(platforms, platform_code, build_dir)
       jar_files = Dir.glob('*/**/*.jar')
       android_jar = "#{ANDROID_SDK_PATH}/platforms/android-#{ANDROID_API}/android.jar"
       mkdir_p classes_dir unless File.exist? classes_dir
-      sh "/usr/bin/javac -cp \"#{jar_files.join(';')}\" -d \"#{classes_dir}\" -bootclasspath \"#{android_jar}\" #{java_src_files.join(' ')}"
+      sh "javac -cp \"#{jar_files.join(';')}\" -d \"#{classes_dir}\" -bootclasspath \"#{android_jar}\" #{java_src_files.join(' ')}"
     end
     Dir.chdir(classes_dir) do
-      sh "/usr/bin/jar cvf ../motion-cocos.jar ."
+      sh "jar cvf ../motion-cocos.jar ."
     end
   end
 end
@@ -278,11 +278,11 @@ task 'gen_tasks_shortcuts' do
     io.puts "# This file has been generated, do not edit by hand.\n"
     io.puts "def invoke_rake(platform, task)"
     io.puts "  trace = Rake.application.options.trace == true"
-    io.puts "  system \"/usr/bin/rake -r \\\"#\{File.dirname(__FILE__)\}/#\{platform\}.rb\\\" -f \\\"config/#\{platform\}.rb\\\" \\\"#\{task\}\\\" #\{trace ? '--trace' : ''\}\" or exit 1"
+    io.puts "  system \"rake -r \\\"#\{File.dirname(__FILE__)\}/#\{platform\}.rb\\\" -f \\\"config/#\{platform\}.rb\\\" \\\"#\{task\}\\\" #\{trace ? '--trace' : ''\}\" or exit 1"
     io.puts "end"
     %w{ios tvos android}.each do |platform|
       io.puts "namespace '#{platform}' do"
-      `/usr/bin/rake -I /Library/RubyMotion/lib -f /Library/RubyMotion/lib/motion/project/template/#{platform}.rb -T`.scan(/rake\s([^\s]+)\s+#\s([^\n]+)/).each do |plat_task, plat_desc|
+      `rake -I /Library/RubyMotion/lib -f /Library/RubyMotion/lib/motion/project/template/#{platform}.rb -T`.scan(/rake\s([^\s]+)\s+#\s([^\n]+)/).each do |plat_task, plat_desc|
         io.puts "  desc \"#{plat_desc}\""
         io.puts "  task \"#{plat_task}\" do"
         io.puts "    invoke_rake '#{platform}', '#{plat_task}'"
@@ -309,7 +309,7 @@ task 'archive' do
   end
   Dir.chdir(File.dirname(archive_dir)) do
     rm_rf 'motion-game.zip'
-    sh "/usr/bin/zip -r motion-game.zip #{File.basename(archive_dir)}"
+    sh "zip -r motion-game.zip #{File.basename(archive_dir)}"
   end
   mv File.join(File.dirname(archive_dir), 'motion-game.zip'), '.'
 end

@@ -1,3 +1,5 @@
+require 'date'
+
 Gem::Specification.new do |spec|
   spec.name        = 'motion-game'
   spec.version     = '1.1.4'
