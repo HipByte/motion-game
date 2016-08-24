@@ -47,7 +47,9 @@ long rb_num2int(VALUE);
 #define NUM2INT(x) (FIXNUM_P(x) ? FIX2INT(x) : rb_num2int((VALUE)x))
 
 const char *rb_str_cstr(VALUE);
+VALUE rb_string_value(VALUE*);
 #define RSTRING_PTR(str) (rb_str_cstr((VALUE)str))
+#define StringValue(v) rb_string_value(&(v))
 
 VALUE rb_obj_is_kind_of(VALUE, VALUE);
 
@@ -270,7 +272,9 @@ void *rb_object_ptr(VALUE obj);
 #define rb_class_wrap_get_ptr(obj) rb_object_ptr(obj)
 
 const char *rb_str_to_cstr(VALUE obj);
+VALUE rb_string_value(VALUE*);
 #define RSTRING_PTR(str) rb_str_to_cstr(str)
+#define StringValue(v) rb_string_value(&(v))
 
 VALUE rb_vm_current_block_object(void);
 #define rb_current_block() rb_vm_current_block_object()

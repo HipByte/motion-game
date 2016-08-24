@@ -155,10 +155,10 @@ text_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
     cocos2d::ui::Text *text = cocos2d::ui::Text::create();
 
     if (str != Qnil) {
-	text->setString(RSTRING_PTR(str));
+	text->setString(RSTRING_PTR(StringValue(str)));
     }
     if (font_name != Qnil) {
-	text->setFontName(RSTRING_PTR(font_name));
+	text->setFontName(RSTRING_PTR(StringValue(font_name)));
     }
     if (font_size != Qnil) {
 	text->setFontSize(NUM2LONG(font_size));
@@ -181,7 +181,7 @@ text_text(VALUE rcv, SEL sel)
 static VALUE
 text_text_set(VALUE rcv, SEL sel, VALUE val)
 {
-    TEXT(rcv)->setString(RSTRING_PTR(val));
+    TEXT(rcv)->setString(RSTRING_PTR(StringValue(val)));
     return val;
 }
 
@@ -213,7 +213,7 @@ text_font(VALUE rcv, SEL sel)
 static VALUE
 text_font_set(VALUE rcv, SEL sel, VALUE val)
 {
-    TEXT(rcv)->setFontName(RSTRING_PTR(val));
+    TEXT(rcv)->setFontName(RSTRING_PTR(StringValue(val)));
     return val;
 }
 
@@ -354,7 +354,7 @@ button_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
     cocos2d::ui::Button *button = cocos2d::ui::Button::create();
 
     if (title != Qnil) {
-	button->setTitleText(RSTRING_PTR(title));
+	button->setTitleText(RSTRING_PTR(StringValue(title)));
     }
 
     return rb_class_wrap_new(button, rcv);
@@ -374,7 +374,7 @@ button_text(VALUE rcv, SEL sel)
 static VALUE
 button_text_set(VALUE rcv, SEL sel, VALUE val)
 {
-    BUTTON(rcv)->setTitleText(RSTRING_PTR(val));
+    BUTTON(rcv)->setTitleText(RSTRING_PTR(StringValue(val)));
     return val;
 }
 
@@ -406,7 +406,7 @@ button_font(VALUE rcv, SEL sel)
 static VALUE
 button_font_set(VALUE rcv, SEL sel, VALUE val)
 {
-    BUTTON(rcv)->setTitleFontName(RSTRING_PTR(val));
+    BUTTON(rcv)->setTitleFontName(RSTRING_PTR(StringValue(val)));
     return val;
 }
 
@@ -446,21 +446,21 @@ button_zoom_scale_set(VALUE rcv, SEL sel, VALUE val)
 static VALUE
 button_load_texture_normal(VALUE rcv, SEL sel, VALUE val)
 {
-  BUTTON(rcv)->loadTextureNormal(RSTRING_PTR(val));
+  BUTTON(rcv)->loadTextureNormal(RSTRING_PTR(StringValue(val)));
   return val;
 }
 
 static VALUE
 button_load_texture_pressed(VALUE rcv, SEL sel, VALUE val)
 {
-  BUTTON(rcv)->loadTexturePressed(RSTRING_PTR(val));
+  BUTTON(rcv)->loadTexturePressed(RSTRING_PTR(StringValue(val)));
   return val;
 }
 
 static VALUE
 button_load_texture_disabled(VALUE rcv, SEL sel, VALUE val)
 {
-  BUTTON(rcv)->loadTextureDisabled(RSTRING_PTR(val));
+  BUTTON(rcv)->loadTextureDisabled(RSTRING_PTR(StringValue(val)));
   return val;
 }
 
@@ -868,7 +868,7 @@ web_new(VALUE rcv, SEL sel)
 static VALUE
 web_load_html(VALUE rcv, SEL sel, VALUE str, VALUE baseurl)
 {
-    WEB(rcv)->loadHTMLString(RSTRING_PTR(str), RSTRING_PTR(baseurl));
+    WEB(rcv)->loadHTMLString(RSTRING_PTR(StringValue(str)), RSTRING_PTR(StringValue(baseurl)));
     return rcv;
 }
 
@@ -880,7 +880,7 @@ web_load_html(VALUE rcv, SEL sel, VALUE str, VALUE baseurl)
 static VALUE
 web_load_url(VALUE rcv, SEL sel, VALUE str)
 {
-    WEB(rcv)->loadURL(RSTRING_PTR(str));
+    WEB(rcv)->loadURL(RSTRING_PTR(StringValue(str)));
     return rcv;
 }
 
@@ -892,7 +892,7 @@ web_load_url(VALUE rcv, SEL sel, VALUE str)
 static VALUE
 web_load_file(VALUE rcv, SEL sel, VALUE str)
 {
-    WEB(rcv)->loadFile(RSTRING_PTR(str));
+    WEB(rcv)->loadFile(RSTRING_PTR(StringValue(str)));
     return rcv;
 }
 
@@ -928,7 +928,7 @@ web_reload(VALUE rcv, SEL sel)
 static VALUE
 web_evaluate(VALUE rcv, SEL sel, VALUE expr)
 {
-    WEB(rcv)->evaluateJS(RSTRING_PTR(expr));
+    WEB(rcv)->evaluateJS(RSTRING_PTR(StringValue(expr)));
     return rcv;
 }
 #endif
