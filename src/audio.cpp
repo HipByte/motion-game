@@ -32,7 +32,7 @@ audio_play(VALUE rcv, SEL sel, int argc, VALUE *argv)
 
     rb_scan_args(argc, argv, "12", &path, &loop, &volume);
 
-    std::string str = RSTRING_PTR(path);
+    std::string str = RSTRING_PTR(StringValue(path));
     if (str.find('.') == std::string::npos) {
 #if CC_TARGET_OS_IPHONE || CC_TARGET_OS_APPLETV
 	str.append(".caf");

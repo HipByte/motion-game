@@ -19,7 +19,7 @@ menu_image_item(VALUE rcv, SEL sel, VALUE normal_image, VALUE selected_image)
     block = rb_retain(block); // FIXME need release...
 
     cocos2d::MenuItemImage *item = cocos2d::MenuItemImage::create(
-	    RSTRING_PTR(normal_image), RSTRING_PTR(selected_image),
+	    RSTRING_PTR(StringValue(normal_image)), RSTRING_PTR(StringValue(selected_image)),
 	    [block](cocos2d::Ref *sender) {
 		rb_block_call(block, 0, NULL);
 	    });

@@ -193,7 +193,7 @@ scene_schedule(VALUE rcv, SEL sel, int argc, VALUE *argv)
 static VALUE
 scene_unschedule(VALUE rcv, SEL sel, VALUE key)
 {
-    SCENE(rcv)->unschedule(RSTRING_PTR(key));
+    SCENE(rcv)->unschedule(RSTRING_PTR(StringValue(key)));
     return rcv;
 }
 

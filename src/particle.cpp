@@ -25,7 +25,7 @@ particle_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
 
     cocos2d::ParticleSystem *particle = NULL;
     if (RTEST(name)) {
-	particle = cocos2d::ParticleSystemQuad::create(RSTRING_PTR(name));
+	particle = cocos2d::ParticleSystemQuad::create(RSTRING_PTR(StringValue(name)));
     }
     else {
 	particle = cocos2d::ParticleSystemQuad::createWithTotalParticles(50);
@@ -43,7 +43,7 @@ static VALUE
 particle_texture_set(VALUE rcv, SEL sel, VALUE path)
 {
     auto texture_cache = cocos2d::Director::getInstance()->getTextureCache();
-    auto texture = texture_cache->addImage(RSTRING_PTR(path));
+    auto texture = texture_cache->addImage(RSTRING_PTR(StringValue(path)));
     auto particle = PARTICLE(rcv);
     particle->setTexture(texture);
     particle->setStartSize(texture->getPixelsWide());

@@ -187,7 +187,7 @@ node_name(VALUE rcv, SEL sel)
 static VALUE
 node_name_set(VALUE rcv, SEL sel, VALUE val)
 {
-    NODE(rcv)->setName(RSTRING_PTR(val));
+    NODE(rcv)->setName(RSTRING_PTR(StringValue(val)));
     return val;
 }
 

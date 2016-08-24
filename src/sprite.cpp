@@ -20,7 +20,7 @@ static VALUE
 sprite_load(VALUE rcv, SEL sel, VALUE plist_path)
 {
     cocos2d::SpriteFrameCache::getInstance()->addSpriteFramesWithFile(
-	    RSTRING_PTR(plist_path));
+	    RSTRING_PTR(StringValue(plist_path)));
     return Qnil;
 }
 
@@ -36,7 +36,7 @@ sprite_load(VALUE rcv, SEL sel, VALUE plist_path)
 static VALUE
 sprite_new(VALUE rcv, SEL sel, VALUE name)
 {
-    std::string name_str = RSTRING_PTR(name);
+    std::string name_str = RSTRING_PTR(StringValue(name));
     cocos2d::Sprite *sprite = NULL;
 
     // Are we trying to retrieve a sprite frame?
@@ -137,7 +137,8 @@ sprite_animate(VALUE rcv, SEL sel, int argc, VALUE *argv)
     cocos2d::Vector<cocos2d::SpriteFrame *> frames;
     auto texture_cache = cocos2d::Director::getInstance()->getTextureCache();
     for (int i = 0, count = RARRAY_LEN(frame_names); i < count; i++) {
-	std::string frame_name = RSTRING_PTR(RARRAY_AT(frame_names, i));
+    VALUE name = RARRAY_AT(frame_names, i);
+	std::string frame_name = RSTRING_PTR(StringValue(name));
 	auto texture = texture_cache->addImage(frame_name);
 	cocos2d::SpriteFrame *frame = NULL;
 	if (texture != NULL) {
