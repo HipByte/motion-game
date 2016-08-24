@@ -33,14 +33,35 @@ $ gem install motion-game
 
 You can build your own copy of motion-game:
 
+- Make sure you have your system set up for Android develpment: `motion android-setup --api_version=16`.
+
 ```
 $ git clone https://github.com/HipByte/motion-game.git && cd motion-game
 $ git submodule update --init
+$ bundle
 $ rake build:setup
 
 $ rake gem
 $ gem install motion-game-x.x.gem
 ```
+
+#### Developing Locally
+
+Once you have the source locally. Create a motion-game project as a sibling to the `motion-game` directory using the `motion create --template=motion-game PROJECTNAME` command.
+
+Update the reference to `motion-game` in your `Gemfile` to point to your local instance of `motion-game`:
+
+    gem 'motion-game', path: '../motion-game'
+
+Chances are all of you changes will be done in the `/src` directory (since it'll probably be adding missing Cocos2dx methods).
+
+Once you've made your change in the correct `.cpp` file, run `rake build:ios`/`rake build:android` to test your changes locally (running `rake gem` is a longer process which you don't have to do).
+
+Here are some examples of how to add missing apis to motion-game:
+
+- [add Draw#triange](https://github.com/HipByte/motion-game/commit/3c32771be11c5715a4922ba45914207b2c6f4d38)
+- [add Draw#line](https://github.com/HipByte/motion-game/commit/972fd115d3ef2816c19618b14823363356ca85b1)
+- [add Draw#clear](https://github.com/HipByte/motion-game/commit/98cc463724153bae1481a9364ef3f166e15f8c0f)
 
 ### Hello World
 
