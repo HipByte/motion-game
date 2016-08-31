@@ -12,6 +12,7 @@ ANDROID_NDK_PATH = File.expand_path(ENV['RUBYMOTION_ANDROID_NDK'] || '~/.rubymot
 ANDROID_SDK_PATH = File.expand_path(ENV['RUBYMOTION_ANDROID_SDK'] || '~/.rubymotion-android/sdk')
 ANDROID_API = '16'
 
+OPTZ_LEVEL = '3'
 BUILD_OPTIONS = {}
 begin
   # iOS
@@ -23,13 +24,13 @@ begin
     cflags = "-isysroot \"#{sdk_path}\" -F#{sdk_path}/System/Library/Frameworks -fobjc-legacy-dispatch -fobjc-abi-version=2 "
     case platform_apple_str
     when 'iPhoneSimulator'
-      cflags << " -arch i386 -arch x86_64 -mios-simulator-version-min=#{XCODE_IOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_IPHONE=1 -include platform/ios/cocos2d-prefix.pch"
+      cflags << " -arch i386 -arch x86_64 -O#{OPTZ_LEVEL} -mios-simulator-version-min=#{XCODE_IOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_IPHONE=1 -include platform/ios/cocos2d-prefix.pch"
     when 'iPhoneOS'
-      cflags << " -arch armv7 -arch armv7s -arch arm64 -mios-version-min=#{XCODE_IOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_IPHONE=1 -include platform/ios/cocos2d-prefix.pch"
+      cflags << " -arch armv7 -arch armv7s -arch arm64 -O#{OPTZ_LEVEL} -mios-version-min=#{XCODE_IOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_IPHONE=1 -include platform/ios/cocos2d-prefix.pch"
     when 'AppleTVSimulator'
-      cflags << " -arch i386 -arch x86_64 -mtvos-simulator-version-min=#{XCODE_TVOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_APPLETV=1 -include platform/tvos/cocos2d-prefix.pch"
+      cflags << " -arch i386 -arch x86_64 -O#{OPTZ_LEVEL} -mtvos-simulator-version-min=#{XCODE_TVOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_APPLETV=1 -include platform/tvos/cocos2d-prefix.pch"
     when 'AppleTVOS'
-      cflags << " -arch arm64 -fembed-bitcode -mtvos-version-min=#{XCODE_TVOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_APPLETV=1 -include platform/tvos/cocos2d-prefix.pch"
+      cflags << " -arch arm64 -fembed-bitcode -O#{OPTZ_LEVEL} -mtvos-version-min=#{XCODE_TVOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_APPLETV=1 -include platform/tvos/cocos2d-prefix.pch"
     end
     cflags
   end
