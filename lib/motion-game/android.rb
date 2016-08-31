@@ -8,10 +8,11 @@ Motion::Project::App.setup do |app|
   app.resources_dirs = []
   app.files.concat(Dir.glob(File.join(File.dirname(__FILE__), 'android/*.rb')))
   app.vendor_project :jar => File.join(File.dirname(__FILE__), '../../build/android/motion-cocos.jar')
-  app.archs = ['armv5te', 'x86']
+  app.archs = ['armv7', 'x86']
 
   %w{armeabi x86}.each do |arch|
-    app.libs[arch] += %w{motion-cocos chipmunk crypto curl freetype jpeg z png ssl tiff webp}.map { |x| File.join(File.dirname(__FILE__), "../../build/android/#{arch}/lib#{x}.a") }.map { |x| "\"#{x}\""} + ['-latomic', '-lEGL', '-lGLESv2', '-lOpenSLES', '-landroid'] # The order of these libraries is very important for the linker to find all symbols.
+    lib_arch = (arch == 'armeabi') ? 'armeabi-v7a' : 'x86'
+    app.libs[lib_arch] += %w{motion-cocos chipmunk crypto curl freetype jpeg z png ssl tiff webp}.map { |x| File.join(File.dirname(__FILE__), "../../build/android/#{arch}/lib#{x}.a") }.map { |x| "\"#{x}\""} + ['-latomic', '-lEGL', '-lGLESv2', '-lOpenSLES', '-landroid'] # The order of these libraries is very important for the linker to find all symbols.
   end
   app.custom_init_funcs << 'Init_Fluency'
 
