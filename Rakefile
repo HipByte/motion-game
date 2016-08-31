@@ -128,7 +128,7 @@ def build_project(platforms, platform_code, build_dir)
     end
 
     ['external/bullet','external/xxhash', 'external/ConvertUTF', 'external/tinyxml2', 'external/unzip', 'external/edtaa3func', 'extensions/GUI/CCControlExtension', 'extensions/GUI/CCScrollView', 'external/clipper', 'external/poly2tri', 'extensions/Particle3D', 'external/recast'].each do |dir|
-      Dir.chdir(File.join(COCOS2D_PATH , dir)) do
+      Dir.chdir(File.join(COCOS2D_PATH, dir)) do
         add_flags = '-DUSE_FILE32API -I.'
         base_headers = '-I' + (0...dir.split('/').size).to_a.map { '..' }.join('/')
         add_flags << ' ' + base_headers
