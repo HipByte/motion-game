@@ -248,7 +248,7 @@ namespace 'build' do
     sh "git submodule update --init"
     unless File.exist?("v3-deps-78.zip")
       # Download .zip file from https://github.com/HipByte/cocos2d-x-3rd-party-libs-bin/releases/tag/RubyMotion-v3-deps-78
-      sh "curl 'https://github-cloud.s3.amazonaws.com/releases/58326432/88f72f8a-15a0-11e6-81ac-da33e00647f6.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAISTNZFOVBIJMK3TQ%2F20160508%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20160508T194544Z&X-Amz-Expires=300&X-Amz-Signature=d6f90cd38ccb2afb779f37655d737174bbfa6117471d8e17616bbb3264b9493e&X-Amz-SignedHeaders=host&actor_id=199156&response-content-disposition=attachment%3B%20filename%3Dv3-deps-78.zip&response-content-type=application%2Foctet-stream' -o v3-deps-78.zip"
+      sh "curl 'https://dl.dropboxusercontent.com/u/15539999/motion-game/v3-deps-78.zip' -o v3-deps-78.zip"
     end
     sh "python ext/cocos2d-x/download-deps.py --remove-download no"
   end
