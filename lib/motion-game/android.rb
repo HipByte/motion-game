@@ -11,7 +11,7 @@ Motion::Project::App.setup do |app|
   app.archs = ['armv5te', 'x86']
 
   %w{armeabi x86}.each do |arch|
-    app.libs[arch] += %w{motion-cocos chipmunk crypto curl freetype jpeg z png ssl tiff webp}.map { |x| File.join(File.dirname(__FILE__), "../../build/android/#{arch}/lib#{x}.a") } + ['-latomic', '-lEGL', '-lGLESv2', '-lOpenSLES', '-landroid'] # The order of these libraries is very important for the linker to find all symbols.
+    app.libs[arch] += %w{motion-cocos chipmunk crypto curl freetype jpeg z png ssl tiff webp}.map { |x| File.join(File.dirname(__FILE__), "../../build/android/#{arch}/lib#{x}.a") }.map { |x| "\"#{x}\""} + ['-latomic', '-lEGL', '-lGLESv2', '-lOpenSLES', '-landroid'] # The order of these libraries is very important for the linker to find all symbols.
   end
   app.custom_init_funcs << 'Init_Fluency'
 
