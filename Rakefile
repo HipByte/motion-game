@@ -21,7 +21,7 @@ begin
   cflags_gen = lambda do |platform_apple_str|
     sdk_path = "#{XCODE_PATH}/Contents/Developer/Platforms/#{platform_apple_str}.platform/Developer/SDKs/#{platform_apple_str}.sdk"
     cflags = "-isysroot \"#{sdk_path}\" -F#{sdk_path}/System/Library/Frameworks -fobjc-legacy-dispatch -fobjc-abi-version=2 "
-    case platform_apple_str 
+    case platform_apple_str
     when 'iPhoneSimulator'
       cflags << " -arch i386 -arch x86_64 -mios-simulator-version-min=#{XCODE_IOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_IPHONE -include platform/ios/cocos2d-prefix.pch"
     when 'iPhoneOS'
@@ -126,7 +126,7 @@ def build_project(platforms, platform_code, build_dir)
       objs += parallel.objects
       objs.flatten!
     end
-  
+
     ['external/bullet','external/xxhash', 'external/ConvertUTF', 'external/tinyxml2', 'external/unzip', 'external/edtaa3func', 'extensions/GUI/CCControlExtension', 'extensions/GUI/CCScrollView', 'external/clipper', 'external/poly2tri', 'extensions/Particle3D', 'external/recast'].each do |dir|
       Dir.chdir(File.join(COCOS2D_PATH , dir)) do
         add_flags = '-DUSE_FILE32API -I.'
@@ -151,7 +151,7 @@ def build_project(platforms, platform_code, build_dir)
         objs.flatten!
       end
     end
-  
+
     Dir.chdir('src') do
       add_flags = "-I. -Werror -I\"#{COCOS2D_PATH}/cocos\" -I\"#{COCOS2D_PATH}/cocos/audio/include\""
       files = Dir.glob(file_pattern)
@@ -167,7 +167,7 @@ def build_project(platforms, platform_code, build_dir)
     toolchain_bin = "#{ANDROID_NDK_PATH}/toolchains/x86-4.9/prebuilt/darwin-x86_64/i686-linux-android/bin"
     ar = toolchain_bin + "/ar"
     ranlib = toolchain_bin + "/ranlib"
-  
+
     lib_dir = File.join(build_dir,
       case platform
         when 'android-x86'
@@ -389,7 +389,7 @@ class DocAPIGen
       when '#'
         :imethod
       else
-        raise "expected method definition `#{definition}' to start with '.' or '#'" 
+        raise "expected method definition `#{definition}' to start with '.' or '#'"
     end
     method[:type] = type
     klass[:nodes] << method
@@ -444,6 +444,6 @@ end
 desc 'Create motion-game.gem file'
 task 'gem' do
   Rake::Task[:"build:all"].invoke
-  Rake::Task[:doc].invoke  
+  Rake::Task[:doc].invoke
   sh "gem build motion-game.gemspec"
 end
