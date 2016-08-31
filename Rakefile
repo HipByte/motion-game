@@ -64,9 +64,9 @@ def build_project(platforms, platform_code, build_dir)
       cxxflags = platform_options[:cxxflags]
       case File.extname(src_path)
         when '.cpp', '.mm', '.cc'
-          sh "#{cxx} #{cxxflags} #{add_flags} -c #{src_path} -o #{obj_path}"
+          sh "#{cxx} #{cxxflags} #{add_flags} -c #{src_path} -o \"#{obj_path}\""
         when '.c', '.m'
-          sh "#{cc} #{cflags} #{add_flags} -c #{src_path} -o #{obj_path}"
+          sh "#{cc} #{cflags} #{add_flags} -c #{src_path} -o \"#{obj_path}\""
       end
     end
     obj_path
@@ -153,7 +153,7 @@ def build_project(platforms, platform_code, build_dir)
     end
   
     Dir.chdir('src') do
-      add_flags = "-I. -Werror -I#{COCOS2D_PATH}/cocos -I#{COCOS2D_PATH}/cocos/audio/include"
+      add_flags = "-I. -Werror -I\"#{COCOS2D_PATH}/cocos\" -I\"#{COCOS2D_PATH}/cocos/audio/include\""
       files = Dir.glob(file_pattern)
       parallel = ParallelBuilder.new(compile_obj, platform, add_flags)
       parallel.files = files
@@ -179,8 +179,8 @@ def build_project(platforms, platform_code, build_dir)
     if !File.exist?(lib) or objs.any? { |x| File.mtime(x) > File.mtime(lib) }
       rm_rf lib
       mkdir_p lib_dir
-      sh "#{ar} rcu #{lib} #{objs.join(' ')}"
-      sh "#{ranlib} #{lib}"
+      sh "#{ar} rcu \"#{lib}\" #{objs.map{|x| "\"#{x}\""}.join(' ')}"
+      sh "#{ranlib} \"#{lib}\""
     end
 
     objs.clear
@@ -195,8 +195,8 @@ def build_project(platforms, platform_code, build_dir)
     if !File.exist?(lib) or objs.any? { |x| File.mtime(x) > File.mtime(lib) }
       rm_rf lib
       mkdir_p lib_dir
-      sh "#{ar} rcu #{lib} #{objs.join(' ')}"
-      sh "#{ranlib} #{lib}"
+      sh "#{ar} rcu \"#{lib}\" #{objs.map{|x| "\"#{x}\""}.join(' ')}"
+      sh "#{ranlib} \"#{lib}\""
     end
   end
 
