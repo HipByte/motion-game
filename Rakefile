@@ -127,7 +127,7 @@ def build_project(platforms, platform_code, build_dir)
       objs.flatten!
     end
 
-    ['external/bullet','external/xxhash', 'external/ConvertUTF', 'external/tinyxml2', 'external/unzip', 'external/edtaa3func', 'extensions/GUI/CCControlExtension', 'extensions/GUI/CCScrollView', 'external/clipper', 'external/poly2tri', 'extensions/Particle3D', 'external/recast'].each do |dir|
+    ['external/bullet', 'external/xxhash', 'external/ConvertUTF', 'external/tinyxml2', 'external/unzip', 'external/edtaa3func', 'extensions/GUI/CCControlExtension', 'extensions/GUI/CCScrollView', 'external/clipper', 'external/poly2tri', 'extensions/Particle3D', 'external/recast'].each do |dir|
       Dir.chdir(File.join(COCOS2D_PATH, dir)) do
         add_flags = '-DUSE_FILE32API -I.'
         base_headers = '-I' + (0...dir.split('/').size).to_a.map { '..' }.join('/')
@@ -136,7 +136,7 @@ def build_project(platforms, platform_code, build_dir)
         add_flags << ' ' + base_headers + '/cocos/platform'
         add_flags << ' -I../../'
         add_flags << ' -I../'
-        files = Dir.glob(File.join('**',file_pattern))
+        files = Dir.glob(File.join('**', file_pattern))
         files.delete_if do |src_path|
           skip = false
           (skip = true) if src_path.include?('DX11')
@@ -227,7 +227,7 @@ def build_project(platforms, platform_code, build_dir)
       aidl_tool = File.join(build_tools_dir, 'aidl')
       aidl_files = Dir.glob('*/**/*.aidl')
       aidl_files.each do |aidl_file|
-        sh "#{aidl_tool} #{aidl_file} #{File.dirname(aidl_file)}/#{File.basename(aidl_file,'.*')}.java"
+        sh "#{aidl_tool} #{aidl_file} #{File.dirname(aidl_file)}/#{File.basename(aidl_file, '.*')}.java"
       end
 
       java_src_files = Dir.glob('*/**/*.java')
