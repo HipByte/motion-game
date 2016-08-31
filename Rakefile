@@ -31,7 +31,7 @@ begin
     when 'AppleTVOS'
       cflags << " -arch arm64 -fembed-bitcode -mtvos-version-min=#{XCODE_TVOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_APPLETV -include platform/tvos/cocos2d-prefix.pch"
     end
-   cflags
+    cflags
   end
   %w{iPhoneSimulator iPhoneOS AppleTVSimulator AppleTVOS}.each do |platform|
     cflags = cflags_gen.call(platform)
