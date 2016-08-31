@@ -376,9 +376,9 @@ class DocAPIGen
   private
 
   def add_class(definition)
-   klass = { :def => definition, :doc => '', :nodes => [] }
-   @classes << klass
-   klass
+    klass = { :def => definition, :doc => '', :nodes => [] }
+    @classes << klass
+    klass
   end
 
   def add_method(klass, definition)
