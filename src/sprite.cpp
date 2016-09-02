@@ -100,6 +100,32 @@ sprite_move_to(VALUE rcv, SEL sel, VALUE position, VALUE interval)
 		rb_any_to_ccvec2(position)));
 }
 
+/// @method #rotate_by(delta_angle, interval)
+/// Rotates the position of the receiver to a new angle determined by the
+/// sum of the current rotation and the given +delta_angle+ object.
+/// @param delta_angle [Float] the angle to add to the current rotation
+/// @param interval [Float] the animation interval.
+/// @return [Sprite] the receiver.
+static VALUE
+sprite_rotate_by(VALUE rcv, SEL sel, VALUE delta_angle, VALUE interval)
+{
+    return run_action(rcv, cocos2d::RotateBy::create(NUM2DBL(interval),
+        NUM2DBL(delta_angle)));
+}
+
+/// @method #rotate_to(angle, interval)
+/// Rotates the angle of the receiver to a new angle certain angle 
+/// by modifying it's rotation attribute.
+/// @param angle [Float] the receiver should be rotated to.
+/// @param interval [Float] the animation interval.
+/// @return [Sprite] the receiver.
+static VALUE
+sprite_rotate_to(VALUE rcv, SEL sel, VALUE angle, VALUE interval)
+{
+    return run_action(rcv, cocos2d::RotateTo::create(NUM2DBL(interval),
+        NUM2DBL(angle)));
+}
+
 /// @method #blink(number_of_blinks, interval)
 /// Blinks the receiver.
 /// @param number_of_blinks [Integer] the number of times the receiver should
@@ -407,6 +433,8 @@ Init_Sprite(void)
     rb_define_singleton_method(rb_cSprite, "new", sprite_new, 1);
     rb_define_method(rb_cSprite, "move_by", sprite_move_by, 2);
     rb_define_method(rb_cSprite, "move_to", sprite_move_to, 2);
+    rb_define_method(rb_cSprite, "rotate_by", sprite_rotate_by, 2);
+    rb_define_method(rb_cSprite, "rotate_to", sprite_rotate_to, 2);
     rb_define_method(rb_cSprite, "blink", sprite_blink, 2);
     rb_define_method(rb_cSprite, "animate", sprite_animate, -1);
     rb_define_method(rb_cSprite, "attach_physics_box",
