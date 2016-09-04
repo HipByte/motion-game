@@ -124,6 +124,28 @@ director_resume(VALUE rcv, SEL sel)
     return rcv;
 }
 
+/// @method #start_animation
+/// The main loop is triggered again.
+/// @return [Director] the receiver.
+
+static VALUE
+director_start_animation(VALUE rcv, SEL sel)
+{
+    DIRECTOR(rcv)->startAnimation();
+    return rcv;
+}
+
+/// @method #stop_animation
+/// Stops the animation.
+/// @return [Director] the receiver.
+
+static VALUE
+director_stop_animation(VALUE rcv, SEL sel)
+{
+    DIRECTOR(rcv)->stopAnimation();
+    return rcv;
+}
+
 /// @group Properties
 
 /// @property-readonly #origin
@@ -176,6 +198,8 @@ Init_Director(void)
     rb_define_method(rb_cDirector, "end", director_end, 0);
     rb_define_method(rb_cDirector, "pause", director_pause, 0);
     rb_define_method(rb_cDirector, "resume", director_resume, 0);
+    rb_define_method(rb_cDirector, "start_animation", director_start_animation, 0);
+    rb_define_method(rb_cDirector, "stop_animation", director_stop_animation, 0);
     rb_define_method(rb_cDirector, "origin", director_origin, 0);
     rb_define_method(rb_cDirector, "size", director_size, 0);
     rb_define_method(rb_cDirector, "show_stats=", director_show_stats_set, 1);
