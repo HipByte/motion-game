@@ -17,4 +17,16 @@ class AppDelegate
 
     true
   end
+
+  def applicationWillEnterForeground(application)
+    director = MG::Director.shared
+    director.resume
+    director.start_animation
+  end
+
+  def applicationWillResignActive(application)
+    director = MG::Director.shared
+    director.pause
+    director.stop_animation
+  end
 end
