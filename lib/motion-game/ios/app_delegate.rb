@@ -22,11 +22,13 @@ class AppDelegate
     director = MG::Director.shared
     director.resume
     director.start_animation
+    @app.resume if @app.respond_to?(:resume)
   end
 
   def applicationWillResignActive(application)
     director = MG::Director.shared
     director.pause
     director.stop_animation
+    @app.send(:pause) if @app.respond_to?(:pause)
   end
 end
