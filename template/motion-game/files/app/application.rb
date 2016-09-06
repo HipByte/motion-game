@@ -4,10 +4,10 @@ class Application < MG::Application
   end
 
   def resume
-    # Will be Called when app will move to active state from background.
+    # Will be called when app will move to active state from background.
   end
 
   def pause
-    # Will be Called when app will move to background from active state.
+    # Will be called when app will move to background from active state.
   end
 end
