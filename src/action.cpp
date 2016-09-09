@@ -22,7 +22,9 @@ VALUE rb_cSpawn = Qnil;
 VALUE rb_cFollow = Qnil;
 VALUE rb_cDelayTime = Qnil;
 VALUE rb_cSpeed = Qnil;
+VALUE rb_cAnimate = Qnil;
 VALUE rb_cRepeat = Qnil;
+VALUE rb_cRepeatForever = Qnil;
 
 /// @class Action < Object
 /// @method #reverse
@@ -32,6 +34,17 @@ static VALUE
 action_reverse(VALUE rcv, SEL sel)
 {
     ACTION(rcv)->reverse();
+    return rcv;
+}
+
+/// @class Action < Object
+/// @method #clone
+/// Clones the action
+/// @return [Action] the cloned action.
+static VALUE
+action_clone(VALUE rcv, SEL sel)
+{
+    ACTION(rcv)->clone();
     return rcv;
 }
 
@@ -47,7 +60,7 @@ action_done(VALUE rcv, SEL sel)
 
 /// @class MoveBy < Action
 /// @group Constructors
-/// @method #initialize(position, interval)
+/// @method #initialize(delta_location, interval)
 /// Creates an action that will move the position of the receiver to a new location 
 /// determined by the sum of the current location and the given +delta_location+ object.
 /// @param delta_location [Point] a point that will be added to the receiver's
@@ -63,15 +76,15 @@ move_by_new(VALUE rcv, SEL sel, VALUE delta_location, VALUE interval)
 
 /// @class MoveTo < Action
 /// @group Constructors
-/// @method #initialize(position, interval)
+/// @method #initialize(location, interval)
 /// Creates an action that will move the position of the receiver to a new given location.
 /// @param location [Point] where the receiver should be moved to.
 /// @param interval [Float] the animation interval.
 /// @return [MoveTo] the action.
 static VALUE
-move_to_new(VALUE rcv, SEL sel, VALUE position, VALUE interval)
+move_to_new(VALUE rcv, SEL sel, VALUE location, VALUE interval)
 {
-    auto action = cocos2d::MoveTo::create(NUM2DBL(interval), rb_any_to_ccvec2(position));        
+    auto action = cocos2d::MoveTo::create(NUM2DBL(interval), rb_any_to_ccvec2(location));        
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -331,7 +344,7 @@ spawn_new(VALUE rcv, SEL sel, VALUE actions)
 /// @group Constructors
 /// @method #initialize(followed_node)
 /// Creates an action that sets up the receiver to follow the 'followed node'.
-/// @param followed_node [noe] the node to follow
+/// @param followed_node [Node] the node to follow
 /// @return [Follow] the action.
 static VALUE
 follow_new(VALUE rcv, SEL sel, VALUE followed_node)
@@ -355,7 +368,7 @@ delay_time_new(VALUE rcv, SEL sel, VALUE interval)
 
 /// @class Speed < Action
 /// @group Constructors
-/// @method #initialize(interval)
+/// @method #initialize(target_action, speed)
 /// Changes the speed of an action, making it take longer (speed>1)
 /// or less (speed<1) time. Useful to simulate 'slow motion' or 'fast forward' effect.
 /// ** This action can't be Sequenceable because it is not an IntervalAction.
@@ -371,26 +384,92 @@ speed_new(VALUE rcv, SEL sel, VALUE target_action, VALUE speed)
 
 /// @class Repeat < Action
 /// @group Constructors
-/// @method #initialize(interval)
+/// @method #initialize(target_action, times)
 /// Creates an action that repeats the provided action a certain number of times.
-/// @param target_action [Action] the action to repeat
-/// @param interval [Integer, Symbol] the number of times to repeat. 
-/// If given the +:forever+ symbol, the animation will loop forever.
+/// @param target_action [Action] the action to repeat.
+/// @param times [Integer] the number of times to repeat. 
 /// @return [Repeat] the action.
 static VALUE
 repeat_new(VALUE rcv, SEL sel, VALUE target_action, VALUE times)
 {
-    if (rb_obj_is_kind_of(times, rb_cInteger)) {
-        auto action = cocos2d::Repeat::create(ACTION_INTERVAL(target_action), NUM2INT(times));        
-        return rb_class_wrap_new((void *)action, rb_cAction);
+    auto action = cocos2d::Repeat::create(ACTION_INTERVAL(target_action), NUM2INT(times));        
+    return rb_class_wrap_new((void *)action, rb_cAction);
+}
+
+/// @class RepeatForever < Action
+/// @group Constructors
+/// @method #initialize(target_action)
+/// Creates an action that repeats the provided action forever.
+/// @param target_action [Action] the action to repeat.
+/// @return [RepeatForever] the action.
+static VALUE
+repeat_forever_new(VALUE rcv, SEL sel, VALUE target_action)
+{
+    auto action = cocos2d::RepeatForever::create(ACTION_INTERVAL(target_action));        
+    return rb_class_wrap_new((void *)action, rb_cAction);
+}
+
+/// @class Animate < Action
+/// @group Constructors
+/// @method #initialize(frame_names, delay, loops=1)
+/// Creates an animation action where the sprite display frame will be changed to
+/// the given frames in +frame_names+ based on the given +delay+ and
+/// repeated +loops+ times.
+/// @param frame_names [Array<String>] an array of sprite frames to load and
+///   use for the animation, which can be either the names of standalone image
+///   files in the application's resource directory or the names of sprite
+///   frames loaded from a spritesheet using {load}.
+/// @param delay [Float] the delay in seconds between each frame animation.
+/// @param loops [Integer, Symbol] the number of times the animation should
+///   loop. If given the +:forever+ symbol, the animation will loop forever.
+/// @return [Animate] the action.
+static VALUE
+animate_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
+{
+    VALUE frame_names = Qnil, delay = Qnil, loops = Qnil;
+
+    rb_scan_args(argc, argv, "21", &frame_names, &delay, &loops);
+
+    cocos2d::Vector<cocos2d::SpriteFrame *> frames;
+    auto texture_cache = cocos2d::Director::getInstance()->getTextureCache();
+    for (int i = 0, count = RARRAY_LEN(frame_names); i < count; i++) {
+        VALUE name = RARRAY_AT(frame_names, i);
+        std::string frame_name = RSTRING_PTR(StringValue(name));
+        auto texture = texture_cache->addImage(frame_name);
+        cocos2d::SpriteFrame *frame = NULL;
+        if (texture != NULL) {
+            cocos2d::Rect rect = cocos2d::Rect::ZERO;
+            rect.size = texture->getContentSize();
+            frame = cocos2d::SpriteFrame::createWithTexture(texture,
+                rect);
+        }
+        else {
+            frame = cocos2d::SpriteFrameCache::getInstance()->getSpriteFrameByName(frame_name);
+        }
+        assert(frame != NULL);
+        frames.pushBack(frame);
     }
-    else if (times == rb_name2sym("forever")) {
-        auto action = cocos2d::RepeatForever::create(ACTION_INTERVAL(target_action));        
-        return rb_class_wrap_new((void *)action, rb_cAction);
+
+    int loops_i = 1;
+    bool forever = false;
+    if (loops != Qnil) {
+        if (rb_obj_is_kind_of(loops, rb_cInteger)) {
+            loops_i = NUM2LONG(loops);
+        }
+        else if (loops == rb_name2sym("forever")) {
+            forever = true;
+        }
     }
-    else {
-      rb_raise(rb_eRuntimeError, "Expected an integer or :forever as the times parameter"); 
+
+    auto animation = cocos2d::Animation::createWithSpriteFrames(frames,
+        NUM2DBL(delay), loops_i);
+    cocos2d::ActionInterval *action = cocos2d::Animate::create(animation);
+    
+    if (forever) {
+        action = cocos2d::RepeatForever::create(action);
     }
+
+    return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
 extern "C"
@@ -398,8 +477,8 @@ void
 Init_Action(void)
 {
     rb_cAction = rb_define_class_under(rb_mMC, "Action", rb_cObject);
-
     rb_define_method(rb_cAction, "reverse", action_reverse, 0);
+    rb_define_method(rb_cAction, "clone", action_clone, 0);
     rb_define_method(rb_cAction, "done?", action_done, 0);
     
     rb_cMoveBy = rb_define_class_under(rb_mMC, "MoveBy", rb_cAction);
@@ -425,6 +504,12 @@ Init_Action(void)
 
     rb_cScaleTo = rb_define_class_under(rb_mMC, "ScaleTo", rb_cAction);
     rb_define_singleton_method(rb_cScaleTo, "new", scale_to_new, 2);
+
+    rb_cSkewBy = rb_define_class_under(rb_mMC, "SkewBy", rb_cAction);
+    rb_define_singleton_method(rb_cSkewBy, "new", skew_by_new, 3);
+
+    rb_cSkewTo = rb_define_class_under(rb_mMC, "SkewTo", rb_cAction);
+    rb_define_singleton_method(rb_cSkewTo, "new", skew_to_new, 3);
 
     rb_cTintBy = rb_define_class_under(rb_mMC, "TintBy", rb_cAction);
     rb_define_singleton_method(rb_cTintBy, "new", tint_by_new, 4);
@@ -459,11 +544,16 @@ Init_Action(void)
     rb_cRepeat = rb_define_class_under(rb_mMC, "Repeat", rb_cAction);
     rb_define_singleton_method(rb_cRepeat, "new", repeat_new, 2);
 
+    rb_cRepeatForever = rb_define_class_under(rb_mMC, "RepeatForever", rb_cAction);
+    rb_define_singleton_method(rb_cRepeatForever, "new", repeat_forever_new, 1);
+
     rb_cSpeed = rb_define_class_under(rb_mMC, "Speed", rb_cAction);
     rb_define_singleton_method(rb_cSpeed, "new", speed_new, 2);
+
+    rb_cAnimate = rb_define_class_under(rb_mMC, "Animate", rb_cAction);
+    rb_define_singleton_method(rb_cAnimate, "new", animate_new, -1);
 }
 
 // TODO: Add actions
   // BezierTo/BezierBy
   // Ease***
-  // Animate
