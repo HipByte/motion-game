@@ -403,6 +403,7 @@ extern VALUE rb_cColor;
 #define SIZE(obj) _COCOS_WRAP_GET(obj, cocos2d::Size)
 #define COLOR(obj) _COCOS_WRAP_GET(obj, cocos2d::Color4B)
 #define ACTION(obj) _COCOS_WRAP_GET(obj, cocos2d::Action)
+#define ACTION_INTERVAL(obj) _COCOS_WRAP_GET(obj, cocos2d::ActionInterval)
 #define FINITE_TIME_ACTION(obj) _COCOS_WRAP_GET(obj, cocos2d::FiniteTimeAction)
 
 static inline cocos2d::Vec2

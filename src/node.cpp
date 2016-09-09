@@ -24,7 +24,6 @@ node_alloc(VALUE rcv, SEL sel)
 /// and higher than +1+. The default anchor point value is +[0.5, 0.5]+, which
 /// means the center of the parent.
 /// @return [Point] the anchor point of the node.
-
 static VALUE
 node_anchor_point(VALUE rcv, SEL sel)
 {
@@ -192,6 +191,48 @@ node_name_set(VALUE rcv, SEL sel, VALUE val)
 }
 
 /// @group Miscellaneous
+/// @method #run_action(action)
+/// Run the provided action on the receiver node.
+/// @return [Node] the receiver.
+static VALUE
+node_run_action(VALUE rcv, SEL sel, VALUE action)
+{
+    VALUE block = rb_current_block();
+    if (block != Qnil) {
+    block = rb_retain(block); // FIXME need release...
+    auto call_funcn =
+        cocos2d::CallFuncN::create([block](cocos2d::Node *node) {
+        rb_block_call(block, 0, NULL);
+        });
+    NODE(rcv)->runAction(cocos2d::Sequence::create(FINITE_TIME_ACTION(action), call_funcn, (void *)0));
+    }
+    else {
+    NODE(rcv)->runAction(ACTION(action));
+    }
+    
+    return rcv;
+}
+
+/// @method #stop_all_actions()
+/// Stop all actions running on the node
+/// @return [Node] the receiver.
+static VALUE
+node_stop_all_actions(VALUE rcv, SEL sel)
+{
+    NODE(rcv)->stopAllActions();
+    return rcv;
+}
+
+/// @method #stop_action(action)
+/// Stop the provided action
+/// @param action [Action] the action to stop.
+/// @return [Node] the receiver.
+static VALUE
+node_stop_action(VALUE rcv, SEL sel, VALUE action)
+{
+    NODE(rcv)->stopAction(ACTION(action));
+    return rcv;
+}
 
 /// @method #intersects?(node)
 /// @param node [Node] a given Node object.
@@ -477,6 +518,8 @@ Init_Node(void)
     rb_define_method(rb_cNode, "children", node_children, 0);
     rb_define_method(rb_cNode, "delete_from_parent", node_delete_from_parent,
 	    -1);
+    rb_define_method(rb_cNode, "run_action", node_run_action, 1);
+    rb_define_method(rb_cNode, "stop_all_actions", node_stop_all_actions, 0);
 
     rb_cParallaxNode = rb_define_class_under(rb_mMC, "Parallax", rb_cNode);
 

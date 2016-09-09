@@ -72,26 +72,6 @@ run_action(VALUE rcv, cocos2d::FiniteTimeAction *action)
     return rcv;
 }
 
-static VALUE
-sprite_run_action(VALUE rcv, SEL sel, VALUE action)
-{
-    VALUE block = rb_current_block();
-    if (block != Qnil) {
-    block = rb_retain(block); // FIXME need release...
-    auto call_funcn =
-        cocos2d::CallFuncN::create([block](cocos2d::Node *node) {
-        rb_block_call(block, 0, NULL);
-        });
-    SPRITE(rcv)->runAction(cocos2d::Sequence::create(FINITE_TIME_ACTION(action), call_funcn, (void *)0));
-    }
-    else {
-    SPRITE(rcv)->runAction(ACTION(action));
-    }
-    
-    
-    return rcv;
-}
-
 /// @method #move_by(delta_location, interval)
 /// Moves the position of the receiver to a new location determined by the
 /// sum of the current location and the given +delta_location+ object.
@@ -101,10 +81,10 @@ sprite_run_action(VALUE rcv, SEL sel, VALUE action)
 /// @return [Sprite] the receiver.
 
 static VALUE
-sprite_move_by(VALUE rcv, SEL sel, VALUE position, VALUE interval)
+sprite_move_by(VALUE rcv, SEL sel, VALUE delta_location, VALUE interval)
 {
     return run_action(rcv, cocos2d::MoveBy::create(NUM2DBL(interval),
-		rb_any_to_ccvec2(position)));
+		rb_any_to_ccvec2(delta_location)));
 }
 
 /// @method #move_to(location, interval)
@@ -114,10 +94,10 @@ sprite_move_by(VALUE rcv, SEL sel, VALUE position, VALUE interval)
 /// @return [Sprite] the receiver.
 
 static VALUE
-sprite_move_to(VALUE rcv, SEL sel, VALUE position, VALUE interval)
+sprite_move_to(VALUE rcv, SEL sel, VALUE location, VALUE interval)
 {
     return run_action(rcv, cocos2d::MoveTo::create(NUM2DBL(interval),
-		rb_any_to_ccvec2(position)));
+		rb_any_to_ccvec2(location)));
 }
 
 /// @method #rotate_by(delta_angle, interval)
@@ -451,7 +431,6 @@ Init_Sprite(void)
 
     rb_define_singleton_method(rb_cSprite, "load", sprite_load, 1);
     rb_define_singleton_method(rb_cSprite, "new", sprite_new, 1);
-    rb_define_method(rb_cSprite, "run_action", sprite_run_action, 1);
     rb_define_method(rb_cSprite, "move_by", sprite_move_by, 2);
     rb_define_method(rb_cSprite, "move_to", sprite_move_to, 2);
     rb_define_method(rb_cSprite, "rotate_by", sprite_rotate_by, 2);
