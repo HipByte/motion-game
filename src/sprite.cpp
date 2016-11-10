@@ -174,6 +174,33 @@ sprite_animate(VALUE rcv, SEL sel, int argc, VALUE *argv)
     return run_action(rcv, action);
 }
 
+
+/// @method #flipped_horizontally=(value)
+/// Sets whether the sprite should be flipped horizontally or not. It only flips
+/// the texture of the sprite, and not the texture of the sprite's children.
+/// Also, flipping the texture doesn't alter the anchorPoint.
+/// @param value [Boolean] true if the sprite should be flipped horizontally, false otherwise.
+
+static VALUE
+sprite_flipped_horizontally_set(VALUE rcv, SEL sel, VALUE arg)
+{
+    SPRITE(rcv)->setFlippedX(RTEST(arg));
+    return arg;
+}
+
+/// @method #flipped_vertically=(value)
+/// Sets whether the sprite should be flipped vertically or not. It only flips
+/// the texture of the sprite, and not the texture of the sprite's children.
+/// Also, flipping the texture doesn't alter the anchorPoint.
+/// @param value [Boolean] true if the sprite should be flipped vertically, false otherwise.
+
+static VALUE
+sprite_flipped_vertically_set(VALUE rcv, SEL sel, VALUE arg)
+{
+    SPRITE(rcv)->setFlippedY(RTEST(arg));
+    return arg;
+}
+
 /// @group Physics
 
 static cocos2d::PhysicsBody *
@@ -409,6 +436,8 @@ Init_Sprite(void)
     rb_define_method(rb_cSprite, "move_to", sprite_move_to, 2);
     rb_define_method(rb_cSprite, "blink", sprite_blink, 2);
     rb_define_method(rb_cSprite, "animate", sprite_animate, -1);
+    rb_define_method(rb_cSprite, "flipped_horizontally=", sprite_flipped_horizontally_set, 1);
+    rb_define_method(rb_cSprite, "flipped_vertically=", sprite_flipped_vertically_set, 1);
     rb_define_method(rb_cSprite, "attach_physics_box",
 	    sprite_attach_physics_box, -1);
     rb_define_method(rb_cSprite, "apply_impulse", sprite_apply_impulse, 1);
