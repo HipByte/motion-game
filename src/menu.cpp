@@ -14,7 +14,7 @@ menu_alloc(VALUE rcv, SEL sel)
 }
 
 /// @group Miscellaneous
-/// @method #menu_align_items_vertically(padding=null)
+/// @method #align_items_vertically(padding=null)
 /// aligns menu items vertically with padding 
 /// (call after adding items via image_item)
 /// @param padding [Float] the amount of padding between the items.
@@ -34,7 +34,7 @@ menu_align_items_vertically(VALUE rcv, SEL sel, int argc, VALUE *argv)
     return rcv;
 }
 
-/// @method #menu_align_items_horizontally(padding=null)
+/// @method #align_items_horizontally(padding=null)
 /// aligns menu items horizontally with padding 
 /// (call after adding items via image_item)
 /// @param padding [Float] the amount of padding between the items.
