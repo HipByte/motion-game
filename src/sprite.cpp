@@ -465,7 +465,9 @@ Init_Sprite(void)
     rb_define_method(rb_cSprite, "blink", sprite_blink, 2);
     rb_define_method(rb_cSprite, "animate", sprite_animate, -1);
     rb_define_method(rb_cSprite, "flipped_horizontally=", sprite_flipped_horizontally_set, 1);
+    rb_define_method(rb_cSprite, "flipped_x=", sprite_flipped_horizontally_set, 1);
     rb_define_method(rb_cSprite, "flipped_vertically=", sprite_flipped_vertically_set, 1);
+    rb_define_method(rb_cSprite, "flipped_y=", sprite_flipped_vertically_set, 1);
     rb_define_method(rb_cSprite, "attach_physics_box",
 	    sprite_attach_physics_box, -1);
     rb_define_method(rb_cSprite, "apply_impulse", sprite_apply_impulse, 1);
