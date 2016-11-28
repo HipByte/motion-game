@@ -207,6 +207,9 @@ sprite_animate(VALUE rcv, SEL sel, int argc, VALUE *argv)
 /// Also, flipping the texture doesn't alter the anchorPoint.
 /// @param value [Boolean] true if the sprite should be flipped horizontally, false otherwise.
 
+/// @method #flipped_x=(value)
+/// This is alias method of "#flipped_horizontally=".
+
 static VALUE
 sprite_flipped_horizontally_set(VALUE rcv, SEL sel, VALUE arg)
 {
@@ -219,6 +222,9 @@ sprite_flipped_horizontally_set(VALUE rcv, SEL sel, VALUE arg)
 /// the texture of the sprite, and not the texture of the sprite's children.
 /// Also, flipping the texture doesn't alter the anchorPoint.
 /// @param value [Boolean] true if the sprite should be flipped vertically, false otherwise.
+
+/// @method #flipped_y=(value)
+/// This is alias method of "#flipped_vertically=".
 
 static VALUE
 sprite_flipped_vertically_set(VALUE rcv, SEL sel, VALUE arg)
