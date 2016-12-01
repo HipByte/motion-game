@@ -1,4 +1,4 @@
-require_relative 'paralel_builder'
+require_relative 'parallel_builder'
 
 COCOS2D_PATH = File.expand_path('ext/cocos2d-x')
 
