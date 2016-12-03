@@ -200,15 +200,16 @@ node_run_action(VALUE rcv, SEL sel, VALUE action)
 {
     VALUE block = rb_current_block();
     if (block != Qnil) {
-    block = rb_retain(block); // FIXME need release...
-    auto call_funcn =
-        cocos2d::CallFuncN::create([block](cocos2d::Node *node) {
-        rb_block_call(block, 0, NULL);
-        });
-    NODE(rcv)->runAction(cocos2d::Sequence::create(FINITE_TIME_ACTION(action), call_funcn, (void *)0));
+	block = rb_retain(block); // FIXME need release...
+	auto call_funcn =
+	    cocos2d::CallFuncN::create(
+		[block](cocos2d::Node *node) {
+		    rb_block_call(block, 0, NULL);
+		});
+	NODE(rcv)->runAction(cocos2d::Sequence::create(FINITE_TIME_ACTION(action), call_funcn, (void *)0));
     }
     else {
-    NODE(rcv)->runAction(ACTION(action));
+	NODE(rcv)->runAction(ACTION(action));
     }
 
     return rcv;
@@ -244,7 +245,7 @@ static VALUE
 node_intersects(VALUE rcv, SEL sel, VALUE node)
 {
     return NODE(rcv)->getBoundingBox().intersectsRect(
-	    NODE(node)->getBoundingBox()) ? Qtrue : Qfalse;
+	NODE(node)->getBoundingBox()) ? Qtrue : Qfalse;
 }
 
 /// @group Container
@@ -517,8 +518,7 @@ Init_Node(void)
     rb_define_method(rb_cNode, "delete", node_delete, -1);
     rb_define_method(rb_cNode, "parent", node_parent, 0);
     rb_define_method(rb_cNode, "children", node_children, 0);
-    rb_define_method(rb_cNode, "delete_from_parent", node_delete_from_parent,
-	    -1);
+    rb_define_method(rb_cNode, "delete_from_parent", node_delete_from_parent, -1);
     rb_define_method(rb_cNode, "run_action", node_run_action, 1);
     rb_define_method(rb_cNode, "stop_all_actions", node_stop_all_actions, 0);
 

@@ -91,7 +91,7 @@ application_screen_size_changed(VALUE rcv, SEL sel)
     if (glview != NULL) {
 	cocos2d::Size size = glview->getFrameSize();
 	cocos2d::Application::getInstance()->applicationScreenSizeChanged(
-		size.width, size.height);
+	    size.width, size.height);
     }
     return rcv;
 }
@@ -102,15 +102,13 @@ Init_Application(void)
 {
     rb_cApplication = rb_define_class_under(rb_mMC, "Application", rb_cObject);
 
-    rb_define_singleton_method(rb_cApplication, "shared",
-	    application_instance, 0);
+    rb_define_singleton_method(rb_cApplication, "shared", application_instance, 0);
     rb_define_singleton_method(rb_cApplication, "alloc", application_alloc, 0);
     rb_define_method(rb_cApplication, "run", application_run, 0);
     rb_define_method(rb_cApplication, "start", application_start, 0);
 
     // Internal.
-    rb_define_method(rb_cApplication, "_screen_size_changed",
-	    application_screen_size_changed, 0);
+    rb_define_method(rb_cApplication, "_screen_size_changed", application_screen_size_changed, 0);
 }
 
 #if CC_TARGET_OS_ANDROID

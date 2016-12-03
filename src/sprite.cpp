@@ -85,7 +85,7 @@ static VALUE
 sprite_move_by(VALUE rcv, SEL sel, VALUE delta_location, VALUE interval)
 {
     return run_action(rcv, cocos2d::MoveBy::create(NUM2DBL(interval),
-		rb_any_to_ccvec2(delta_location)));
+		    rb_any_to_ccvec2(delta_location)));
 }
 
 /// @method #move_to(location, interval)
@@ -98,7 +98,7 @@ static VALUE
 sprite_move_to(VALUE rcv, SEL sel, VALUE location, VALUE interval)
 {
     return run_action(rcv, cocos2d::MoveTo::create(NUM2DBL(interval),
-		rb_any_to_ccvec2(location)));
+		    rb_any_to_ccvec2(location)));
 }
 
 /// @method #rotate_by(delta_angle, interval)
@@ -111,7 +111,7 @@ static VALUE
 sprite_rotate_by(VALUE rcv, SEL sel, VALUE delta_angle, VALUE interval)
 {
     return run_action(rcv, cocos2d::RotateBy::create(NUM2DBL(interval),
-        NUM2DBL(delta_angle)));
+		    NUM2DBL(delta_angle)));
 }
 
 /// @method #rotate_to(angle, interval)
@@ -124,7 +124,7 @@ static VALUE
 sprite_rotate_to(VALUE rcv, SEL sel, VALUE angle, VALUE interval)
 {
     return run_action(rcv, cocos2d::RotateTo::create(NUM2DBL(interval),
-        NUM2DBL(angle)));
+		    NUM2DBL(angle)));
 }
 
 /// @method #blink(number_of_blinks, interval)
@@ -138,7 +138,7 @@ static VALUE
 sprite_blink(VALUE rcv, SEL sel, VALUE blinks, VALUE interval)
 {
     return run_action(rcv, cocos2d::Blink::create(NUM2DBL(interval),
-		NUM2INT(blinks)));
+		    NUM2INT(blinks)));
 }
 
 /// @method #animate(frame_names, delay, loops=1)
@@ -164,15 +164,14 @@ sprite_animate(VALUE rcv, SEL sel, int argc, VALUE *argv)
     cocos2d::Vector<cocos2d::SpriteFrame *> frames;
     auto texture_cache = cocos2d::Director::getInstance()->getTextureCache();
     for (int i = 0, count = RARRAY_LEN(frame_names); i < count; i++) {
-    VALUE name = RARRAY_AT(frame_names, i);
+	VALUE name = RARRAY_AT(frame_names, i);
 	std::string frame_name = RSTRING_PTR(StringValue(name));
 	auto texture = texture_cache->addImage(frame_name);
 	cocos2d::SpriteFrame *frame = NULL;
 	if (texture != NULL) {
 	    cocos2d::Rect rect = cocos2d::Rect::ZERO;
 	    rect.size = texture->getContentSize();
-	    frame = cocos2d::SpriteFrame::createWithTexture(texture,
-		    rect);
+	    frame = cocos2d::SpriteFrame::createWithTexture(texture, rect);
 	}
 	else {
 	    frame = cocos2d::SpriteFrameCache::getInstance()->getSpriteFrameByName(frame_name);
@@ -475,8 +474,7 @@ Init_Sprite(void)
     rb_define_method(rb_cSprite, "flipped_x=", sprite_flipped_horizontally_set, 1);
     rb_define_method(rb_cSprite, "flipped_vertically=", sprite_flipped_vertically_set, 1);
     rb_define_method(rb_cSprite, "flipped_y=", sprite_flipped_vertically_set, 1);
-    rb_define_method(rb_cSprite, "attach_physics_box",
-	    sprite_attach_physics_box, -1);
+    rb_define_method(rb_cSprite, "attach_physics_box", sprite_attach_physics_box, -1);
     rb_define_method(rb_cSprite, "apply_impulse", sprite_apply_impulse, 1);
     rb_define_method(rb_cSprite, "apply_force", sprite_apply_force, 1);
     rb_define_method(rb_cSprite, "mass", sprite_mass, 0);
@@ -492,14 +490,11 @@ Init_Sprite(void)
     rb_define_method(rb_cSprite, "resting?", sprite_resting, 0);
     rb_define_method(rb_cSprite, "resting=", sprite_resting_set, 1);
     rb_define_method(rb_cSprite, "inertia_moment", sprite_inertia_moment, 0);
-    rb_define_method(rb_cSprite, "inertia_moment=", sprite_inertia_moment_set,
-	    1);
+    rb_define_method(rb_cSprite, "inertia_moment=", sprite_inertia_moment_set, 1);
     rb_define_method(rb_cSprite, "category_mask", sprite_category_mask, 0);
-    rb_define_method(rb_cSprite, "category_mask=", sprite_category_mask_set,
-	    1);
+    rb_define_method(rb_cSprite, "category_mask=", sprite_category_mask_set, 1);
     rb_define_method(rb_cSprite, "collision_mask", sprite_collision_mask, 0);
-    rb_define_method(rb_cSprite, "collision_mask=", sprite_collision_mask_set,
-	    1);
+    rb_define_method(rb_cSprite, "collision_mask=", sprite_collision_mask_set, 1);
     rb_define_method(rb_cSprite, "contact_mask", sprite_contact_mask, 0);
     rb_define_method(rb_cSprite, "contact_mask=", sprite_contact_mask_set, 1);
 }

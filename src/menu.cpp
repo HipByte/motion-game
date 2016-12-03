@@ -27,9 +27,10 @@ menu_align_items_vertically(VALUE rcv, SEL sel, int argc, VALUE *argv)
     rb_scan_args(argc, argv, "01", &padding);
 
     if (padding != Qnil) {
-        MENU(rcv)->alignItemsVerticallyWithPadding(NUM2LONG(padding));
-    } else {
-        MENU(rcv)->alignItemsVertically();
+	MENU(rcv)->alignItemsVerticallyWithPadding(NUM2LONG(padding));
+    }
+    else {
+	MENU(rcv)->alignItemsVertically();
     }
 
     return rcv;
@@ -47,9 +48,10 @@ menu_align_items_horizontally(VALUE rcv, SEL sel, int argc, VALUE *argv)
     rb_scan_args(argc, argv, "01", &padding);
 
     if (padding != Qnil) {
-        MENU(rcv)->alignItemsHorizontallyWithPadding(NUM2LONG(padding));
-    } else {
-        MENU(rcv)->alignItemsHorizontally();
+	MENU(rcv)->alignItemsHorizontallyWithPadding(NUM2LONG(padding));
+    }
+    else {
+	MENU(rcv)->alignItemsHorizontally();
     }
 
     return rcv;
@@ -84,10 +86,10 @@ menu_image_item(VALUE rcv, SEL sel, VALUE normal_image, VALUE selected_image)
     block = rb_retain(block); // FIXME need release...
 
     cocos2d::MenuItemImage *item = cocos2d::MenuItemImage::create(
-	    RSTRING_PTR(StringValue(normal_image)), RSTRING_PTR(StringValue(selected_image)),
-	    [block](cocos2d::Ref *sender) {
-		rb_block_call(block, 0, NULL);
-	    });
+	RSTRING_PTR(StringValue(normal_image)), RSTRING_PTR(StringValue(selected_image)),
+	[block](cocos2d::Ref *sender) {
+	    rb_block_call(block, 0, NULL);
+	});
     MENU(rcv)->addChild(item);
     return rcv;
 }

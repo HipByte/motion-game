@@ -44,8 +44,8 @@ audio_play(VALUE rcv, SEL sel, int argc, VALUE *argv)
 
     auto audio = new struct mc_Audio();
     audio->audio_id = AUDIO_ENGINE::play2d(str,
-	loop == Qnil ? false : RTEST(loop),
-	volume == Qnil ? 1.0 : NUM2DBL(volume));
+	    loop == Qnil ? false : RTEST(loop),
+	    volume == Qnil ? 1.0 : NUM2DBL(volume));
     return rb_class_wrap_new((void *)audio, rb_cAudio);
 }
 
@@ -175,8 +175,7 @@ Init_Audio(void)
     rb_define_method(rb_cAudio, "volume", audio_volume, 0);
     rb_define_method(rb_cAudio, "volume=", audio_volume_set, 1);
     rb_define_method(rb_cAudio, "current_position", audio_current_position, 0);
-    rb_define_method(rb_cAudio, "current_position=",
-	    audio_current_position_set, 1);
+    rb_define_method(rb_cAudio, "current_position=", audio_current_position_set, 1);
     rb_define_method(rb_cAudio, "duration", audio_duration, 0);
     rb_define_method(rb_cAudio, "resume", audio_resume, 0);
     rb_define_method(rb_cAudio, "pause", audio_pause, 0);

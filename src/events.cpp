@@ -72,16 +72,14 @@ Init_Events(void)
 {
     rb_mEvents = rb_define_module_under(rb_mMC, "Events");
 
-    rb_cAcceleration = rb_define_class_under(rb_mEvents, "Acceleration",
-	    rb_cObject);
+    rb_cAcceleration = rb_define_class_under(rb_mEvents, "Acceleration", rb_cObject);
 
     rb_define_method(rb_cAcceleration, "x", acc_x, 0);
     rb_define_method(rb_cAcceleration, "y", acc_y, 0);
     rb_define_method(rb_cAcceleration, "z", acc_z, 0);
     rb_define_method(rb_cAcceleration, "timestamp", acc_timestamp, 0);
 
-    rb_cTouch = rb_define_class_under(rb_mEvents, "Touch",
-	    rb_cObject);
+    rb_cTouch = rb_define_class_under(rb_mEvents, "Touch", rb_cObject);
 
     rb_define_method(rb_cTouch, "location", touch_location, 0);
 }

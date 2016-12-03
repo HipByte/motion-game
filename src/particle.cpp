@@ -232,14 +232,10 @@ Init_Particle(void)
     rb_define_method(rb_cParticle, "angle_range=", particle_angle_range_set, 1);
     rb_define_method(rb_cParticle, "duration", particle_duration, 0);
     rb_define_method(rb_cParticle, "duration=", particle_duration_set, 1);
-    rb_define_method(rb_cParticle, "position_range",
-	    particle_position_range, 0);
-    rb_define_method(rb_cParticle, "position_range=",
-	    particle_position_range_set, 1);
-    rb_define_method(rb_cParticle, "particle_count",
-	    particle_particle_count, 0);
-    rb_define_method(rb_cParticle, "particle_count=",
-	    particle_particle_count_set, 1);
+    rb_define_method(rb_cParticle, "position_range", particle_position_range, 0);
+    rb_define_method(rb_cParticle, "position_range=", particle_position_range_set, 1);
+    rb_define_method(rb_cParticle, "particle_count", particle_particle_count, 0);
+    rb_define_method(rb_cParticle, "particle_count=", particle_particle_count_set, 1);
     rb_define_method(rb_cParticle, "start_color", particle_start_color, 0);
     rb_define_method(rb_cParticle, "start_color=", particle_start_color_set, 1);
     rb_define_method(rb_cParticle, "end_color", particle_end_color, 0);

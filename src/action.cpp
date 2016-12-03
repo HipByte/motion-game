@@ -227,7 +227,7 @@ static VALUE
 tint_by_new(VALUE rcv, SEL sel, VALUE delta_red, VALUE delta_green, VALUE delta_blue, VALUE interval)
 {
     auto action = cocos2d::TintBy::create(NUM2DBL(interval),
-      NUM2BYTE(delta_red), NUM2BYTE(delta_green), NUM2BYTE(delta_blue));
+	    NUM2BYTE(delta_red), NUM2BYTE(delta_green), NUM2BYTE(delta_blue));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -315,7 +315,7 @@ sequence_new(VALUE rcv, SEL sel, VALUE actions)
     cocos2d::Vector<cocos2d::FiniteTimeAction *> actionsVector;
 
     for (int i = 0, count = RARRAY_LEN(actions); i < count; i++) {
-    actionsVector.pushBack(FINITE_TIME_ACTION(RARRAY_AT(actions, i)));
+	actionsVector.pushBack(FINITE_TIME_ACTION(RARRAY_AT(actions, i)));
     }
 
     auto action = cocos2d::Sequence::create(actionsVector);
@@ -334,7 +334,7 @@ spawn_new(VALUE rcv, SEL sel, VALUE actions)
     cocos2d::Vector<cocos2d::FiniteTimeAction *> actionsVector;
 
     for (int i = 0, count = RARRAY_LEN(actions); i < count; i++) {
-    actionsVector.pushBack(FINITE_TIME_ACTION(RARRAY_AT(actions, i)));
+	actionsVector.pushBack(FINITE_TIME_ACTION(RARRAY_AT(actions, i)));
     }
 
     auto action = cocos2d::Spawn::create(actionsVector);
@@ -434,40 +434,40 @@ animate_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
     cocos2d::Vector<cocos2d::SpriteFrame *> frames;
     auto texture_cache = cocos2d::Director::getInstance()->getTextureCache();
     for (int i = 0, count = RARRAY_LEN(frame_names); i < count; i++) {
-        VALUE name = RARRAY_AT(frame_names, i);
-        std::string frame_name = RSTRING_PTR(StringValue(name));
-        auto texture = texture_cache->addImage(frame_name);
-        cocos2d::SpriteFrame *frame = NULL;
-        if (texture != NULL) {
-            cocos2d::Rect rect = cocos2d::Rect::ZERO;
-            rect.size = texture->getContentSize();
-            frame = cocos2d::SpriteFrame::createWithTexture(texture,
-                rect);
-        }
-        else {
-            frame = cocos2d::SpriteFrameCache::getInstance()->getSpriteFrameByName(frame_name);
-        }
-        assert(frame != NULL);
-        frames.pushBack(frame);
+	VALUE name = RARRAY_AT(frame_names, i);
+	std::string frame_name = RSTRING_PTR(StringValue(name));
+	auto texture = texture_cache->addImage(frame_name);
+	cocos2d::SpriteFrame *frame = NULL;
+	if (texture != NULL) {
+	    cocos2d::Rect rect = cocos2d::Rect::ZERO;
+	    rect.size = texture->getContentSize();
+	    frame = cocos2d::SpriteFrame::createWithTexture(texture,
+		    rect);
+	}
+	else {
+	    frame = cocos2d::SpriteFrameCache::getInstance()->getSpriteFrameByName(frame_name);
+	}
+	assert(frame != NULL);
+	frames.pushBack(frame);
     }
 
     int loops_i = 1;
     bool forever = false;
     if (loops != Qnil) {
-        if (rb_obj_is_kind_of(loops, rb_cInteger)) {
-            loops_i = NUM2LONG(loops);
-        }
-        else if (loops == rb_name2sym("forever")) {
-            forever = true;
-        }
+	if (rb_obj_is_kind_of(loops, rb_cInteger)) {
+	    loops_i = NUM2LONG(loops);
+	}
+	else if (loops == rb_name2sym("forever")) {
+	    forever = true;
+	}
     }
 
     auto animation = cocos2d::Animation::createWithSpriteFrames(frames,
-        NUM2DBL(delay), loops_i);
+	    NUM2DBL(delay), loops_i);
     cocos2d::ActionInterval *action = cocos2d::Animate::create(animation);
 
     if (forever) {
-        action = cocos2d::RepeatForever::create(action);
+	action = cocos2d::RepeatForever::create(action);
     }
 
     return rb_class_wrap_new((void *)action, rb_cAction);

@@ -95,25 +95,25 @@ widget_on_touch(VALUE rcv, SEL sel)
     block = rb_retain(block); // FIXME need release...
 
     WIDGET(rcv)->addTouchEventListener(
-	    [block](cocos2d::Ref *ref,
-		    cocos2d::ui::Widget::TouchEventType event_type) {
-		VALUE sym = Qnil;
-		switch (event_type) {
-		case cocos2d::ui::Widget::TouchEventType::BEGAN:
-		    sym = rb_name2sym("begin");
-		    break;
-		case cocos2d::ui::Widget::TouchEventType::MOVED:
-		    sym = rb_name2sym("move");
-		    break;
-		case cocos2d::ui::Widget::TouchEventType::ENDED:
-		    sym = rb_name2sym("end");
-		    break;
-		case cocos2d::ui::Widget::TouchEventType::CANCELED:
-		    sym = rb_name2sym("cancel");
-		    break;
-		}
-		rb_block_call(block, 1, &sym);
-	    });
+	[block](cocos2d::Ref *ref,
+		cocos2d::ui::Widget::TouchEventType event_type) {
+	    VALUE sym = Qnil;
+	    switch (event_type) {
+	      case cocos2d::ui::Widget::TouchEventType::BEGAN:
+		sym = rb_name2sym("begin");
+		break;
+	      case cocos2d::ui::Widget::TouchEventType::MOVED:
+		sym = rb_name2sym("move");
+		break;
+	      case cocos2d::ui::Widget::TouchEventType::ENDED:
+		sym = rb_name2sym("end");
+		break;
+	      case cocos2d::ui::Widget::TouchEventType::CANCELED:
+		sym = rb_name2sym("cancel");
+		break;
+	    }
+	    rb_block_call(block, 1, &sym);
+	});
     return rcv;
 }
 
@@ -260,14 +260,14 @@ static VALUE
 text_vertical_align(VALUE rcv, SEL sel)
 {
     switch (TEXT(rcv)->getTextVerticalAlignment()) {
-	case cocos2d::TextVAlignment::TOP:
-	    return sym_top;
-	case cocos2d::TextVAlignment::CENTER:
-	    return sym_center;
-	case cocos2d::TextVAlignment::BOTTOM:
-	    return sym_bottom;
-	default:
-	    abort();
+      case cocos2d::TextVAlignment::TOP:
+	return sym_top;
+      case cocos2d::TextVAlignment::CENTER:
+	return sym_center;
+      case cocos2d::TextVAlignment::BOTTOM:
+	return sym_bottom;
+      default:
+	abort();
     }
 }
 
@@ -298,14 +298,14 @@ static VALUE
 text_horizontal_align(VALUE rcv, SEL sel)
 {
     switch (TEXT(rcv)->getTextHorizontalAlignment()) {
-	case cocos2d::TextHAlignment::LEFT:
-	    return sym_left;
-	case cocos2d::TextHAlignment::CENTER:
-	    return sym_center;
-	case cocos2d::TextHAlignment::RIGHT:
-	    return sym_right;
-	default:
-	    abort();
+      case cocos2d::TextHAlignment::LEFT:
+	return sym_left;
+      case cocos2d::TextHAlignment::CENTER:
+	return sym_center;
+      case cocos2d::TextHAlignment::RIGHT:
+	return sym_right;
+      default:
+	abort();
     }
 }
 
@@ -527,16 +527,16 @@ static VALUE
 layout_type(VALUE rcv, SEL sel)
 {
     switch (LAYOUT(rcv)->getLayoutType()) {
-	case cocos2d::ui::Layout::Type::ABSOLUTE:
-	    return sym_absolute;
-	case cocos2d::ui::Layout::Type::VERTICAL:
-	    return sym_vertical;
-	case cocos2d::ui::Layout::Type::HORIZONTAL:
-	    return sym_horizontal;
-	case cocos2d::ui::Layout::Type::RELATIVE:
-	    return sym_relative;
-	default:
-	    abort();
+      case cocos2d::ui::Layout::Type::ABSOLUTE:
+	return sym_absolute;
+      case cocos2d::ui::Layout::Type::VERTICAL:
+	return sym_vertical;
+      case cocos2d::ui::Layout::Type::HORIZONTAL:
+	return sym_horizontal;
+      case cocos2d::ui::Layout::Type::RELATIVE:
+	return sym_relative;
+      default:
+	abort();
     }
     return rcv;
 }
@@ -576,8 +576,7 @@ static VALUE
 layout_background_color_set(VALUE rcv, SEL sel, VALUE color)
 {
     auto layout = LAYOUT(rcv);
-    layout->setBackGroundColorType(
-	    cocos2d::ui::Layout::BackGroundColorType::SOLID);
+    layout->setBackGroundColorType(cocos2d::ui::Layout::BackGroundColorType::SOLID);
     layout->setBackGroundColor(rb_any_to_cccolor3(color));
     return color;
 }
@@ -633,16 +632,16 @@ static VALUE
 scroll_direction(VALUE rcv, SEL sel)
 {
     switch (SCROLL(rcv)->getDirection()) {
-	case cocos2d::ui::ScrollView::Direction::NONE:
-	    return sym_none;
-	case cocos2d::ui::ScrollView::Direction::VERTICAL:
-	    return sym_vertical;
-	case cocos2d::ui::ScrollView::Direction::HORIZONTAL:
-	    return sym_horizontal;
-	case cocos2d::ui::ScrollView::Direction::BOTH:
-	    return sym_both;
-	default:
-	    abort();
+      case cocos2d::ui::ScrollView::Direction::NONE:
+	return sym_none;
+      case cocos2d::ui::ScrollView::Direction::VERTICAL:
+	return sym_vertical;
+      case cocos2d::ui::ScrollView::Direction::HORIZONTAL:
+	return sym_horizontal;
+      case cocos2d::ui::ScrollView::Direction::BOTH:
+	return sym_both;
+      default:
+	abort();
     }
 }
 
@@ -800,15 +799,14 @@ list_on_selection(VALUE rcv, SEL sel)
 
     auto list = LIST(rcv);
     list->addEventListener(
-	    [block, list](cocos2d::Ref *ref,
-		    cocos2d::ui::ListView::EventType event_type) {
-		if (event_type ==
-			cocos2d::ui::ListView::EventType::\
-			ON_SELECTED_ITEM_END) {
-		    VALUE index = LONG2NUM(list->getCurSelectedIndex());
-		    rb_block_call(block, 1, &index);
-		}
-	    });
+	[block, list](cocos2d::Ref *ref,
+		cocos2d::ui::ListView::EventType event_type) {
+	    if (event_type ==
+		    cocos2d::ui::ListView::EventType::ON_SELECTED_ITEM_END) {
+		VALUE index = LONG2NUM(list->getCurSelectedIndex());
+		rb_block_call(block, 1, &index);
+	    }
+	});
     return rcv;
 }
 
@@ -964,11 +962,9 @@ Init_UI(void)
     rb_define_method(rb_cUIText, "area_size", text_area_size, 0);
     rb_define_method(rb_cUIText, "area_size=", text_area_size_set, 1);
     rb_define_method(rb_cUIText, "vertical_align", text_vertical_align, 0);
-    rb_define_method(rb_cUIText, "vertical_align=",
-	    text_vertical_align_set, 1);
+    rb_define_method(rb_cUIText, "vertical_align=", text_vertical_align_set, 1);
     rb_define_method(rb_cUIText, "horizontal_align", text_horizontal_align, 0);
-    rb_define_method(rb_cUIText, "horizontal_align=",
-	    text_horizontal_align_set, 1);
+    rb_define_method(rb_cUIText, "horizontal_align=", text_horizontal_align_set, 1);
 
     sym_top = rb_name2sym("top");
     sym_center = rb_name2sym("center");
@@ -1004,10 +1000,8 @@ Init_UI(void)
     rb_define_singleton_method(rb_cUILayout, "new", layout_new, 0);
     rb_define_method(rb_cUILayout, "type", layout_type, 0);
     rb_define_method(rb_cUILayout, "type=", layout_type_set, 1);
-    rb_define_method(rb_cUILayout, "background_color",
-	    layout_background_color, 0);
-    rb_define_method(rb_cUILayout, "background_color=",
-	    layout_background_color_set, 1);
+    rb_define_method(rb_cUILayout, "background_color", layout_background_color, 0);
+    rb_define_method(rb_cUILayout, "background_color=", layout_background_color_set, 1);
     rb_define_method(rb_cUILayout, "clipping=", layout_clipping_set, 1);
     rb_define_method(rb_cUILayout, "clipping?", layout_clipping, 0);
     rb_define_method(rb_cUILayout, "add", layout_add, 1);
@@ -1022,8 +1016,7 @@ Init_UI(void)
     rb_define_method(rb_cUIScroll, "direction=", scroll_direction_set, 1);
     rb_define_method(rb_cUIScroll, "inner_size", scroll_inner_size, 0);
     rb_define_method(rb_cUIScroll, "inner_size=", scroll_inner_size_set, 1);
-    rb_define_method(rb_cUIScroll, "inner_container",
-	    scroll_inner_container, 0);
+    rb_define_method(rb_cUIScroll, "inner_container", scroll_inner_container, 0);
 
     sym_none = rb_name2sym("none");
     sym_vertical = rb_name2sym("vertical");
