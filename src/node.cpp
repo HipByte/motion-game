@@ -1,4 +1,5 @@
 #include "rubymotion.h"
+#include "motion-game.h"
 
 /// @class Node < Object
 /// Node is the base class of objects in the scene graph. You should not

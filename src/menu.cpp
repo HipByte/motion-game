@@ -1,4 +1,5 @@
 #include "rubymotion.h"
+#include "motion-game.h"
 
 VALUE rb_cMenu = Qnil;
 

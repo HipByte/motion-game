@@ -1,4 +1,5 @@
 #include "rubymotion.h"
+#include "motion-game.h"
 
 #include <ui/UIWidget.h>
 #include <ui/UIText.h>

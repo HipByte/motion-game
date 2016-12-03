@@ -1,4 +1,5 @@
 #include "rubymotion.h"
+#include "motion-game.h"
 
 /// @class Director < Object
 /// Director is a shared object that takes care of the scene graph.

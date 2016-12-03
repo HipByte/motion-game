@@ -1,4 +1,5 @@
 #include "rubymotion.h"
+#include "motion-game.h"
 
 /// @class Application < Object
 /// The application class. A proper subclass is generated for you by the

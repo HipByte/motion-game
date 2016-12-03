@@ -1,4 +1,5 @@
 #include "rubymotion.h"
+#include "motion-game.h"
 #include <dlfcn.h>
 
 /// @class Scene < Node

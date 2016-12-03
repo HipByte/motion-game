@@ -1,4 +1,6 @@
 #include "rubymotion.h"
+#include "motion-game.h"
+
 #if CC_TARGET_OS_ANDROID
 # include "platform/android/jni/JniHelper.h"
 #endif

@@ -1,4 +1,5 @@
 #include "rubymotion.h"
+#include "motion-game.h"
 
 /// @class Point < Object
 /// A point represents a location in a two-dimensional coordinate system using

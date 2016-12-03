@@ -1,4 +1,5 @@
 #include "rubymotion.h"
+#include "motion-game.h"
 
 static VALUE rb_mEvents = Qnil;
 VALUE rb_cAcceleration = Qnil;
