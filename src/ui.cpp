@@ -79,7 +79,7 @@ widget_highlighted_set(VALUE rcv, SEL sel, VALUE val)
 
 /// @method #on_touch
 /// Configures a block to be called when a touch event is received on the
-/// widget. 
+/// widget.
 /// @yield [Symbol] the given block will be called when the event
 ///   is received with a +Symbol+ that describes the type of event, which can
 ///   be +:begin+, +:move+, +:end+ or +:cancel+.

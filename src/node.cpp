@@ -210,7 +210,7 @@ node_run_action(VALUE rcv, SEL sel, VALUE action)
     else {
     NODE(rcv)->runAction(ACTION(action));
     }
-    
+
     return rcv;
 }
 

@@ -153,7 +153,7 @@ scene_update(VALUE rcv, SEL sel, VALUE delta)
 /// @param repeat [Integer] the number of times the block should be repeated.
 /// @param interval [Float] the interval between repetitions, in seconds.
 /// @yield [Float] the given block will be yield with the delta value,
-///   in seconds. 
+///   in seconds.
 /// @return [String] a token representing the task that can be passed to
 ///   {#unschedule} when needed.
 
@@ -221,7 +221,7 @@ scene_on_touch_event(VALUE rcv, SEL sel, mc_Scene_EventType type)
     auto scene = SCENE(rcv);
     if (scene->touch_listener == NULL) {
         scene->touch_listener = cocos2d::EventListenerTouchOneByOne::create();
-    } 
+    }
     else {
         scene->getEventDispatcher()->removeEventListener(scene->touch_listener);
     }
@@ -374,7 +374,7 @@ scene_debug_physics(VALUE rcv, SEL sel)
 
 static VALUE
 scene_debug_physics_set(VALUE rcv, SEL sel, VALUE arg)
-{ 
+{
     SCENE(rcv)->scene->getPhysicsWorld()->setDebugDrawMask(RTEST(arg)
 	    ? cocos2d::PhysicsWorld::DEBUGDRAW_ALL
 	    : cocos2d::PhysicsWorld::DEBUGDRAW_NONE);

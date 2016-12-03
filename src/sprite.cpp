@@ -115,7 +115,7 @@ sprite_rotate_by(VALUE rcv, SEL sel, VALUE delta_angle, VALUE interval)
 }
 
 /// @method #rotate_to(angle, interval)
-/// Rotates the angle of the receiver to a new angle certain angle 
+/// Rotates the angle of the receiver to a new angle certain angle
 /// by modifying it's rotation attribute.
 /// @param angle [Float] the receiver should be rotated to.
 /// @param interval [Float] the animation interval.
@@ -241,7 +241,7 @@ need_physics(VALUE rcv)
 {
     auto physics = SPRITE(rcv)->getPhysicsBody();
     if (physics == NULL) {
-	rb_raise(rb_eRuntimeError, "receiver does not have a physics body"); 
+	rb_raise(rb_eRuntimeError, "receiver does not have a physics body");
     }
     return physics;
 }

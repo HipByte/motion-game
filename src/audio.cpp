@@ -23,7 +23,7 @@ struct mc_Audio {
 /// @param path [String] the path of the sound file that should be played.
 /// @param loop [Boolean] whether the sound file playback should loop.
 /// @param volume [Float] the audio volume that should be used to play this
-///   this sound file, as a +0.0+ to +1.0+ Float range.  
+///   this sound file, as a +0.0+ to +1.0+ Float range.
 /// @return [Audio] an Audio instance.
 
 static VALUE
@@ -37,7 +37,7 @@ audio_play(VALUE rcv, SEL sel, int argc, VALUE *argv)
     if (str.find('.') == std::string::npos) {
 #if CC_TARGET_OS_IPHONE || CC_TARGET_OS_APPLETV
 	str.append(".caf");
-#else  
+#else
 	str.append(".wav");
 #endif
     }
@@ -63,7 +63,7 @@ audio_loop(VALUE rcv, SEL sel)
 static VALUE
 audio_loop_set(VALUE rcv, SEL sel, VALUE flag)
 {
-    AUDIO_ENGINE::setLoop(AUDIO_ID(rcv), RTEST(flag)); 
+    AUDIO_ENGINE::setLoop(AUDIO_ID(rcv), RTEST(flag));
     return flag;
 }
 
@@ -79,7 +79,7 @@ audio_volume(VALUE rcv, SEL sel)
 static VALUE
 audio_volume_set(VALUE rcv, SEL sel, VALUE val)
 {
-    AUDIO_ENGINE::setVolume(AUDIO_ID(rcv), NUM2DBL(val)); 
+    AUDIO_ENGINE::setVolume(AUDIO_ID(rcv), NUM2DBL(val));
     return val;
 }
 
@@ -95,7 +95,7 @@ audio_current_position(VALUE rcv, SEL sel)
 static VALUE
 audio_current_position_set(VALUE rcv, SEL sel, VALUE val)
 {
-    AUDIO_ENGINE::setCurrentTime(AUDIO_ID(rcv), NUM2DBL(val)); 
+    AUDIO_ENGINE::setCurrentTime(AUDIO_ID(rcv), NUM2DBL(val));
     return val;
 }
 

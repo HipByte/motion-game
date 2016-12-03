@@ -62,7 +62,7 @@ action_done(VALUE rcv, SEL sel)
 /// @class MoveBy < Action
 /// @group Constructors
 /// @method #initialize(delta_location, interval)
-/// Creates an action that will move the position of the receiver to a new location 
+/// Creates an action that will move the position of the receiver to a new location
 /// determined by the sum of the current location and the given +delta_location+ object.
 /// @param delta_location [Point] a point that will be added to the receiver's
 ///   current location.
@@ -71,7 +71,7 @@ action_done(VALUE rcv, SEL sel)
 static VALUE
 move_by_new(VALUE rcv, SEL sel, VALUE delta_location, VALUE interval)
 {
-    auto action = cocos2d::MoveBy::create(NUM2DBL(interval), rb_any_to_ccvec2(delta_location));        
+    auto action = cocos2d::MoveBy::create(NUM2DBL(interval), rb_any_to_ccvec2(delta_location));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -85,14 +85,14 @@ move_by_new(VALUE rcv, SEL sel, VALUE delta_location, VALUE interval)
 static VALUE
 move_to_new(VALUE rcv, SEL sel, VALUE location, VALUE interval)
 {
-    auto action = cocos2d::MoveTo::create(NUM2DBL(interval), rb_any_to_ccvec2(location));        
+    auto action = cocos2d::MoveTo::create(NUM2DBL(interval), rb_any_to_ccvec2(location));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
 /// @class JumpBy < Action
 /// @group Constructors
 /// @method #initialize(delta_location, height, jumps, interval)
-/// Creates an action that will jump the receiver to a new location 
+/// Creates an action that will jump the receiver to a new location
 /// determined by the sum of the current location and the given +delta_location+ object.
 /// @param delta_location [Point] a point that will be added to the receiver's
 ///   current location during jumping.
@@ -103,7 +103,7 @@ move_to_new(VALUE rcv, SEL sel, VALUE location, VALUE interval)
 static VALUE
 jump_by_new(VALUE rcv, SEL sel, VALUE delta_location, VALUE height, VALUE jumps, VALUE interval)
 {
-    auto action = cocos2d::JumpBy::create(NUM2DBL(interval), rb_any_to_ccvec2(delta_location), NUM2DBL(height), NUM2INT(jumps));        
+    auto action = cocos2d::JumpBy::create(NUM2DBL(interval), rb_any_to_ccvec2(delta_location), NUM2DBL(height), NUM2INT(jumps));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -119,14 +119,14 @@ jump_by_new(VALUE rcv, SEL sel, VALUE delta_location, VALUE height, VALUE jumps,
 static VALUE
 jump_to_new(VALUE rcv, SEL sel, VALUE location, VALUE height, VALUE jumps, VALUE interval)
 {
-    auto action = cocos2d::JumpTo::create(NUM2DBL(interval), rb_any_to_ccvec2(location), NUM2DBL(height), NUM2INT(jumps));        
+    auto action = cocos2d::JumpTo::create(NUM2DBL(interval), rb_any_to_ccvec2(location), NUM2DBL(height), NUM2INT(jumps));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
 /// @class RotateBy < Action
 /// @group Constructors
 /// @method #initialize(delta_angle, interval)
-/// Creates an action that will rotates the position of the receiver 
+/// Creates an action that will rotates the position of the receiver
 /// to a new angle determined by the
 /// sum of the current rotation and the given +delta_angle+ object.
 /// @param delta_angle [Float] the angle to add to the current rotation
@@ -135,7 +135,7 @@ jump_to_new(VALUE rcv, SEL sel, VALUE location, VALUE height, VALUE jumps, VALUE
 static VALUE
 rotate_by_new(VALUE rcv, SEL sel, VALUE delta_angle, VALUE interval)
 {
-    auto action = cocos2d::RotateBy::create(NUM2DBL(interval), NUM2DBL(delta_angle));        
+    auto action = cocos2d::RotateBy::create(NUM2DBL(interval), NUM2DBL(delta_angle));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -150,7 +150,7 @@ rotate_by_new(VALUE rcv, SEL sel, VALUE delta_angle, VALUE interval)
 static VALUE
 rotate_to_new(VALUE rcv, SEL sel, VALUE angle, VALUE interval)
 {
-    auto action = cocos2d::RotateTo::create(NUM2DBL(interval), NUM2DBL(angle));        
+    auto action = cocos2d::RotateTo::create(NUM2DBL(interval), NUM2DBL(angle));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -164,7 +164,7 @@ rotate_to_new(VALUE rcv, SEL sel, VALUE angle, VALUE interval)
 static VALUE
 scale_by_new(VALUE rcv, SEL sel, VALUE scale, VALUE interval)
 {
-    auto action = cocos2d::ScaleBy::create(NUM2DBL(interval), NUM2DBL(scale));        
+    auto action = cocos2d::ScaleBy::create(NUM2DBL(interval), NUM2DBL(scale));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -178,14 +178,14 @@ scale_by_new(VALUE rcv, SEL sel, VALUE scale, VALUE interval)
 static VALUE
 scale_to_new(VALUE rcv, SEL sel, VALUE scale, VALUE interval)
 {
-    auto action = cocos2d::ScaleTo::create(NUM2DBL(interval), NUM2DBL(scale));        
+    auto action = cocos2d::ScaleTo::create(NUM2DBL(interval), NUM2DBL(scale));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
 /// @class SkewBy < Action
 /// @group Constructors
 /// @method #initialize(delta_x_angle, delta_y_angle, interval)
-/// Creates an action that skews a Node object to given angles by modifying it's 
+/// Creates an action that skews a Node object to given angles by modifying it's
 /// skewX and skewY attributes by delta_x_angle and delta_y_angle.
 /// @param delta_x_angle [Float] the skew X delta angle
 /// @param delta_y_angle [Float] the skew Y delta angle
@@ -194,14 +194,14 @@ scale_to_new(VALUE rcv, SEL sel, VALUE scale, VALUE interval)
 static VALUE
 skew_by_new(VALUE rcv, SEL sel, VALUE delta_x_angle, VALUE delta_y_angle, VALUE interval)
 {
-    auto action = cocos2d::SkewBy::create(NUM2DBL(interval), NUM2DBL(delta_x_angle), NUM2DBL(delta_y_angle));        
+    auto action = cocos2d::SkewBy::create(NUM2DBL(interval), NUM2DBL(delta_x_angle), NUM2DBL(delta_y_angle));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
 /// @class SkewTo < Action
 /// @group Constructors
 /// @method #initialize(x_angle, y_angle, interval)
-/// Creates an action that skews a Node object to given angles by modifying it's 
+/// Creates an action that skews a Node object to given angles by modifying it's
 /// skewX and skewY attributes
 /// @param x_angle [Float] the Skew X Angle
 /// @param y_angle [Float] the Skew Y Angle
@@ -210,7 +210,7 @@ skew_by_new(VALUE rcv, SEL sel, VALUE delta_x_angle, VALUE delta_y_angle, VALUE 
 static VALUE
 skew_to_new(VALUE rcv, SEL sel, VALUE x_angle, VALUE y_angle, VALUE interval)
 {
-    auto action = cocos2d::SkewTo::create(NUM2DBL(interval), NUM2DBL(x_angle), NUM2DBL(y_angle));        
+    auto action = cocos2d::SkewTo::create(NUM2DBL(interval), NUM2DBL(x_angle), NUM2DBL(y_angle));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -218,16 +218,16 @@ skew_to_new(VALUE rcv, SEL sel, VALUE x_angle, VALUE y_angle, VALUE interval)
 /// @group Constructors
 /// @method #initialize(delta_red, delta_green, delta_blue, interval)
 /// Creates an action that tints a Node from current tint to a custom one.
-/// @param delta_red [Float] 
-/// @param delta_green [Float] 
-/// @param delta_blue [Float] 
+/// @param delta_red [Float]
+/// @param delta_green [Float]
+/// @param delta_blue [Float]
 /// @param interval [Float] the animation interval.
 /// @return [TintBy] the action.
 static VALUE
 tint_by_new(VALUE rcv, SEL sel, VALUE delta_red, VALUE delta_green, VALUE delta_blue, VALUE interval)
 {
-    auto action = cocos2d::TintBy::create(NUM2DBL(interval), 
-      NUM2BYTE(delta_red), NUM2BYTE(delta_green), NUM2BYTE(delta_blue));        
+    auto action = cocos2d::TintBy::create(NUM2DBL(interval),
+      NUM2BYTE(delta_red), NUM2BYTE(delta_green), NUM2BYTE(delta_blue));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -235,15 +235,15 @@ tint_by_new(VALUE rcv, SEL sel, VALUE delta_red, VALUE delta_green, VALUE delta_
 /// @group Constructors
 /// @method #initialize(red, green, blue, interval)
 /// Creates an action that tints the receiver from its current tint to a custom one.
-/// @param red [Float] 
-/// @param green [Float] 
-/// @param blue [Float] 
+/// @param red [Float]
+/// @param green [Float]
+/// @param blue [Float]
 /// @param interval [Float] the animation interval.
 /// @return [TintTo] the action.
 static VALUE
 tint_to_new(VALUE rcv, SEL sel, VALUE red, VALUE green, VALUE blue, VALUE interval)
 {
-    auto action = cocos2d::TintTo::create(NUM2DBL(interval), NUM2BYTE(red), NUM2BYTE(green), NUM2BYTE(blue));        
+    auto action = cocos2d::TintTo::create(NUM2DBL(interval), NUM2BYTE(red), NUM2BYTE(green), NUM2BYTE(blue));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -258,7 +258,7 @@ tint_to_new(VALUE rcv, SEL sel, VALUE red, VALUE green, VALUE blue, VALUE interv
 static VALUE
 fade_to_new(VALUE rcv, SEL sel, VALUE opacity, VALUE interval)
 {
-    auto action = cocos2d::FadeTo::create(NUM2DBL(interval), NUM2BYTE(opacity));        
+    auto action = cocos2d::FadeTo::create(NUM2DBL(interval), NUM2BYTE(opacity));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -271,7 +271,7 @@ fade_to_new(VALUE rcv, SEL sel, VALUE opacity, VALUE interval)
 static VALUE
 fade_in_new(VALUE rcv, SEL sel, VALUE interval)
 {
-    auto action = cocos2d::FadeIn::create(NUM2DBL(interval));        
+    auto action = cocos2d::FadeIn::create(NUM2DBL(interval));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -284,7 +284,7 @@ fade_in_new(VALUE rcv, SEL sel, VALUE interval)
 static VALUE
 fade_out_new(VALUE rcv, SEL sel, VALUE interval)
 {
-    auto action = cocos2d::FadeOut::create(NUM2DBL(interval));        
+    auto action = cocos2d::FadeOut::create(NUM2DBL(interval));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -298,14 +298,14 @@ fade_out_new(VALUE rcv, SEL sel, VALUE interval)
 static VALUE
 blink_new(VALUE rcv, SEL sel, VALUE blinks, VALUE interval)
 {
-    auto action = cocos2d::Blink::create(NUM2DBL(interval), NUM2INT(blinks));        
+    auto action = cocos2d::Blink::create(NUM2DBL(interval), NUM2INT(blinks));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
 /// @class Sequence < Action
 /// @group Constructors
 /// @method #initialize(actions)
-/// Creates an action that runs actions sequentially, 
+/// Creates an action that runs actions sequentially,
 /// one after another on the receiver.
 /// @param actions [Action[]] the array of actions to run in sequence
 /// @return [Sequence] the action.
@@ -313,12 +313,12 @@ static VALUE
 sequence_new(VALUE rcv, SEL sel, VALUE actions)
 {
     cocos2d::Vector<cocos2d::FiniteTimeAction *> actionsVector;
-    
+
     for (int i = 0, count = RARRAY_LEN(actions); i < count; i++) {
     actionsVector.pushBack(FINITE_TIME_ACTION(RARRAY_AT(actions, i)));
     }
-    
-    auto action = cocos2d::Sequence::create(actionsVector);        
+
+    auto action = cocos2d::Sequence::create(actionsVector);
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -332,12 +332,12 @@ static VALUE
 spawn_new(VALUE rcv, SEL sel, VALUE actions)
 {
     cocos2d::Vector<cocos2d::FiniteTimeAction *> actionsVector;
-    
+
     for (int i = 0, count = RARRAY_LEN(actions); i < count; i++) {
     actionsVector.pushBack(FINITE_TIME_ACTION(RARRAY_AT(actions, i)));
     }
-    
-    auto action = cocos2d::Spawn::create(actionsVector);        
+
+    auto action = cocos2d::Spawn::create(actionsVector);
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -350,7 +350,7 @@ spawn_new(VALUE rcv, SEL sel, VALUE actions)
 static VALUE
 follow_new(VALUE rcv, SEL sel, VALUE followed_node)
 {
-    auto action = cocos2d::Follow::create(NODE(followed_node));        
+    auto action = cocos2d::Follow::create(NODE(followed_node));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -363,7 +363,7 @@ follow_new(VALUE rcv, SEL sel, VALUE followed_node)
 static VALUE
 delay_time_new(VALUE rcv, SEL sel, VALUE interval)
 {
-    auto action = cocos2d::DelayTime::create(NUM2DBL(interval));        
+    auto action = cocos2d::DelayTime::create(NUM2DBL(interval));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -379,7 +379,7 @@ delay_time_new(VALUE rcv, SEL sel, VALUE interval)
 static VALUE
 speed_new(VALUE rcv, SEL sel, VALUE target_action, VALUE speed)
 {
-    auto action = cocos2d::Speed::create(ACTION_INTERVAL(target_action), NUM2DBL(speed));        
+    auto action = cocos2d::Speed::create(ACTION_INTERVAL(target_action), NUM2DBL(speed));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -388,12 +388,12 @@ speed_new(VALUE rcv, SEL sel, VALUE target_action, VALUE speed)
 /// @method #initialize(target_action, times)
 /// Creates an action that repeats the provided action a certain number of times.
 /// @param target_action [Action] the action to repeat.
-/// @param times [Integer] the number of times to repeat. 
+/// @param times [Integer] the number of times to repeat.
 /// @return [Repeat] the action.
 static VALUE
 repeat_new(VALUE rcv, SEL sel, VALUE target_action, VALUE times)
 {
-    auto action = cocos2d::Repeat::create(ACTION_INTERVAL(target_action), NUM2INT(times));        
+    auto action = cocos2d::Repeat::create(ACTION_INTERVAL(target_action), NUM2INT(times));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -406,7 +406,7 @@ repeat_new(VALUE rcv, SEL sel, VALUE target_action, VALUE times)
 static VALUE
 repeat_forever_new(VALUE rcv, SEL sel, VALUE target_action)
 {
-    auto action = cocos2d::RepeatForever::create(ACTION_INTERVAL(target_action));        
+    auto action = cocos2d::RepeatForever::create(ACTION_INTERVAL(target_action));
     return rb_class_wrap_new((void *)action, rb_cAction);
 }
 
@@ -465,7 +465,7 @@ animate_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
     auto animation = cocos2d::Animation::createWithSpriteFrames(frames,
         NUM2DBL(delay), loops_i);
     cocos2d::ActionInterval *action = cocos2d::Animate::create(animation);
-    
+
     if (forever) {
         action = cocos2d::RepeatForever::create(action);
     }
@@ -481,7 +481,7 @@ Init_Action(void)
     rb_define_method(rb_cAction, "reverse", action_reverse, 0);
     rb_define_method(rb_cAction, "clone", action_clone, 0);
     rb_define_method(rb_cAction, "done?", action_done, 0);
-    
+
     rb_cMoveBy = rb_define_class_under(rb_mMC, "MoveBy", rb_cAction);
     rb_define_singleton_method(rb_cMoveBy, "new", move_by_new, 2);
 

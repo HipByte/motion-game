@@ -4,8 +4,8 @@
 VALUE rb_cMenu = Qnil;
 
 /// @class Menu < Object
-/// A Menu is a way to navigate through game options. 
-/// Menus often contain options like Play, Quit, Settings and About. 
+/// A Menu is a way to navigate through game options.
+/// Menus often contain options like Play, Quit, Settings and About.
 /// This is usually in the form of buttons that are pressed.
 static VALUE
 menu_alloc(VALUE rcv, SEL sel)
@@ -16,7 +16,7 @@ menu_alloc(VALUE rcv, SEL sel)
 
 /// @group Miscellaneous
 /// @method #align_items_vertically(padding=null)
-/// aligns menu items vertically with padding 
+/// aligns menu items vertically with padding
 /// (call after adding items via image_item)
 /// @param padding [Float] the amount of padding between the items.
 /// @return [Menu] the receiver.
@@ -31,12 +31,12 @@ menu_align_items_vertically(VALUE rcv, SEL sel, int argc, VALUE *argv)
     } else {
         MENU(rcv)->alignItemsVertically();
     }
-    
+
     return rcv;
 }
 
 /// @method #align_items_horizontally(padding=null)
-/// aligns menu items horizontally with padding 
+/// aligns menu items horizontally with padding
 /// (call after adding items via image_item)
 /// @param padding [Float] the amount of padding between the items.
 /// @return [Menu] the receiver.
@@ -51,7 +51,7 @@ menu_align_items_horizontally(VALUE rcv, SEL sel, int argc, VALUE *argv)
     } else {
         MENU(rcv)->alignItemsHorizontally();
     }
-    
+
     return rcv;
 }
 
@@ -101,7 +101,7 @@ Init_Menu(void)
     rb_define_singleton_method(rb_cMenu, "alloc", menu_alloc, 0);
     rb_define_method(rb_cMenu, "enabled?", menu_enabled, 0);
     rb_define_method(rb_cMenu, "enabled=", menu_enabled_set, 1);
-    rb_define_method(rb_cMenu, "image_item", menu_image_item, 2); 
-    rb_define_method(rb_cMenu, "align_items_horizontally", menu_align_items_horizontally, -1); 
-    rb_define_method(rb_cMenu, "align_items_vertically", menu_align_items_vertically, -1); 
+    rb_define_method(rb_cMenu, "image_item", menu_image_item, 2);
+    rb_define_method(rb_cMenu, "align_items_horizontally", menu_align_items_horizontally, -1);
+    rb_define_method(rb_cMenu, "align_items_vertically", menu_align_items_vertically, -1);
 }

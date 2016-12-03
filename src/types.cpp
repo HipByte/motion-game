@@ -4,7 +4,7 @@
 /// @class Point < Object
 /// A point represents a location in a two-dimensional coordinate system using
 /// +x+ and +y+ variables.
-/// 
+///
 /// When calling a method that expects a +Point+ object, a 2-element +Array+
 /// can be passed instead, as a convenience shortcut. For example,
 ///   node.location = [10, 20]
@@ -13,7 +13,7 @@
 ///   point.x = 10
 ///   point.y = 20
 ///   node.location = point
- 
+
 VALUE rb_cPoint = Qnil;
 
 extern "C"
@@ -101,7 +101,7 @@ point_inspect(VALUE rcv, SEL sel)
 
 /// @class Size < Object
 /// A size represents the dimensions of width and height of an object.
-/// 
+///
 /// When calling a method that expects a +Size+ object, a 2-element +Array+
 /// can be passed instead, as a convenience shortcut. For example,
 ///   node.size = [200, 400]
@@ -220,7 +220,7 @@ size_inspect(VALUE rcv, SEL sel)
 
 /// @class Color < Object
 /// A color represents the color, and sometimes opacity (alpha) of an object.
-/// 
+///
 /// When calling a method that expects a +Color+ object, a 3-element +Array+
 /// (red-green-blue) or 4-element +Array+ (red-green-blue-alpha) can be passed
 /// instead, as a convenience shortcut. For example,
