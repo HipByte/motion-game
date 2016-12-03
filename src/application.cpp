@@ -48,11 +48,6 @@ class mc_Application : private cocos2d::Application {
 static VALUE
 application_instance(VALUE rcv, SEL sel)
 {
-    if (mc_application_instance == Qnil) {
-	VALUE obj = rb_class_wrap_new(
-		(void *)cocos2d::Application::getInstance(), rb_cApplication);
-	mc_application_instance = rb_retain(obj);
-    }
     return mc_application_instance;
 }
 
@@ -61,7 +56,8 @@ application_alloc(VALUE rcv, SEL sel)
 {
     mc_Application *app = new mc_Application();
     VALUE obj = rb_class_wrap_new((void *)app, rcv);
-    app->obj = obj;
+    app->obj = rb_retain(obj);
+    mc_application_instance = rb_retain(obj);
     return obj;
 }
 
