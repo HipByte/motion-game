@@ -20,6 +20,9 @@ extern "C" {
 
 #include <objc/runtime.h>
 
+void DBGLog(const char *format, ... );
+#define debug_log DBGLog
+
 long rb_ary_len(VALUE);
 VALUE rb_ary_elt(VALUE, long);
 #define RARRAY_LEN(a) (rb_ary_len((VALUE)a))
@@ -144,7 +147,15 @@ const char *rb_sym2name(VALUE sym);
 #endif
 
 JNIEnv *rb_vm_current_jni_env(void);
+const char *rb_vm_app_package(void);
 #define VM_JNI_ENV() rb_vm_current_jni_env()
+#define VM_APP_PACKAGE() rb_vm_app_package()
+
+#define vm_print(tag, fmt, ...) \
+    __android_log_print(tag, VM_APP_PACKAGE(), fmt, ##__VA_ARGS__)
+#define debug_log(fmt, ...) \
+    vm_print(ANDROID_LOG_INFO, fmt, ##__VA_ARGS__)
+
 JavaVM *rb_vm_java_vm(void);
 #define VM_JAVA_VM() rb_vm_java_vm()
 
