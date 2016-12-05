@@ -8,7 +8,6 @@ Motion::Project::App.setup do |app|
   app.resources_dirs = []
   app.files.concat(Dir.glob(File.join(File.dirname(__FILE__), 'android/*.rb')))
   app.vendor_project :jar => File.join(File.dirname(__FILE__), '../../build/android/motion-cocos.jar')
-  app.archs = ['armv7', 'x86']
 
   %w{armeabi x86}.each do |arch|
     lib_arch = (arch == 'armeabi') ? 'armeabi-v7a' : 'x86'
