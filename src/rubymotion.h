@@ -19,6 +19,7 @@ extern "C" {
 #if CC_TARGET_OS_IPHONE || CC_TARGET_OS_APPLETV
 
 #include <objc/runtime.h>
+#include <objc/message.h>
 
 void DBGLog(const char *format, ... );
 #define debug_log DBGLog
@@ -85,12 +86,13 @@ rb_class_wrap_new(void *ptr, VALUE klass)
 {
 #define T_NATIVE 0x16
     struct rb_class_ptr *obj =
-	(struct rb_class_ptr *)class_createInstance((Class)klass,
+	(struct rb_class_ptr *)class_createInstance((Class)RB_GET_CLASS(klass),
 		sizeof(struct rb_class_ptr));
     assert(obj != NULL);
-    obj->klass = klass;
+    //obj->klass = klass;
     obj->flags = T_NATIVE;
     obj->ptr = ptr;
+    objc_msgSend((id)obj, sel_registerName("autorelease"));
     return (VALUE)obj;
 }
 
