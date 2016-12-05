@@ -120,9 +120,6 @@ cocos_android_app_init(JNIEnv* env)
     VALUE app_klass = rb_const_get(rb_cObject, "Application");
     assert(app_klass != Qnil);
 
-    mc_Application *app = new mc_Application();
-    VALUE obj = rb_class_wrap_new((void *)app, app_klass);
-    app->obj = rb_retain(obj);
-    mc_application_instance = rb_retain(app->obj);
+    application_alloc(app_klass, 0);
 }
 #endif
