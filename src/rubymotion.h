@@ -86,7 +86,7 @@ rb_class_wrap_new(void *ptr, VALUE klass)
 {
 #define T_NATIVE 0x16
     struct rb_class_ptr *obj =
-	(struct rb_class_ptr *)class_createInstance((Class)RB_GET_CLASS(klass),
+	(struct rb_class_ptr *)class_createInstance((Class)klass,
 		sizeof(struct rb_class_ptr));
     assert(obj != NULL);
     //obj->klass = klass;
