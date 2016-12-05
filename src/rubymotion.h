@@ -75,7 +75,7 @@ VALUE rb_vm_call_s(VALUE self, SEL sel, int argc, const VALUE *argv);
 #define rb_send(rcv, sel, argc, argv) rb_vm_call_s(rcv, sel, argc, argv)
 
 struct rb_class_ptr {
-    VALUE klass;
+    VALUE reserved; // MUST NOT use.
     VALUE flags;
     void *ptr;
 };
@@ -89,7 +89,6 @@ rb_class_wrap_new(void *ptr, VALUE klass)
 	(struct rb_class_ptr *)class_createInstance((Class)klass,
 		sizeof(struct rb_class_ptr));
     assert(obj != NULL);
-    //obj->klass = klass;
     obj->flags = T_NATIVE;
     obj->ptr = ptr;
     objc_msgSend((id)obj, sel_registerName("autorelease"));
