@@ -1,5 +1,7 @@
 # motion-game
 
+[![Gem Version](https://badge.fury.io/rb/motion-game.svg)](https://badge.fury.io/rb/motion-game)
+
 motion-game is a cross-platform mobile game engine for RubyMotion. It lets you write mobile games in Ruby for iOS, tvOS and Android.
 
 motion-game is currently in **beta**. Please give it a try and report problems you find to us.
