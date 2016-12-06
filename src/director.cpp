@@ -6,7 +6,7 @@
 
 VALUE rb_cDirector = Qnil;
 static VALUE mc_director_instance = Qnil;
-static VALUE director_using_scene = Qnil;
+static std::vector<VALUE> director_using_scene(3);
 
 /// @group Constructors
 
@@ -51,7 +51,7 @@ director_view_get(VALUE rcv, SEL sel)
 static VALUE
 director_run(VALUE rcv, SEL sel, VALUE obj)
 {
-    director_using_scene = rb_retain(obj);
+    director_using_scene[0] = rb_retain(obj);
     DIRECTOR(rcv)->runWithScene(rb_any_to_scene(obj));
     return rcv;
 }
@@ -65,8 +65,8 @@ director_run(VALUE rcv, SEL sel, VALUE obj)
 static VALUE
 director_replace(VALUE rcv, SEL sel, VALUE obj)
 {
-    rb_release(director_using_scene);
-    director_using_scene = rb_retain(obj);
+    rb_release(director_using_scene[0]);
+    director_using_scene[0] = rb_retain(obj);
     DIRECTOR(rcv)->replaceScene(rb_any_to_scene(obj));
     return rcv;
 }
@@ -80,6 +80,7 @@ director_replace(VALUE rcv, SEL sel, VALUE obj)
 static VALUE
 director_push(VALUE rcv, SEL sel, VALUE obj)
 {
+    director_using_scene.push_back(rb_retain(obj));
     DIRECTOR(rcv)->pushScene(rb_any_to_scene(obj));
     return rcv;
 }
@@ -92,6 +93,9 @@ director_push(VALUE rcv, SEL sel, VALUE obj)
 static VALUE
 director_pop(VALUE rcv, SEL sel)
 {
+    VALUE last_scene = director_using_scene.back();
+    director_using_scene.pop_back();
+    rb_release(last_scene);
     DIRECTOR(rcv)->popScene();
     return rcv;
 }
@@ -103,6 +107,13 @@ director_pop(VALUE rcv, SEL sel)
 static VALUE
 director_end(VALUE rcv, SEL sel)
 {
+    for (auto iter = director_using_scene.begin();
+	 iter != director_using_scene.end(); ++iter) {
+	if (*iter != 0) {
+	    rb_release(*iter);
+	    *iter = 0;
+	}
+    }
     DIRECTOR(rcv)->end();
     return rcv;
 }
