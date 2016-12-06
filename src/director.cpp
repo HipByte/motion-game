@@ -6,6 +6,7 @@
 
 VALUE rb_cDirector = Qnil;
 static VALUE mc_director_instance = Qnil;
+static VALUE director_using_scene = Qnil;
 
 /// @group Constructors
 
@@ -50,6 +51,7 @@ director_view_get(VALUE rcv, SEL sel)
 static VALUE
 director_run(VALUE rcv, SEL sel, VALUE obj)
 {
+    director_using_scene = rb_retain(obj);
     DIRECTOR(rcv)->runWithScene(rb_any_to_scene(obj));
     return rcv;
 }
@@ -63,6 +65,8 @@ director_run(VALUE rcv, SEL sel, VALUE obj)
 static VALUE
 director_replace(VALUE rcv, SEL sel, VALUE obj)
 {
+    rb_release(director_using_scene);
+    director_using_scene = rb_retain(obj);
     DIRECTOR(rcv)->replaceScene(rb_any_to_scene(obj));
     return rcv;
 }
