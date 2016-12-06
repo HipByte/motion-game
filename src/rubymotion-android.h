@@ -63,13 +63,15 @@ vm_local(jobject ref)
 }
 
 #define rb_retain(obj) (VALUE)vm_global((jobject)obj)
-#define rb_release(obj) \
-    ({ \
-	VALUE _obj = obj; \
-	VALUE _local = VM_LOCAL(_obj); \
-	VM_GLOBAL_DELETE(_obj); \
-	_local; \
-    })
+
+static jobject
+rb_release_internal(jobject obj)
+{
+    jobject local = _VM_LOCAL(obj);
+    _VM_GLOBAL_DELETE(obj);
+    return local;
+}
+#define rb_release(obj) rb_release_internal((jobject)obj)
 
 #define IMP void *
 #define SEL const char *
