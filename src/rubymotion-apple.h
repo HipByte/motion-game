@@ -90,7 +90,7 @@ void *rb_objc_release(void *addr);
 #define rb_release(obj) \
     ({ \
 	VALUE _obj = (VALUE)obj; \
-	rb_objc_release((void *)_obj); \
+	rb_objc_release((void *)_obj); \ // TODO: should send `autorelease` instead of `release` for stability.
 	_obj; \
     })
 
