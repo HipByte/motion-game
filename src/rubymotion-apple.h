@@ -87,10 +87,11 @@ void *rb_objc_retain(void *addr);
     })
 
 void *rb_objc_release(void *addr);
+// TODO: should send `autorelease` instead of `release` for stability.
 #define rb_release(obj) \
     ({ \
 	VALUE _obj = (VALUE)obj; \
-	rb_objc_release((void *)_obj); \ // TODO: should send `autorelease` instead of `release` for stability.
+	rb_objc_release((void *)_obj); \
 	_obj; \
     })
 
