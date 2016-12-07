@@ -26,6 +26,13 @@ class mc_Application : private cocos2d::Application {
 
     virtual bool
     applicationDidFinishLaunching() {
+#if CC_TARGET_OS_ANDROID
+	// FIXME : issue #58
+	// In the first GetObjectClass() call, it will return invalid class on Android 7.1.1.
+	// Then, it will fail to lookup method with invalid class on RubyMotion Android runtime.
+	// So, in advance, it have to call GetObjectClass() in here.
+	VM_JNI_ENV()->GetObjectClass((jobject)obj);
+#endif
 	rb_send(obj, start_sel, 0, NULL);
 	return true;
     }
