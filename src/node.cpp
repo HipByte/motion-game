@@ -12,7 +12,7 @@ static VALUE rb_cDrawNode = Qnil;
 static VALUE
 node_alloc(VALUE rcv, SEL sel)
 {
-    return rb_class_wrap_new((void *)cocos2d::Node::create(), rcv);
+    return rb_cocos2d_object_new(cocos2d::Node::create(), rcv);
 }
 
 /// @group Properties
@@ -312,7 +312,7 @@ static VALUE
 node_parent(VALUE rcv, SEL sel)
 {
     auto parent = NODE(rcv)->getParent();
-    return parent == NULL ? Qnil : rb_class_wrap_new((void *)parent, rb_cNode);
+    return parent == NULL ? Qnil : rb_cocos2d_object_new(parent, rb_cNode);
 }
 
 /// @method #children
@@ -325,7 +325,7 @@ node_children(VALUE rcv, SEL sel)
     VALUE ary = rb_ary_new();
     auto vector = NODE(rcv)->getChildren();
     for (int i = 0, count = vector.size(); i < count; i++) {
-	rb_ary_push(ary, rb_class_wrap_new((void *)vector.at(i), rb_cNode));
+	rb_ary_push(ary, rb_cocos2d_object_new(vector.at(i), rb_cNode));
     }
     return ary;
 }
@@ -356,7 +356,7 @@ static VALUE
 pnode_alloc(VALUE rcv, SEL sel)
 {
     cocos2d::ParallaxNode *pnode = cocos2d::ParallaxNode::create();
-    return rb_class_wrap_new((void *)pnode, rcv);
+    return rb_cocos2d_object_new(pnode, rcv);
 }
 
 /// @method #add(node, zpos, parallax_ratio, position_offset)
@@ -386,7 +386,7 @@ static VALUE
 draw_alloc(VALUE rcv, SEL sel)
 {
     auto node = cocos2d::DrawNode::create();
-    return rb_class_wrap_new((void *)node, rcv);
+    return rb_cocos2d_object_new(node, rcv);
 }
 
 /// @group Draw Operations

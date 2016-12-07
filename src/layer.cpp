@@ -88,7 +88,7 @@ scene_alloc(VALUE rcv, SEL sel)
     scene->addChild(layer);
     layer->scene = scene;
 
-    VALUE obj = rb_class_wrap_new((void *)layer, rcv);
+    VALUE obj = rb_cocos2d_object_new(layer, rcv);
     layer->obj = rb_retain(obj);
     return obj;
 }
@@ -225,7 +225,7 @@ scene_on_touch_event(VALUE rcv, SEL sel, mc_Scene_EventType type)
 	scene->getEventDispatcher()->removeEventListener(scene->touch_listener);
     }
     auto lambda = [block](cocos2d::Touch *touch, cocos2d::Event *event) -> bool {
-	VALUE touch_obj = rb_class_wrap_new((void *)touch, rb_cTouch);
+	VALUE touch_obj = rb_cocos2d_object_new(touch, rb_cTouch);
 	return RTEST(rb_block_call(block, 1, &touch_obj));
     };
 
@@ -315,7 +315,7 @@ scene_on_accelerate(VALUE rcv, SEL sel)
     cocos2d::Device::setAccelerometerEnabled(true);
     auto listener = cocos2d::EventListenerAcceleration::create(
 	[block](cocos2d::Acceleration *acc, cocos2d::Event *event) {
-	    VALUE acc_obj = rb_class_wrap_new((void *)acc, rb_cAcceleration);
+	    VALUE acc_obj = rb_cocos2d_object_new(acc, rb_cAcceleration);
 	    rb_block_call(block, 1, &acc_obj);
 	});
 
@@ -340,8 +340,6 @@ scene_on_contact_begin(VALUE rcv, SEL sel)
 
     auto listener = cocos2d::EventListenerPhysicsContact::create();
     listener->onContactBegin = [block](cocos2d::PhysicsContact &contact) -> bool {
-//	VALUE touch_obj = rb_class_wrap_new((void *)touch,
-//		rb_cTouch);
 	return RTEST(rb_block_call(block, 0, NULL));
     };
 

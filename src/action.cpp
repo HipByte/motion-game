@@ -72,7 +72,7 @@ static VALUE
 move_by_new(VALUE rcv, SEL sel, VALUE delta_location, VALUE interval)
 {
     auto action = cocos2d::MoveBy::create(NUM2DBL(interval), rb_any_to_ccvec2(delta_location));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class MoveTo < Action
@@ -86,7 +86,7 @@ static VALUE
 move_to_new(VALUE rcv, SEL sel, VALUE location, VALUE interval)
 {
     auto action = cocos2d::MoveTo::create(NUM2DBL(interval), rb_any_to_ccvec2(location));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class JumpBy < Action
@@ -104,7 +104,7 @@ static VALUE
 jump_by_new(VALUE rcv, SEL sel, VALUE delta_location, VALUE height, VALUE jumps, VALUE interval)
 {
     auto action = cocos2d::JumpBy::create(NUM2DBL(interval), rb_any_to_ccvec2(delta_location), NUM2DBL(height), NUM2INT(jumps));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class JumpTo < Action
@@ -120,7 +120,7 @@ static VALUE
 jump_to_new(VALUE rcv, SEL sel, VALUE location, VALUE height, VALUE jumps, VALUE interval)
 {
     auto action = cocos2d::JumpTo::create(NUM2DBL(interval), rb_any_to_ccvec2(location), NUM2DBL(height), NUM2INT(jumps));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class RotateBy < Action
@@ -136,7 +136,7 @@ static VALUE
 rotate_by_new(VALUE rcv, SEL sel, VALUE delta_angle, VALUE interval)
 {
     auto action = cocos2d::RotateBy::create(NUM2DBL(interval), NUM2DBL(delta_angle));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class RotateTo < Action
@@ -151,7 +151,7 @@ static VALUE
 rotate_to_new(VALUE rcv, SEL sel, VALUE angle, VALUE interval)
 {
     auto action = cocos2d::RotateTo::create(NUM2DBL(interval), NUM2DBL(angle));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class ScaleBy < Action
@@ -165,7 +165,7 @@ static VALUE
 scale_by_new(VALUE rcv, SEL sel, VALUE scale, VALUE interval)
 {
     auto action = cocos2d::ScaleBy::create(NUM2DBL(interval), NUM2DBL(scale));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class ScaleTo < Action
@@ -179,7 +179,7 @@ static VALUE
 scale_to_new(VALUE rcv, SEL sel, VALUE scale, VALUE interval)
 {
     auto action = cocos2d::ScaleTo::create(NUM2DBL(interval), NUM2DBL(scale));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class SkewBy < Action
@@ -195,7 +195,7 @@ static VALUE
 skew_by_new(VALUE rcv, SEL sel, VALUE delta_x_angle, VALUE delta_y_angle, VALUE interval)
 {
     auto action = cocos2d::SkewBy::create(NUM2DBL(interval), NUM2DBL(delta_x_angle), NUM2DBL(delta_y_angle));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class SkewTo < Action
@@ -211,7 +211,7 @@ static VALUE
 skew_to_new(VALUE rcv, SEL sel, VALUE x_angle, VALUE y_angle, VALUE interval)
 {
     auto action = cocos2d::SkewTo::create(NUM2DBL(interval), NUM2DBL(x_angle), NUM2DBL(y_angle));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class TintBy < Action
@@ -228,7 +228,7 @@ tint_by_new(VALUE rcv, SEL sel, VALUE delta_red, VALUE delta_green, VALUE delta_
 {
     auto action = cocos2d::TintBy::create(NUM2DBL(interval),
 	    NUM2BYTE(delta_red), NUM2BYTE(delta_green), NUM2BYTE(delta_blue));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class TintTo < Action
@@ -244,7 +244,7 @@ static VALUE
 tint_to_new(VALUE rcv, SEL sel, VALUE red, VALUE green, VALUE blue, VALUE interval)
 {
     auto action = cocos2d::TintTo::create(NUM2DBL(interval), NUM2BYTE(red), NUM2BYTE(green), NUM2BYTE(blue));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class FadeTo < Action
@@ -259,7 +259,7 @@ static VALUE
 fade_to_new(VALUE rcv, SEL sel, VALUE opacity, VALUE interval)
 {
     auto action = cocos2d::FadeTo::create(NUM2DBL(interval), NUM2BYTE(opacity));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class FadeIn < Action
@@ -272,7 +272,7 @@ static VALUE
 fade_in_new(VALUE rcv, SEL sel, VALUE interval)
 {
     auto action = cocos2d::FadeIn::create(NUM2DBL(interval));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class FadeOut < Action
@@ -285,7 +285,7 @@ static VALUE
 fade_out_new(VALUE rcv, SEL sel, VALUE interval)
 {
     auto action = cocos2d::FadeOut::create(NUM2DBL(interval));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class Blink < Action
@@ -299,7 +299,7 @@ static VALUE
 blink_new(VALUE rcv, SEL sel, VALUE blinks, VALUE interval)
 {
     auto action = cocos2d::Blink::create(NUM2DBL(interval), NUM2INT(blinks));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class Sequence < Action
@@ -319,7 +319,7 @@ sequence_new(VALUE rcv, SEL sel, VALUE actions)
     }
 
     auto action = cocos2d::Sequence::create(actionsVector);
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class Spawn < Action
@@ -338,7 +338,7 @@ spawn_new(VALUE rcv, SEL sel, VALUE actions)
     }
 
     auto action = cocos2d::Spawn::create(actionsVector);
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class Follow < Action
@@ -351,7 +351,7 @@ static VALUE
 follow_new(VALUE rcv, SEL sel, VALUE followed_node)
 {
     auto action = cocos2d::Follow::create(NODE(followed_node));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class DelayTime < Action
@@ -364,7 +364,7 @@ static VALUE
 delay_time_new(VALUE rcv, SEL sel, VALUE interval)
 {
     auto action = cocos2d::DelayTime::create(NUM2DBL(interval));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class Speed < Action
@@ -380,7 +380,7 @@ static VALUE
 speed_new(VALUE rcv, SEL sel, VALUE target_action, VALUE speed)
 {
     auto action = cocos2d::Speed::create(ACTION_INTERVAL(target_action), NUM2DBL(speed));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class Repeat < Action
@@ -394,7 +394,7 @@ static VALUE
 repeat_new(VALUE rcv, SEL sel, VALUE target_action, VALUE times)
 {
     auto action = cocos2d::Repeat::create(ACTION_INTERVAL(target_action), NUM2INT(times));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class RepeatForever < Action
@@ -407,7 +407,7 @@ static VALUE
 repeat_forever_new(VALUE rcv, SEL sel, VALUE target_action)
 {
     auto action = cocos2d::RepeatForever::create(ACTION_INTERVAL(target_action));
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 /// @class Animate < Action
@@ -470,7 +470,7 @@ animate_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
 	action = cocos2d::RepeatForever::create(action);
     }
 
-    return rb_class_wrap_new((void *)action, rb_cAction);
+    return rb_cocos2d_object_new(action, rb_cAction);
 }
 
 extern "C"

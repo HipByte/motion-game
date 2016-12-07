@@ -32,7 +32,7 @@ particle_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
 	particle = cocos2d::ParticleSystemQuad::createWithTotalParticles(50);
 	particle->setAutoRemoveOnFinish(true);
     }
-    return rb_class_wrap_new((void *)particle, rcv);
+    return rb_cocos2d_object_new(particle, rcv);
 }
 
 /// @group Properties

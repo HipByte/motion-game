@@ -52,7 +52,7 @@ sprite_new(VALUE rcv, SEL sel, VALUE name)
 	sprite = cocos2d::Sprite::create(name_str);
     }
     assert(sprite != NULL); // TODO raise exception
-    return rb_class_wrap_new((void *)sprite, rcv);
+    return rb_cocos2d_object_new(sprite, rcv);
 }
 
 /// @group Actions

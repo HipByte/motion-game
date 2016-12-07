@@ -165,7 +165,7 @@ text_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
 	text->setFontSize(NUM2LONG(font_size));
     }
 
-    return rb_class_wrap_new(text, rcv);
+    return rb_cocos2d_object_new(text, rcv);
 }
 
 /// @group Properties
@@ -358,7 +358,7 @@ button_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
 	button->setTitleText(RSTRING_PTR(StringValue(title)));
     }
 
-    return rb_class_wrap_new(button, rcv);
+    return rb_cocos2d_object_new(button, rcv);
 }
 
 /// @group Properties
@@ -479,7 +479,7 @@ static VALUE rb_cUISlider = Qnil;
 static VALUE
 slider_new(VALUE rcv, SEL sel)
 {
-    return rb_class_wrap_new(cocos2d::ui::Slider::create(), rcv);
+    return rb_cocos2d_object_new(cocos2d::ui::Slider::create(), rcv);
 }
 
 /// @group Properties
@@ -515,7 +515,7 @@ static VALUE rb_cUILayout = Qnil;
 static VALUE
 layout_new(VALUE rcv, SEL sel)
 {
-    return rb_class_wrap_new(cocos2d::ui::Layout::create(), rcv);
+    return rb_cocos2d_object_new(cocos2d::ui::Layout::create(), rcv);
 }
 
 /// @group Properties
@@ -619,7 +619,7 @@ static VALUE rb_cUIScroll = Qnil;
 static VALUE
 scroll_new(VALUE rcv, SEL sel)
 {
-    return rb_class_wrap_new(cocos2d::ui::ScrollView::create(), rcv);
+    return rb_cocos2d_object_new(cocos2d::ui::ScrollView::create(), rcv);
 }
 
 /// @group Properties
@@ -694,7 +694,7 @@ scroll_inner_container(VALUE rcv, SEL sel)
 {
     auto layout = SCROLL(rcv)->getInnerContainer();
     return layout == NULL
-	? Qnil : rb_class_wrap_new((void *)layout, rb_cUILayout);
+	? Qnil : rb_cocos2d_object_new(layout, rb_cUILayout);
 }
 
 /// @class List < Scroll
@@ -711,7 +711,7 @@ static VALUE rb_cUIList = Qnil;
 static VALUE
 list_new(VALUE rcv, SEL sel)
 {
-    return rb_class_wrap_new(cocos2d::ui::ListView::create(), rcv);
+    return rb_cocos2d_object_new(cocos2d::ui::ListView::create(), rcv);
 }
 
 /// @group Managing Items
@@ -853,7 +853,7 @@ static VALUE rb_cUIWeb = Qnil;
 static VALUE
 web_new(VALUE rcv, SEL sel)
 {
-    return rb_class_wrap_new(cocos2d::experimental::ui::WebView::create(), rcv);
+    return rb_cocos2d_object_new(cocos2d::experimental::ui::WebView::create(), rcv);
 }
 
 /// @group Loading Data

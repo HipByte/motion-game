@@ -17,8 +17,7 @@ static VALUE
 director_instance(VALUE rcv, SEL sel)
 {
     if (mc_director_instance == Qnil) {
-	VALUE obj = rb_class_wrap_new(
-	    (void *)cocos2d::Director::getInstance(), rb_cDirector);
+	VALUE obj = rb_cocos2d_object_new(cocos2d::Director::getInstance(), rb_cDirector);
 	mc_director_instance = rb_retain(obj);
     }
     return mc_director_instance;

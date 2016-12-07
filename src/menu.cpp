@@ -11,7 +11,7 @@ static VALUE
 menu_alloc(VALUE rcv, SEL sel)
 {
     cocos2d::Menu *menu = cocos2d::Menu::create();
-    return rb_class_wrap_new((void *)menu, rcv);
+    return rb_cocos2d_object_new(menu, rcv);
 }
 
 /// @group Miscellaneous

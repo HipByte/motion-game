@@ -36,6 +36,8 @@ extern VALUE rb_cColor;
 #define ACTION_INTERVAL(obj) _COCOS_WRAP_GET(obj, cocos2d::ActionInterval)
 #define FINITE_TIME_ACTION(obj) _COCOS_WRAP_GET(obj, cocos2d::FiniteTimeAction)
 
+VALUE rb_cocos2d_object_new(cocos2d::Ref *ptr, VALUE klass);
+
 static inline cocos2d::Vec2
 rb_any_to_ccvec2(VALUE obj)
 {

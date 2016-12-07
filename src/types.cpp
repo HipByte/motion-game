@@ -21,7 +21,8 @@ VALUE
 rb_ccvec2_to_obj(cocos2d::Vec2 _vec2)
 {
     cocos2d::Vec2 *vec2 = new cocos2d::Vec2(_vec2);
-    return rb_class_wrap_new((void *)vec2, rb_cPoint);
+    // cocos2d::Vec2 does not inherite cocos2d::Ref.
+    return rb_class_wrap_new(vec2, rb_cPoint);
 }
 
 static VALUE
@@ -118,7 +119,8 @@ VALUE
 rb_ccsize_to_obj(cocos2d::Size _size)
 {
     cocos2d::Size *size = new cocos2d::Size(_size);
-    return rb_class_wrap_new((void *)size, rb_cSize);
+    // cocos2d::Size does not inherite cocos2d::Ref.
+    return rb_class_wrap_new(size, rb_cSize);
 }
 
 static VALUE
@@ -250,7 +252,8 @@ VALUE
 rb_cccolor4_to_obj(cocos2d::Color4B _color)
 {
     cocos2d::Color4B *color = new cocos2d::Color4B(_color);
-    return rb_class_wrap_new((void *)color, rb_cColor);
+    // cocos2d::Color4B does not inherite cocos2d::Ref.
+    return rb_class_wrap_new(color, rb_cColor);
 }
 
 static VALUE
