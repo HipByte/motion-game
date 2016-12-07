@@ -67,8 +67,8 @@ vm_local(jobject ref)
 static inline jobject
 rb_release_internal(jobject obj)
 {
-    jobject local = _VM_LOCAL(obj);
-    _VM_GLOBAL_DELETE(obj);
+    jobject local = vm_local(obj);
+    vm_global_delete(obj);
     return local;
 }
 #define rb_release(obj) (VALUE)rb_release_internal((jobject)obj)
