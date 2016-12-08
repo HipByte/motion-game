@@ -150,7 +150,7 @@ VALUE rb_object_new(jclass klass, void *ptr);
 #define rb_class_wrap_new(ptr, klass) rb_object_new((jclass)klass, ptr)
 
 void *rb_object_ptr(VALUE obj);
-#define rb_class_wrap_get_ptr(obj) rb_object_ptr(obj)
+#define rb_class_wrap_get_ptr(obj) rb_object_ptr((VALUE)obj)
 
 const char *rb_str_to_cstr(VALUE obj);
 VALUE rb_string_value(VALUE*);

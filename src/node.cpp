@@ -490,6 +490,8 @@ void
 Init_Node(void)
 {
     rb_cNode = rb_define_class_under(rb_mMC, "Node", rb_cObject);
+    // Register finalizer in rb_cNode only for node.cpp because other classes inherit rb_cNode
+    rb_register_cocos2d_object_finalizer(rb_cNode);
 
     rb_define_singleton_method(rb_cNode, "alloc", node_alloc, 0);
     rb_define_method(rb_cNode, "anchor_point", node_anchor_point, 0);

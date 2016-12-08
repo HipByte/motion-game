@@ -395,6 +395,7 @@ void
 Init_Layer(void)
 {
     rb_cScene = rb_define_class_under(rb_mMC, "Scene", rb_cNode);
+    rb_register_cocos2d_object_finalizer(rb_cScene);
 
     rb_define_singleton_method(rb_cScene, "alloc", scene_alloc, 0);
     rb_define_method(rb_cScene, "initialize", scene_initialize, 0);

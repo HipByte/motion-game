@@ -478,6 +478,9 @@ void
 Init_Action(void)
 {
     rb_cAction = rb_define_class_under(rb_mMC, "Action", rb_cObject);
+    // Register finalizer in rb_cAction only for action.cpp because other classes inherit rb_cAction
+    rb_register_cocos2d_object_finalizer(rb_cAction);
+
     rb_define_method(rb_cAction, "reverse", action_reverse, 0);
     rb_define_method(rb_cAction, "clone", action_clone, 0);
     rb_define_method(rb_cAction, "done?", action_done, 0);
