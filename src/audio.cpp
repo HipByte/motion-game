@@ -60,6 +60,10 @@ audio_loop(VALUE rcv, SEL sel)
     return AUDIO_ENGINE::isLoop(AUDIO_ID(rcv)) ? Qtrue : Qfalse;
 }
 
+/// @method #loop=(value)
+/// Set whether to loop the sound.
+/// @param value [Boolean] true if the sound should loop.
+
 static VALUE
 audio_loop_set(VALUE rcv, SEL sel, VALUE flag)
 {
@@ -76,6 +80,10 @@ audio_volume(VALUE rcv, SEL sel)
     return DBL2NUM(AUDIO_ENGINE::getVolume(AUDIO_ID(rcv)));
 }
 
+/// @method #volume=(value)
+/// Set the volume of the sound.
+/// @param value [Float] the volume of the sound.
+
 static VALUE
 audio_volume_set(VALUE rcv, SEL sel, VALUE val)
 {
@@ -91,6 +99,10 @@ audio_current_position(VALUE rcv, SEL sel)
 {
     return DBL2NUM(AUDIO_ENGINE::getCurrentTime(AUDIO_ID(rcv)));
 }
+
+/// @method #current_position=(value)
+/// Set the position where to play the sound.
+/// @param value [Float] the position
 
 static VALUE
 audio_current_position_set(VALUE rcv, SEL sel, VALUE val)
