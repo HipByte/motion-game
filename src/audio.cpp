@@ -49,9 +49,9 @@ audio_play(VALUE rcv, SEL sel, int argc, VALUE *argv)
     return rb_class_wrap_new((void *)audio, rb_cAudio);
 }
 
-/// @group Properties
+/// @group Instance Method Summary
 
-/// @property #loop?
+/// @method #loop?
 /// @return [Boolean] whether the sound file should loop.
 
 static VALUE
@@ -71,7 +71,7 @@ audio_loop_set(VALUE rcv, SEL sel, VALUE flag)
     return flag;
 }
 
-/// @property #volume
+/// @method #volume
 /// @return [Float] the volume of the sound file, from a 0.0 to 1.0 Float range.
 
 static VALUE
@@ -91,7 +91,7 @@ audio_volume_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
-/// @property #current_position
+/// @method #current_position
 /// @return [Float] the position where to play the sound file.
 
 static VALUE
@@ -111,6 +111,7 @@ audio_current_position_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
+/// @group Properties
 /// @property-readonly #duration
 /// @return [Float] the duration left in the sound file.
 
@@ -120,7 +121,7 @@ audio_duration(VALUE rcv, SEL sel)
     return DBL2NUM(AUDIO_ENGINE::getDuration(AUDIO_ID(rcv)));
 }
 
-/// @group Playback
+/// @group Instance Method Summary
 
 /// @method #resume
 /// Resumes playing the sound file.
