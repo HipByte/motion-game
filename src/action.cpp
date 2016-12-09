@@ -419,7 +419,7 @@ repeat_forever_new(VALUE rcv, SEL sel, VALUE target_action)
 /// @param frame_names [Array<String>] an array of sprite frames to load and
 ///   use for the animation, which can be either the names of standalone image
 ///   files in the application's resource directory or the names of sprite
-///   frames loaded from a spritesheet using {load}.
+///   frames loaded from a spritesheet using {Sprite.load}.
 /// @param delay [Float] the delay in seconds between each frame animation.
 /// @param loops [Integer, Symbol] the number of times the animation should
 ///   loop. If given the +:forever+ symbol, the animation will loop forever.
