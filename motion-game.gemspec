@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.homepage    = 'http://www.rubymotion.com/developers/motion-game'
   spec.license     = 'BSD'
 
-  spec.files       = ['README.md', '.yardopts']
-  spec.files      += Dir.glob('lib/**/*.rb') + Dir.glob('doc/**/*') + Dir.glob('template/**/*')
+  spec.files       = ['README.md', '.yardopts', 'doc/API_reference.rb']
+  spec.files      += Dir.glob('lib/**/*.rb') + Dir.glob('template/**/*')
   # Add libraries for iOS
   spec.files      += Dir.glob('build/ios/*.a')
   # Add libraries for tvOS
