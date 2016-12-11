@@ -5,7 +5,7 @@ Gem::Specification.new do |spec|
   spec.description = "motion-game allows you to write cross-platform native mobile games in Ruby."
   spec.author      = 'HipByte'
   spec.email       = 'info@hipbyte.com'
-  spec.homepage    = 'http://www.rubymotion.com/developers/motion-game'
+  spec.homepage    = 'https://github.com/HipByte/motion-game'
   spec.license     = 'BSD'
 
   spec.files       = ['README.md', '.document', 'doc/API_reference.rb']
