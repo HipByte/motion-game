@@ -436,20 +436,6 @@ task 'doc' do
     io.write(api_gen.to_ruby.string)
   }
   sh "yard doc -o ./doc doc/API_reference.rb"
-
-  # Remove references to API_reference.rb.
-  Dir.glob('doc/**/*.html').each do |html|
-    txt = File.read(html)
-    txt.gsub!(/doc\/API_reference\.rb/, 'motion-game')
-    File.open(html, 'w') { |io| io.write(txt) }
-  end
-
-  # Remove "show source" links.
-  txt = File.read('doc/js/app.js')
-  txt.sub!(/\$\(createSourceLinks\);/, '')
-  File.open('doc/js/app.js', 'w') do |io|
-    io.write(txt)
-  end
 end
 
 desc 'Create motion-game.gem file'
