@@ -267,7 +267,8 @@ text_vertical_align(VALUE rcv, SEL sel)
       case cocos2d::TextVAlignment::BOTTOM:
 	return sym_bottom;
       default:
-	abort();
+	rb_raise(rb_eArgError, "expected :top, :center or :bottom symbol");
+	return Qnil; // No reachable.
     }
 }
 
@@ -305,7 +306,8 @@ text_horizontal_align(VALUE rcv, SEL sel)
       case cocos2d::TextHAlignment::RIGHT:
 	return sym_right;
       default:
-	abort();
+	rb_raise(rb_eArgError, "expected :left, :center or :right symbol");
+	return Qnil; // No reachable.
     }
 }
 
@@ -536,7 +538,8 @@ layout_type(VALUE rcv, SEL sel)
       case cocos2d::ui::Layout::Type::RELATIVE:
 	return sym_relative;
       default:
-	abort();
+	rb_raise(rb_eArgError, "expected :absolute, :vertical, :horizontal "\
+		"or :relative symbols");
     }
     return rcv;
 }
@@ -641,7 +644,9 @@ scroll_direction(VALUE rcv, SEL sel)
       case cocos2d::ui::ScrollView::Direction::BOTH:
 	return sym_both;
       default:
-	abort();
+	rb_raise(rb_eArgError,
+		"expected :none, :vertical, :horizontal or :both symbols");
+	return Qnil; // No reachable.
     }
 }
 
