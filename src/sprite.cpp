@@ -309,7 +309,7 @@ sprite_mass_set(VALUE rcv, SEL sel, VALUE arg)
     return arg;
 }
 
-/// @property #gravitates?
+/// @method #gravitates?
 /// @return [Boolean] whether the sprite should be affected by the scene's
 ///   gravitational force. The default is +true+.
 
@@ -319,6 +319,10 @@ sprite_gravitates(VALUE rcv, SEL sel)
     return need_physics(rcv)->isGravityEnabled() ? Qtrue : Qfalse;
 }
 
+/// @method #gravitates=(value)
+/// Set the body is affected by the physics world's gravitational force or not.
+/// @param value[Boolean] true if enable gravitational force.
+
 static VALUE
 sprite_gravitates_set(VALUE rcv, SEL sel, VALUE arg)
 {
@@ -326,7 +330,7 @@ sprite_gravitates_set(VALUE rcv, SEL sel, VALUE arg)
     return arg;
 }
 
-/// @property #dynamic?
+/// @method #dynamic?
 /// @return [Boolean] whether the sprite body should be dynamic or not in the
 ///   physics world. The default is +true+, and a dynamic body will affect
 ///   with gravity.
@@ -336,6 +340,10 @@ sprite_dynamic(VALUE rcv, SEL sel)
 {
     return need_physics(rcv)->isDynamic() ? Qtrue : Qfalse;
 }
+
+/// @method #dynamic=(value)
+/// Set dynamic to body.
+/// @param value [Boolean] true if the sprite body should be dynamic.
 
 static VALUE
 sprite_dynamic_set(VALUE rcv, SEL sel, VALUE arg)
@@ -376,7 +384,7 @@ sprite_velocity_set(VALUE rcv, SEL sel, VALUE arg)
     return arg;
 }
 
-/// @property #resting?
+/// @method #resting?
 /// @return [Boolean] whether the body is at rest.
 
 static VALUE
@@ -384,6 +392,10 @@ sprite_resting(VALUE rcv, SEL sel)
 {
     return need_physics(rcv)->isResting() ? Qtrue : Qfalse;
 }
+
+/// @method #resting=(value)
+/// Set body to rest
+/// @param value [Boolean] true if rest the body.
 
 static VALUE
 sprite_resting_set(VALUE rcv, SEL sel, VALUE arg)
