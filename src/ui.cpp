@@ -22,7 +22,7 @@ static VALUE rb_cUIWidget = Qnil;
 
 /// @group Properties
 
-/// @property #enabled?
+/// @method #enabled?
 /// Whether the widget is enabled. When enabled, a widget can be
 /// touched or clicked. By default, a widget is enabled.
 /// @return [Boolean] whether the widget is enabled.
@@ -33,6 +33,13 @@ widget_enabled(VALUE rcv, SEL sel)
     return WIDGET(rcv)->isEnabled() ? Qtrue : Qfalse;
 }
 
+/// @method #enabled=(value)
+/// Set whether the widget is enabled.
+/// @param value [Boolean] true if the widget is enabled,
+///   widget may be touched , false if the widget is disabled,
+///   widget cannot be touched.
+///   The default value is true, a widget is default to enabled
+
 static VALUE
 widget_enabled_set(VALUE rcv, SEL sel, VALUE val)
 {
@@ -40,7 +47,7 @@ widget_enabled_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
-/// @property #touch_enabled?
+/// @method #touch_enabled?
 /// Whether the widget is touch enabled. When touch enabled, a widget supports
 /// on_touch. By default, a widget is not touch enabled.
 /// @return [Boolean] whether the widget is touch enabled.
@@ -51,6 +58,11 @@ widget_touch_enabled(VALUE rcv, SEL sel)
     return WIDGET(rcv)->isTouchEnabled() ? Qtrue : Qfalse;
 }
 
+/// @method #touch_enabled=(value)
+/// Set whether the widget is touch enabled.
+/// @param value [Boolean] true if the widget is touch enabled,
+///   false if the widget is touch disabled.
+
 static VALUE
 widget_touch_enabled_set(VALUE rcv, SEL sel, VALUE val)
 {
@@ -58,7 +70,7 @@ widget_touch_enabled_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
-/// @property #highlighted?
+/// @method #highlighted?
 /// Whether the widget is highlighted. By default, a widget is not highlighted.
 /// @return [Boolean] whether the widget is highlighted.
 
@@ -67,6 +79,11 @@ widget_highlighted(VALUE rcv, SEL sel)
 {
     return WIDGET(rcv)->isHighlighted() ? Qtrue : Qfalse;
 }
+
+/// @method #highlighted=(value)
+/// Set whether the widget is hilighted.
+/// @param value [Boolean] true if the widget is hilighted,
+///   false if the widget is not hilighted.
 
 static VALUE
 widget_highlighted_set(VALUE rcv, SEL sel, VALUE val)
