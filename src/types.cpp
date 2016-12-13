@@ -42,6 +42,13 @@ point_x(VALUE rcv, SEL sel)
     return DBL2NUM(VEC2(rcv)->x);
 }
 
+static VALUE
+point_x_set(VALUE rcv, SEL sel, VALUE x)
+{
+    VEC2(rcv)->x = NUM2DBL(x);
+    return x;
+}
+
 /// @property #y
 /// @return [Float] the y coordinate of the point.
 
@@ -49,13 +56,6 @@ static VALUE
 point_y(VALUE rcv, SEL sel)
 {
     return DBL2NUM(VEC2(rcv)->y);
-}
-
-static VALUE
-point_x_set(VALUE rcv, SEL sel, VALUE x)
-{
-    VEC2(rcv)->x = NUM2DBL(x);
-    return x;
 }
 
 static VALUE
@@ -140,6 +140,13 @@ size_width(VALUE rcv, SEL sel)
     return DBL2NUM(SIZE(rcv)->width);
 }
 
+static VALUE
+size_width_set(VALUE rcv, SEL sel, VALUE obj)
+{
+    SIZE(rcv)->width = NUM2DBL(obj);
+    return obj;
+}
+
 /// @property #height
 /// @return [Float] the size height.
 
@@ -147,13 +154,6 @@ static VALUE
 size_height(VALUE rcv, SEL sel)
 {
     return DBL2NUM(SIZE(rcv)->height);
-}
-
-static VALUE
-size_width_set(VALUE rcv, SEL sel, VALUE obj)
-{
-    SIZE(rcv)->width = NUM2DBL(obj);
-    return obj;
 }
 
 static VALUE
@@ -346,8 +346,8 @@ Init_Types(void)
 
     rb_define_singleton_method(rb_cPoint, "alloc", point_alloc, 0);
     rb_define_method(rb_cPoint, "x", point_x, 0);
-    rb_define_method(rb_cPoint, "y", point_y, 0);
     rb_define_method(rb_cPoint, "x=", point_x_set, 1);
+    rb_define_method(rb_cPoint, "y", point_y, 0);
     rb_define_method(rb_cPoint, "y=", point_y_set, 1);
     rb_define_method(rb_cPoint, "+", point_plus, 1);
     rb_define_method(rb_cPoint, "-", point_minus, 1);
@@ -357,8 +357,8 @@ Init_Types(void)
 
     rb_define_singleton_method(rb_cSize, "alloc", size_alloc, 0);
     rb_define_method(rb_cSize, "width", size_width, 0);
-    rb_define_method(rb_cSize, "height", size_height, 0);
     rb_define_method(rb_cSize, "width=", size_width_set, 1);
+    rb_define_method(rb_cSize, "height", size_height, 0);
     rb_define_method(rb_cSize, "height=", size_height_set, 1);
     rb_define_method(rb_cSize, "+", size_plus, 1);
     rb_define_method(rb_cSize, "-", size_minus, 1);
@@ -370,12 +370,12 @@ Init_Types(void)
 
     rb_define_singleton_method(rb_cColor, "alloc", color_alloc, 0);
     rb_define_method(rb_cColor, "red", color_red, 0);
-    rb_define_method(rb_cColor, "green", color_green, 0);
-    rb_define_method(rb_cColor, "blue", color_blue, 0);
-    rb_define_method(rb_cColor, "alpha", color_alpha, 0);
     rb_define_method(rb_cColor, "red=", color_red_set, 1);
+    rb_define_method(rb_cColor, "green", color_green, 0);
     rb_define_method(rb_cColor, "green=", color_green_set, 1);
+    rb_define_method(rb_cColor, "blue", color_blue, 0);
     rb_define_method(rb_cColor, "blue=", color_blue_set, 1);
+    rb_define_method(rb_cColor, "alpha", color_alpha, 0);
     rb_define_method(rb_cColor, "alpha=", color_alpha_set, 1);
     rb_define_method(rb_cColor, "inspect", color_inspect, 0);
 }
