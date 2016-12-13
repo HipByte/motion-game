@@ -982,8 +982,7 @@ void
 Init_UI(void)
 {
     rb_cUIWidget = rb_define_class_under(rb_mMC, "Widget", rb_cNode);
-    // Register finalizer in rb_cUIWidget only for ui.cpp because other classes inherit rb_cUIWidget
-    rb_register_cocos2d_object_finalizer(rb_cUIWidget);
+    // rb_register_cocos2d_object_finalizer(rb_cUIWidget); removed because rb_cUIWidget inherits rb_cNode and it already has finalizer.
 
     rb_define_method(rb_cUIWidget, "enabled?", widget_enabled, 0);
     rb_define_method(rb_cUIWidget, "enabled=", widget_enabled_set, 1);
