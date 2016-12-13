@@ -626,6 +626,9 @@ layout_clipping_set(VALUE rcv, SEL sel, VALUE arg)
 /// Add a child to the container.
 /// @param child [Node] A child node.
 
+/// @method #<<(child)
+/// This is alias method of {#add}.
+
 static VALUE
 layout_add(VALUE rcv, SEL sel, VALUE widget)
 {
@@ -1037,6 +1040,7 @@ Init_UI(void)
     rb_define_method(rb_cUILayout, "clipping=", layout_clipping_set, 1);
     rb_define_method(rb_cUILayout, "clipping?", layout_clipping, 0);
     rb_define_method(rb_cUILayout, "add", layout_add, 1);
+    rb_define_method(rb_cUILayout, "<<", layout_add, 1);
 
     sym_absolute = rb_name2sym("absolute");
     sym_relative = rb_name2sym("relative");
