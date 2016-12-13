@@ -622,6 +622,10 @@ layout_clipping_set(VALUE rcv, SEL sel, VALUE arg)
     return arg;
 }
 
+/// @method #add(child)
+/// Add a child to the container.
+/// @param child [Node] A child node.
+
 static VALUE
 layout_add(VALUE rcv, SEL sel, VALUE widget)
 {
