@@ -601,7 +601,7 @@ layout_background_color_set(VALUE rcv, SEL sel, VALUE color)
     return color;
 }
 
-/// @property #clipping?
+/// @method #clipping?
 /// @return [Boolean] whether the layout can clip its content and children
 ///   (default is false).
 
@@ -610,6 +610,10 @@ layout_clipping(VALUE rcv, SEL sel)
 {
     return LAYOUT(rcv)->isClippingEnabled() ? Qtrue : Qfalse;
 }
+
+/// @method #clipping=(value)
+/// Change if layout can clip it's content and child.
+/// @param value [Boolean] true if clip the its content and children.
 
 static VALUE
 layout_clipping_set(VALUE rcv, SEL sel, VALUE arg)
