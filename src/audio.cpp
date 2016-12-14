@@ -49,7 +49,7 @@ audio_play(VALUE rcv, SEL sel, int argc, VALUE *argv)
     return rb_class_wrap_new((void *)audio, rb_cAudio);
 }
 
-/// @group Instance Method Summary
+/// @endgroup
 
 /// @method #loop?
 /// @return [Boolean] whether the sound file should loop.
@@ -111,7 +111,6 @@ audio_current_position_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
-/// @group Properties
 /// @property-readonly #duration
 /// @return [Float] the duration left in the sound file.
 
@@ -120,8 +119,6 @@ audio_duration(VALUE rcv, SEL sel)
 {
     return DBL2NUM(AUDIO_ENGINE::getDuration(AUDIO_ID(rcv)));
 }
-
-/// @group Instance Method Summary
 
 /// @method #resume
 /// Resumes playing the sound file.

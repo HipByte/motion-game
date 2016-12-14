@@ -35,8 +35,6 @@ particle_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
     return rb_cocos2d_object_new(particle, rcv);
 }
 
-/// @group Properties
-
 /// @property-writeonly #texture
 /// @return [String] the path of the texture file.
 

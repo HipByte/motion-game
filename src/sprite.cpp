@@ -291,7 +291,7 @@ sprite_apply_force(VALUE rcv, SEL sel, VALUE force)
     return rcv;
 }
 
-/// @group Properties
+/// @endgroup
 
 /// @property #mass
 /// @return [Float] the body mass of the sprite.

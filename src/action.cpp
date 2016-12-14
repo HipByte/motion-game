@@ -49,7 +49,6 @@ action_clone(VALUE rcv, SEL sel)
     return rcv;
 }
 
-/// @group Properties
 /// @property #done?
 /// Whether the action is done.
 /// @return [Boolean] whether the action is done.

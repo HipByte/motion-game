@@ -31,8 +31,6 @@ point_alloc(VALUE rcv, SEL sel)
     return rb_ccvec2_to_obj(cocos2d::Vec2());
 }
 
-/// @group Properties
-
 /// @property #x
 /// @return [Float] the x coordinate of the point.
 
@@ -128,8 +126,6 @@ size_alloc(VALUE rcv, SEL sel)
 {
     return rb_ccsize_to_obj(cocos2d::Size());
 }
-
-/// @group Properties
 
 /// @property #width
 /// @return [Float] the size width.
@@ -261,8 +257,6 @@ color_alloc(VALUE rcv, SEL sel)
 {
     return rb_cccolor4_to_obj(cocos2d::Color4B::BLACK);
 }
-
-/// @group Properties
 
 /// @property #red
 /// @return [Float] the red portion of the color, from +0.0+ to +1.0+.

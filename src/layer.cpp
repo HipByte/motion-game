@@ -346,7 +346,7 @@ scene_on_contact_begin(VALUE rcv, SEL sel)
     return scene_add_listener(rcv, listener);
 }
 
-/// @group Properties
+/// @endgroup
 
 /// @property #gravity
 /// @return [Point] the gravity of the scene's physics world.
@@ -364,7 +364,7 @@ scene_gravity_set(VALUE rcv, SEL sel, VALUE arg)
     return rcv;
 }
 
-/// @property #debug_physics?
+/// @method #debug_physics?
 /// @return [Boolean] whether the physics engine should draw debug lines.
 
 static VALUE
@@ -374,6 +374,10 @@ scene_debug_physics(VALUE rcv, SEL sel)
 	== cocos2d::PhysicsWorld::DEBUGDRAW_NONE ? Qfalse : Qtrue;
 }
 
+/// @method #debug_physics=(value)
+/// Set to draw the debug line.
+/// @param value [Boolean] true if draw debug lines.
+
 static VALUE
 scene_debug_physics_set(VALUE rcv, SEL sel, VALUE arg)
 {
@@ -382,6 +386,10 @@ scene_debug_physics_set(VALUE rcv, SEL sel, VALUE arg)
 	    : cocos2d::PhysicsWorld::DEBUGDRAW_NONE);
     return arg;
 }
+
+/// @method #color=(color)
+/// Set background color for scene.
+/// @param color [Color] background color for scene.
 
 static VALUE
 scene_color_set(VALUE rcv, SEL sel, VALUE val)

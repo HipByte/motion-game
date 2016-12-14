@@ -14,7 +14,6 @@ menu_alloc(VALUE rcv, SEL sel)
     return rb_cocos2d_object_new(menu, rcv);
 }
 
-/// @group Miscellaneous
 /// @method #align_items_vertically(padding=null)
 /// aligns menu items vertically with padding
 /// (call after adding items via image_item)
@@ -57,8 +56,7 @@ menu_align_items_horizontally(VALUE rcv, SEL sel, int argc, VALUE *argv)
     return rcv;
 }
 
-/// @group Properties
-/// @property #enabled?
+/// @method #enabled?
 /// Whether the menu is enabled. When enabled, a menu can be
 /// touched or clicked. By default, a menu is enabled.
 /// @return [Boolean] whether the menu is enabled.
@@ -68,6 +66,10 @@ menu_enabled(VALUE rcv, SEL sel)
     return MENU(rcv)->isEnabled() ? Qtrue : Qfalse;
 }
 
+/// @method #enabled=(value)
+/// Enable or disable a menu item.
+/// @param value [Boolean] true if enable an item.
+
 static VALUE
 menu_enabled_set(VALUE rcv, SEL sel, VALUE val)
 {
@@ -75,6 +77,11 @@ menu_enabled_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
+/// @method #image_item(normal_image, selected_image)
+/// Create a menu item with a normal and selected images.
+/// @param normal_image [String] normal image name.
+/// @param selected_image [String] selected image name.
+/// @yield The methods to call when tapped menu.
 
 static VALUE
 menu_image_item(VALUE rcv, SEL sel, VALUE normal_image, VALUE selected_image)

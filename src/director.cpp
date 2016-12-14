@@ -161,7 +161,7 @@ director_stop_animation(VALUE rcv, SEL sel)
     return rcv;
 }
 
-/// @group Properties
+/// @endgroup
 
 /// @property-readonly #origin
 /// @return [Point] the visible origin of the director view in points.
@@ -193,7 +193,7 @@ director_show_stats_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
-/// @property-readonly #show_stats?
+/// @method #show_stats?
 /// Controls whether the FPS (frame-per-second) statistic label is displayed
 /// in the bottom-left corner of the director view. By default it is hidden.
 /// @return [Boolean] whether the FPS label is displayed.

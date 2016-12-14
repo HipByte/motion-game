@@ -15,8 +15,6 @@ node_alloc(VALUE rcv, SEL sel)
     return rb_cocos2d_object_new(cocos2d::Node::create(), rcv);
 }
 
-/// @group Properties
-
 /// @property #anchor_point
 /// The anchor point of the node, as a set of percentage coordinates.
 /// The anchor point represents where the node will be attached to its parent,
@@ -71,9 +69,9 @@ node_size_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
-/// @property #visible?
-/// @return [Boolean] whether the node should be visible. The default value is
-///   true.
+/// @method #visible=(value)
+/// Set whether the node is visible.
+/// @param value [Boolean] true if display the node.
 
 static VALUE
 node_visible_set(VALUE rcv, SEL sel, VALUE val)
@@ -81,6 +79,10 @@ node_visible_set(VALUE rcv, SEL sel, VALUE val)
     NODE(rcv)->setVisible(RTEST(val));
     return val;
 }
+
+/// @method #visible?
+/// @return [Boolean] whether the node should be visible. The default value is
+///   true.
 
 static VALUE
 node_visible(VALUE rcv, SEL sel)
@@ -191,7 +193,6 @@ node_name_set(VALUE rcv, SEL sel, VALUE val)
     return val;
 }
 
-/// @group Miscellaneous
 /// @method #run_action(action)
 /// Run the provided action on the receiver node.
 /// @return [Node] the receiver.

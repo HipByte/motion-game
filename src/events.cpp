@@ -11,8 +11,6 @@ VALUE rb_cTouch = Qnil;
 
 #define ACC(obj) _COCOS_WRAP_GET(obj, cocos2d::Acceleration)
 
-/// @group Properties
-
 /// @property-readonly #x
 /// @return [Float] the x coordinate of the acceleration event.
 
@@ -54,8 +52,6 @@ acc_timestamp(VALUE rcv, SEL sel)
 /// the {Scene#on_touch_begin} method.
 
 #define TOUCH(obj) _COCOS_WRAP_GET(obj, cocos2d::Touch)
-
-/// @group Properties
 
 /// @property-readonly #location
 /// @return [Point] the current location of the touch event.
