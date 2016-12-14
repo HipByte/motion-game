@@ -341,6 +341,8 @@ class DocAPIGen
         current_node = add_property(current_class, md[1], :writer)
       elsif md = line.match(/@group\s+(.+)/)
         current_node = add_group(current_class, md[1])
+      elsif md = line.match(/@endgroup/)
+        current_node = add_endgroup(current_class)
       else
         current_node[:doc] << line << "\n"
       end
@@ -368,6 +370,8 @@ class DocAPIGen
             io.puts "  def #{node[:sel]}; end"
           when :group
             io.puts "  # @group #{node[:name]}"
+          when :endgroup
+            io.puts "  # @endgroup"
         end
         io.puts
       end
@@ -411,6 +415,12 @@ class DocAPIGen
 
   def add_group(klass, definition)
     group = { :type => :group, :name => definition, :doc => '' }
+    klass[:nodes] << group
+    group
+  end
+
+  def add_endgroup(klass)
+    group = { :type => :endgroup, :doc => '' }
     klass[:nodes] << group
     group
   end
