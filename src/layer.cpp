@@ -387,12 +387,12 @@ scene_debug_physics_set(VALUE rcv, SEL sel, VALUE arg)
     return arg;
 }
 
-/// @method #color=(color)
+/// @method #background_color=(color)
 /// Set background color for scene.
 /// @param color [Color] background color for scene.
 
 static VALUE
-scene_color_set(VALUE rcv, SEL sel, VALUE val)
+scene_background_color_set(VALUE rcv, SEL sel, VALUE val)
 {
     SCENE(rcv)->setBackgroundColor(rb_any_to_cccolor3(val));
     return val;
@@ -422,5 +422,6 @@ Init_Layer(void)
     rb_define_method(rb_cScene, "gravity=", scene_gravity_set, 1);
     rb_define_method(rb_cScene, "debug_physics?", scene_debug_physics, 0);
     rb_define_method(rb_cScene, "debug_physics=", scene_debug_physics_set, 1);
-    rb_define_method(rb_cScene, "color=", scene_color_set, 1);
+    rb_define_method(rb_cScene, "background_color=", scene_background_color_set, 1);
+    rb_define_method(rb_cScene, "color=", scene_background_color_set, 1); // depricated
 }
