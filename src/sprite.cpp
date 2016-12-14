@@ -80,6 +80,7 @@ run_action(VALUE rcv, cocos2d::FiniteTimeAction *action)
 ///   current location.
 /// @param interval [Float] the animation interval.
 /// @return [Sprite] the receiver.
+/// @yield if passed a block, the block will be called for the action.
 
 static VALUE
 sprite_move_by(VALUE rcv, SEL sel, VALUE delta_location, VALUE interval)
@@ -93,6 +94,7 @@ sprite_move_by(VALUE rcv, SEL sel, VALUE delta_location, VALUE interval)
 /// @param location [Point] where the receiver should be moved to.
 /// @param interval [Float] the animation interval.
 /// @return [Sprite] the receiver.
+/// @yield if passed a block, the block will be called for the action.
 
 static VALUE
 sprite_move_to(VALUE rcv, SEL sel, VALUE location, VALUE interval)
@@ -107,6 +109,8 @@ sprite_move_to(VALUE rcv, SEL sel, VALUE location, VALUE interval)
 /// @param delta_angle [Float] the angle to add to the current rotation
 /// @param interval [Float] the animation interval.
 /// @return [Sprite] the receiver.
+/// @yield if passed a block, the block will be called for the action.
+
 static VALUE
 sprite_rotate_by(VALUE rcv, SEL sel, VALUE delta_angle, VALUE interval)
 {
@@ -120,6 +124,8 @@ sprite_rotate_by(VALUE rcv, SEL sel, VALUE delta_angle, VALUE interval)
 /// @param angle [Float] the receiver should be rotated to.
 /// @param interval [Float] the animation interval.
 /// @return [Sprite] the receiver.
+/// @yield if passed a block, the block will be called for the action.
+
 static VALUE
 sprite_rotate_to(VALUE rcv, SEL sel, VALUE angle, VALUE interval)
 {
@@ -133,6 +139,7 @@ sprite_rotate_to(VALUE rcv, SEL sel, VALUE angle, VALUE interval)
 ///   blink.
 /// @param interval [Float] the animation interval.
 /// @return [Sprite] the receiver.
+/// @yield if passed a block, the block will be called for the action.
 
 static VALUE
 sprite_blink(VALUE rcv, SEL sel, VALUE blinks, VALUE interval)
@@ -153,6 +160,7 @@ sprite_blink(VALUE rcv, SEL sel, VALUE blinks, VALUE interval)
 /// @param loops [Integer, Symbol] the number of times the animation should
 ///   loop. If given the +:forever+ symbol, the animation will loop forever.
 /// @return [Sprite] the receiver.
+/// @yield if passed a block, the block will be called for the action.
 
 static VALUE
 sprite_animate(VALUE rcv, SEL sel, int argc, VALUE *argv)

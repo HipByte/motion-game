@@ -196,6 +196,8 @@ node_name_set(VALUE rcv, SEL sel, VALUE val)
 /// @method #run_action(action)
 /// Run the provided action on the receiver node.
 /// @return [Node] the receiver.
+/// @yield if passed a block, the block will be called for the action.
+
 static VALUE
 node_run_action(VALUE rcv, SEL sel, VALUE action)
 {
