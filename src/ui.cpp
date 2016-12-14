@@ -20,8 +20,6 @@ static VALUE rb_cUIWidget = Qnil;
 
 #define WIDGET(obj) _COCOS_WRAP_GET(obj, cocos2d::ui::Widget)
 
-/// @group Properties
-
 /// @method #enabled?
 /// Whether the widget is enabled. When enabled, a widget can be
 /// touched or clicked. By default, a widget is enabled.
@@ -185,7 +183,7 @@ text_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
     return rb_cocos2d_object_new(text, rcv);
 }
 
-/// @group Properties
+/// @endgroup
 
 /// @property #text
 /// @return [String] content of the widget.
@@ -380,7 +378,7 @@ button_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
     return rb_cocos2d_object_new(button, rcv);
 }
 
-/// @group Properties
+/// @endgroup
 
 /// @property #text
 /// @return [String] title of the button.
@@ -513,7 +511,7 @@ slider_new(VALUE rcv, SEL sel)
     return rb_cocos2d_object_new(cocos2d::ui::Slider::create(), rcv);
 }
 
-/// @group Properties
+/// @endgroup
 
 /// @property #progress
 /// @return [Integer] the progress direction of the slider, as a percentage
@@ -549,7 +547,7 @@ layout_new(VALUE rcv, SEL sel)
     return rb_cocos2d_object_new(cocos2d::ui::Layout::create(), rcv);
 }
 
-/// @group Properties
+/// @endgroup
 
 /// @property #type
 /// @return [:absolute, :vertical, :horizontal, :relative] the layout type.
@@ -665,7 +663,7 @@ scroll_new(VALUE rcv, SEL sel)
     return rb_cocos2d_object_new(cocos2d::ui::ScrollView::create(), rcv);
 }
 
-/// @group Properties
+/// @endgroup
 
 /// @property #direction
 /// @return [:none, :vertical, :horizontal, :both] the direction of the scroll
@@ -864,7 +862,7 @@ list_selected_item(VALUE rcv, SEL sel)
     return LONG2NUM(LIST(rcv)->getCurSelectedIndex());
 }
 
-/// @group Properties
+/// @endgroup
 
 /// @property #items_margin
 /// @return [Float] the margin between items in the list.
