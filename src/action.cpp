@@ -49,7 +49,7 @@ action_clone(VALUE rcv, SEL sel)
     return rcv;
 }
 
-/// @property #done?
+/// @method #done?
 /// Whether the action is done.
 /// @return [Boolean] whether the action is done.
 static VALUE
