@@ -267,9 +267,11 @@ node_add(VALUE rcv, SEL sel, int argc, VALUE *argv)
     rb_scan_args(argc, argv, "11", &child, &zpos);
 
     if (zpos == Qnil) {
+	rb_retain(child); // FIXME need release...
 	NODE(rcv)->addChild(NODE(child));
     }
     else {
+	rb_retain(child); // FIXME need release...
 	NODE(rcv)->addChild(NODE(child), NUM2LONG(zpos));
     }
     return rcv;
@@ -375,6 +377,7 @@ static VALUE
 pnode_add(VALUE rcv, SEL sel, VALUE child, VALUE z, VALUE parallax_ratio,
 	VALUE position_offset)
 {
+    rb_retain(child); // FIXME need release...
     PNODE(rcv)->addChild(NODE(child), NUM2INT(z),
 	    rb_any_to_ccvec2(parallax_ratio),
 	    rb_any_to_ccvec2(position_offset));

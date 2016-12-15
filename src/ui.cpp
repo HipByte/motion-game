@@ -642,6 +642,7 @@ layout_clipping_set(VALUE rcv, SEL sel, VALUE arg)
 static VALUE
 layout_add(VALUE rcv, SEL sel, VALUE widget)
 {
+    rb_retain(widget); // FIXME need release...
     LAYOUT(rcv)->addChild(WIDGET(widget));
     return widget;
 }
