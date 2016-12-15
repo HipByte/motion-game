@@ -481,7 +481,7 @@ void
 Init_Sprite(void)
 {
     rb_cSprite = rb_define_class_under(rb_mMC, "Sprite", rb_cNode);
-    rb_register_cocos2d_object_finalizer(rb_cSprite);
+    // rb_register_cocos2d_object_finalizer(rb_cSprite); removed because rb_cSprite inherits rb_cNode and it already has finalizer.
 
     rb_define_singleton_method(rb_cSprite, "load", sprite_load, 1);
     rb_define_singleton_method(rb_cSprite, "new", sprite_new, 1);

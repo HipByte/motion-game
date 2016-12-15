@@ -106,7 +106,7 @@ void
 Init_Menu(void)
 {
     rb_cMenu = rb_define_class_under(rb_mMC, "Menu", rb_cNode);
-    rb_register_cocos2d_object_finalizer(rb_cMenu);
+    // rb_register_cocos2d_object_finalizer(rb_cMenu); removed because rb_cMenu inherits rb_cNode and it already has finalizer.
 
     rb_define_singleton_method(rb_cMenu, "alloc", menu_alloc, 0);
     rb_define_method(rb_cMenu, "enabled?", menu_enabled, 0);
