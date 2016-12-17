@@ -116,6 +116,7 @@ vm_rb2jv(VALUE obj)
 #define NUM2INT(x) rb_vm_jobject_to_jint(RB2JV(x))
 #define NUM2LONG(x) (long)(rb_vm_jobject_to_jint(RB2JV(x)))
 #define LONG2NUM(x) (VALUE)(rb_vm_jint_to_jobject(x))
+#define LONG2FIX(x) LONG2NUM(x)
 
 bool rb_vm_kind_of(VALUE obj, VALUE klass);
 #define rb_obj_is_kind_of(obj, klass) rb_vm_kind_of(obj, (VALUE)klass)
