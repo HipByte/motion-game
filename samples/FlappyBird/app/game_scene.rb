@@ -69,7 +69,7 @@ class GameScene < MG::Scene
     @bird.category_mask = BIRD
     @bird.contact_mask = WORLD
     @bird.position = [100, MG::Director.shared.size.height / 2]
-    @bird.animate(['bird_one.png', 'bird_two.png', 'bird_three.png'], 0.5, :forever)
+    @bird.animate(['bird_one.png', 'bird_two.png', 'bird_three.png'], 0.5, MG::Repeat::FOREVER)
     add @bird
   end
 
