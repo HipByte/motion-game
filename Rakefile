@@ -331,6 +331,8 @@ class DocAPIGen
       line = line[4..-1].rstrip
       if md = line.match(/@class\s+(.+)/)
         current_class = current_node = add_class(md[1])
+      elsif md = line.match(/@constant\s+(.+)/)
+        current_node = add_constant(current_class, md[1])
       elsif md = line.match(/@method\s+(.+)/)
         current_node = add_method(current_class, md[1])
       elsif md = line.match(/@property\s+(.+)/)
@@ -362,6 +364,8 @@ class DocAPIGen
       klass[:nodes].each do |node|
         io.puts doc_comment(node, 2)
         case node[:type]
+          when :constant
+            io.puts "  #{node[:sel]}"
           when :property
             io.puts "  attr_#{node[:mode]} :#{node[:sel]}"
           when :cmethod
@@ -387,6 +391,12 @@ class DocAPIGen
     klass = { :def => definition, :doc => '', :nodes => [] }
     @classes << klass
     klass
+  end
+
+  def add_constant(klass, definition)
+    const = { :type => :constant, :sel => definition, :doc =>'' }
+    klass[:nodes] << const
+    const
   end
 
   def add_method(klass, definition)
