@@ -173,6 +173,9 @@ int rb_ary_len(VALUE ary);
 VALUE rb_ary_at(VALUE ary, int pos);
 #define RARRAY_AT(obj, i) rb_ary_at((VALUE)obj, (int)i)
 
+void rb_vm_set_const(VALUE outer, ID path, VALUE value);
+#define rb_define_const(_outer, _path, _value) \
+    rb_vm_set_const((VALUE)_outer, rb_intern(_path), _value)
 VALUE rb_vm_get_const(VALUE outer, ID path, bool lexical_lookup,
         bool defined, void *outer_stack);
 #define rb_const_get(_outer, _path) \

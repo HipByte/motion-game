@@ -110,4 +110,5 @@ VALUE rb_define_class_under(VALUE, const char*, VALUE);
 
 const char *rb_sym2name(VALUE sym);
 
+void rb_define_const(VALUE,const char*,VALUE);
 VALUE rb_const_get(VALUE, ID);
