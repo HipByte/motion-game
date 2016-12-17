@@ -396,6 +396,9 @@ repeat_new(VALUE rcv, SEL sel, VALUE target_action, VALUE times)
     return rb_cocos2d_object_new(action, rb_cAction);
 }
 
+/// @constant FOREVER = -1
+/// This constant is used as a count value indicating an infinite loop.
+
 /// @class RepeatForever < Action
 /// @group Constructors
 /// @method #initialize(target_action)
@@ -546,6 +549,7 @@ Init_Action(void)
 
     rb_cRepeat = rb_define_class_under(rb_mMC, "Repeat", rb_cAction);
     rb_define_singleton_method(rb_cRepeat, "new", repeat_new, 2);
+    rb_define_const(rb_cRepeat, "FOREVER", LONG2FIX(-1));
 
     rb_cRepeatForever = rb_define_class_under(rb_mMC, "RepeatForever", rb_cAction);
     rb_define_singleton_method(rb_cRepeatForever, "new", repeat_forever_new, 1);
