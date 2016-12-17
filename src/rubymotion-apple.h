@@ -109,3 +109,5 @@ VALUE rb_vm_block_eval(void *block, int argc, const VALUE *argv);
 VALUE rb_define_class_under(VALUE, const char*, VALUE);
 
 const char *rb_sym2name(VALUE sym);
+
+VALUE rb_const_get(VALUE, ID);
