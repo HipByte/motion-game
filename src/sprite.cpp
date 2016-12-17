@@ -157,8 +157,8 @@ sprite_blink(VALUE rcv, SEL sel, VALUE blinks, VALUE interval)
 ///   files in the application's resource directory or the names of sprite
 ///   frames loaded from a spritesheet using {load}.
 /// @param delay [Float] the delay in seconds between each frame animation.
-/// @param loops [Integer, Symbol] the number of times the animation should
-///   loop. If given the +:forever+ symbol, the animation will loop forever.
+/// @param loops [Integer] the number of times the animation should loop.
+///   If given {Repeat::FOREVER} (or negative value directly), the animation will loop forever.
 /// @return [Sprite] the receiver.
 /// @yield if passed a block, the block will be called for the action.
 
@@ -189,20 +189,14 @@ sprite_animate(VALUE rcv, SEL sel, int argc, VALUE *argv)
     }
 
     int loops_i = 1;
-    bool forever = false;
     if (loops != Qnil) {
-	if (rb_obj_is_kind_of(loops, rb_cInteger)) {
-	    loops_i = NUM2LONG(loops);
-	}
-	else if (loops == rb_name2sym("forever")) {
-	    forever = true;
-	}
+	loops_i = NUM2LONG(loops);
     }
 
     auto animation = cocos2d::Animation::createWithSpriteFrames(frames,
 	    NUM2DBL(delay), loops_i);
     cocos2d::ActionInterval *action = cocos2d::Animate::create(animation);
-    if (forever) {
+    if (loops_i < 0) {
 	action = cocos2d::RepeatForever::create(action);
     }
     return run_action(rcv, action);
