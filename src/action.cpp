@@ -423,8 +423,8 @@ repeat_forever_new(VALUE rcv, SEL sel, VALUE target_action)
 ///   files in the application's resource directory or the names of sprite
 ///   frames loaded from a spritesheet using {Sprite.load}.
 /// @param delay [Float] the delay in seconds between each frame animation.
-/// @param loops [Integer, Symbol] the number of times the animation should
-///   loop. If given the +:forever+ symbol, the animation will loop forever.
+/// @param loops [Integer] the number of times the animation should loop.
+///   If given {Repeat::FOREVER} (or negative value directly), the animation will loop forever.
 /// @return [Animate] the action.
 static VALUE
 animate_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
@@ -454,21 +454,14 @@ animate_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
     }
 
     int loops_i = 1;
-    bool forever = false;
     if (loops != Qnil) {
-	if (rb_obj_is_kind_of(loops, rb_cInteger)) {
-	    loops_i = NUM2LONG(loops);
-	}
-	else if (loops == rb_name2sym("forever")) {
-	    forever = true;
-	}
+	loops_i = NUM2LONG(loops);
     }
 
     auto animation = cocos2d::Animation::createWithSpriteFrames(frames,
 	    NUM2DBL(delay), loops_i);
     cocos2d::ActionInterval *action = cocos2d::Animate::create(animation);
-
-    if (forever) {
+    if (loops_i < 0) {
 	action = cocos2d::RepeatForever::create(action);
     }
 
