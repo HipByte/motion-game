@@ -8,6 +8,21 @@ rb_cocos2d_object_new(cocos2d::Ref *ptr, VALUE klass)
     return rb_class_wrap_new(ptr, klass);
 }
 
+void
+rb_add_relationship(VALUE container, VALUE child)
+{
+    static ID ivar_name = 0;
+    if (ivar_name == 0) {
+	ivar_name = rb_intern("__children__");
+    }
+    VALUE ary = rb_ivar_get(container, ivar_name);
+    if (ary == Qnil) {
+	ary = rb_ary_new();
+    }
+    rb_ary_push(ary, child);
+    rb_ivar_set(container, ivar_name, ary);
+}
+
 #if CC_TARGET_OS_IPHONE || CC_TARGET_OS_APPLETV
 #define FINALIZER_SELECTOR "dealloc"
 

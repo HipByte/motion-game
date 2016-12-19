@@ -38,6 +38,7 @@ extern VALUE rb_cColor;
 
 VALUE rb_cocos2d_object_new(cocos2d::Ref *ptr, VALUE klass);
 void rb_register_cocos2d_object_finalizer(VALUE klass);
+void rb_add_relationship(VALUE container, VALUE child);
 
 static inline cocos2d::Vec2
 rb_any_to_ccvec2(VALUE obj)

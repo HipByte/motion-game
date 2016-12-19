@@ -34,6 +34,7 @@ int rb_scan_args(int, const VALUE*, const char*, ...);
 VALUE rb_ary_new(void);
 VALUE rb_ary_push(VALUE, VALUE);
 VALUE rb_name2sym(const char *);
+ID rb_intern(const char *name);
 
 #define RTEST(obj) \
     ({ \

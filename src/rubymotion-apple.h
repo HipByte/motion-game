@@ -112,3 +112,5 @@ const char *rb_sym2name(VALUE sym);
 
 void rb_define_const(VALUE,const char*,VALUE);
 VALUE rb_const_get(VALUE, ID);
+VALUE rb_ivar_get(VALUE obj, ID id);
+VALUE rb_ivar_set(VALUE obj, ID id, VALUE val);

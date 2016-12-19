@@ -76,7 +76,6 @@ rb_release_internal(jobject obj)
 #define IMP void *
 #define SEL const char *
 SEL sel_registerName(const char *name);
-ID rb_intern(const char *name);
 
 extern jobject vm_jobject_true;
 extern jobject vm_jobject_false;
@@ -180,6 +179,11 @@ VALUE rb_vm_get_const(VALUE outer, ID path, bool lexical_lookup,
         bool defined, void *outer_stack);
 #define rb_const_get(_outer, _path) \
     rb_vm_get_const((VALUE)_outer, rb_intern(_path), false, false, NULL)
+
+VALUE rb_vm_ivar_get(VALUE obj, ID name);
+#define rb_ivar_get(obj, name) rb_vm_ivar_get(obj, name)
+void rb_vm_ivar_set(VALUE obj, ID name, VALUE val);
+#define rb_ivar_set(obj, name, val) rb_vm_ivar_set(obj, name, val)
 
 void rb_vm_raise(VALUE) __attribute__ ((noreturn));
 #define JAVA_EXC_RETHROW() \
