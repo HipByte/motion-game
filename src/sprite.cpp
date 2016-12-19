@@ -161,7 +161,7 @@ sprite_blink(VALUE rcv, SEL sel, VALUE blinks, VALUE interval)
 ///   frames loaded from a spritesheet using {load}.
 /// @param delay [Float] the delay in seconds between each frame animation.
 /// @param loops [Integer] the number of times the animation should loop.
-///   If given {Repeat::FOREVER} (or negative value directly), the animation will loop forever.
+///   If {Repeat::FOREVER} (or negative value directly) was given, the animation will loop forever.
 /// @return [self] the receiver.
 /// @yield if passed a block, the block will be called for the action.
 

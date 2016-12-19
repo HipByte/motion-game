@@ -424,7 +424,7 @@ repeat_forever_new(VALUE rcv, SEL sel, VALUE target_action)
 ///   frames loaded from a spritesheet using {Sprite.load}.
 /// @param delay [Float] the delay in seconds between each frame animation.
 /// @param loops [Integer] the number of times the animation should loop.
-///   If given {Repeat::FOREVER} (or negative value directly), the animation will loop forever.
+///   If {Repeat::FOREVER} (or negative value directly) was given, the animation will loop forever.
 /// @return [Animate] the action.
 static VALUE
 animate_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
