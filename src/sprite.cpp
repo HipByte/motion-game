@@ -51,7 +51,10 @@ sprite_new(VALUE rcv, SEL sel, VALUE name)
 	// A regular sprite file.
 	sprite = cocos2d::Sprite::create(name_str);
     }
-    assert(sprite != NULL); // TODO raise exception
+    if (sprite == NULL) {
+	rb_raise(rb_eRuntimeError, "Can't create Sprite with `%s'. " \
+		"Need a proper sprite name or calling Sprite.load() for sprite frame.", name_str.c_str());
+    }
     return rb_cocos2d_object_new(sprite, rcv);
 }
 
