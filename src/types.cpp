@@ -175,7 +175,7 @@ size_height_set(VALUE rcv, SEL sel, VALUE obj)
 /// @method #+(size)
 /// Adds the dimensions of the receiver with the dimensions of the given
 /// size object.
-/// @param size [Size] A dimensios.
+/// @param size [Size] A dimension.
 /// @return [Size] a new Size object.
 
 static VALUE
@@ -187,7 +187,7 @@ size_plus(VALUE rcv, SEL sel, VALUE obj)
 /// @method #-(size)
 /// Substracts the dimensions of the receiver with the dimensions of the given
 /// size object.
-/// @param size [Size] A dimensios.
+/// @param size [Size] A dimension.
 /// @return [Size] a new Size object.
 
 static VALUE
