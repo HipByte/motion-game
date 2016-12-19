@@ -151,6 +151,7 @@ scene_update(VALUE rcv, SEL sel, VALUE delta)
 /// Schedules a given block for execution.
 /// @param delay [Float] the duration of the block, in seconds.
 /// @param repeat [Integer] the number of times the block should be repeated.
+///   If {Repeat::FOREVER} (or negative value directly) was given, the animation will loop forever.
 /// @param interval [Float] the interval between repetitions, in seconds.
 /// @yield [Float] the given block will be yield with the delta value,
 ///   in seconds.
@@ -170,7 +171,8 @@ scene_schedule(VALUE rcv, SEL sel, int argc, VALUE *argv)
     rb_scan_args(argc, argv, "12", &delay, &repeat, &interval);
 
     float interval_c  = RTEST(interval) ? NUM2DBL(interval) : 0;
-    unsigned int repeat_c = RTEST(repeat) ? NUM2LONG(repeat) : 0;
+    int tmp_repeat_c = RTEST(repeat) ? NUM2LONG(repeat) : 0;
+    unsigned int repeat_c = (tmp_repeat_c >= 0) ? tmp_repeat_c : kRepeatForever;
     float delay_c = NUM2DBL(delay);
     char key[100];
     snprintf(key, sizeof key, "schedule_lambda_%p", (void *)block);
