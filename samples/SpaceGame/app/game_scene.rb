@@ -110,13 +110,13 @@ class GameScene < MG::Scene
       rand_y = @random.rand(0..(win_size.height))
       rand_duration = @random.rand(2..10)
 
-      asteroid = @asteroids[@next_asteroid]
+      move_asteroid = @asteroids[@next_asteroid]
       @next_asteroid += 1
       @next_asteroid = 0 if @next_asteroid == @asteroids.size
 
-      asteroid.position = [win_size.width + asteroid.size.width / 2, rand_y]
-      asteroid.visible = true
-      asteroid.move_by([-win_size.width - asteroid.size.width, 0], rand_duration) { asteroid.visible = false }
+      move_asteroid.position = [win_size.width + move_asteroid.size.width / 2, rand_y]
+      move_asteroid.visible = true
+      move_asteroid.move_by([-win_size.width - move_asteroid.size.width, 0], rand_duration) { move_asteroid.visible = false }
     end
 
     # Collisions.
