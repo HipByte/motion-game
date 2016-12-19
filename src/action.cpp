@@ -30,7 +30,7 @@ VALUE rb_cRepeatForever = Qnil;
 /// @class Action < Object
 /// @method #reverse
 /// Reverses the action
-/// @return [Action] the reversed action.
+/// @return [self] the receiver.
 static VALUE
 action_reverse(VALUE rcv, SEL sel)
 {
@@ -41,7 +41,7 @@ action_reverse(VALUE rcv, SEL sel)
 /// @class Action < Object
 /// @method #clone
 /// Clones the action
-/// @return [Action] the cloned action.
+/// @return [self] the receiver.
 static VALUE
 action_clone(VALUE rcv, SEL sel)
 {

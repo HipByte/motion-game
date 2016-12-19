@@ -45,7 +45,7 @@ director_view_get(VALUE rcv, SEL sel)
 /// @method #run(scene)
 /// Runs the given scene object.
 /// @param scene [Scene] the scene to run.
-/// @return [Director] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 director_run(VALUE rcv, SEL sel, VALUE obj)
@@ -59,7 +59,7 @@ director_run(VALUE rcv, SEL sel, VALUE obj)
 /// Replaces the current scene with a new one. The running scene will be
 /// terminated.
 /// @param scene [Scene] the scene to replace the current one with.
-/// @return [Director] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 director_replace(VALUE rcv, SEL sel, VALUE obj)
@@ -74,7 +74,7 @@ director_replace(VALUE rcv, SEL sel, VALUE obj)
 /// Suspends the execution of the running scene, and starts running the given
 /// scene instead.
 /// @param scene [Scene] the new scene to run.
-/// @return [Director] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 director_push(VALUE rcv, SEL sel, VALUE obj)
@@ -87,7 +87,7 @@ director_push(VALUE rcv, SEL sel, VALUE obj)
 /// @method #pop
 /// Pops the running scene from the stack, and starts running the previous
 /// scene. If there are no more scenes to run, the execution will be stopped.
-/// @return [Director] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 director_pop(VALUE rcv, SEL sel)
@@ -101,7 +101,7 @@ director_pop(VALUE rcv, SEL sel)
 
 /// @method #end
 /// Ends the execution of the running scene.
-/// @return [Director] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 director_end(VALUE rcv, SEL sel)
@@ -119,7 +119,7 @@ director_end(VALUE rcv, SEL sel)
 
 /// @method #pause
 /// Pauses the execution of the running scene.
-/// @return [Director] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 director_pause(VALUE rcv, SEL sel)
@@ -130,7 +130,7 @@ director_pause(VALUE rcv, SEL sel)
 
 /// @method #resume
 /// Resumes the execution of the current paused scene.
-/// @return [Director] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 director_resume(VALUE rcv, SEL sel)
@@ -141,7 +141,7 @@ director_resume(VALUE rcv, SEL sel)
 
 /// @method #start_animation
 /// The main loop is triggered again.
-/// @return [Director] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 director_start_animation(VALUE rcv, SEL sel)
@@ -152,7 +152,7 @@ director_start_animation(VALUE rcv, SEL sel)
 
 /// @method #stop_animation
 /// Stops the animation.
-/// @return [Director] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 director_stop_animation(VALUE rcv, SEL sel)

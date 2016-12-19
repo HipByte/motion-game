@@ -122,7 +122,7 @@ audio_duration(VALUE rcv, SEL sel)
 
 /// @method #resume
 /// Resumes playing the sound file.
-/// @return [Audio] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 audio_resume(VALUE rcv, SEL sel)
@@ -133,7 +133,7 @@ audio_resume(VALUE rcv, SEL sel)
 
 /// @method #pause
 /// Pauses the sound file.
-/// @return [Audio] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 audio_pause(VALUE rcv, SEL sel)
@@ -144,7 +144,7 @@ audio_pause(VALUE rcv, SEL sel)
 
 /// @method #stop
 /// Stops the sound file.
-/// @return [Audio] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 audio_stop(VALUE rcv, SEL sel)

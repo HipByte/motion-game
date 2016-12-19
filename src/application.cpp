@@ -82,7 +82,7 @@ application_run(VALUE rcv, SEL sel)
 /// This method is called when the application finished launching. This method
 /// is empty by default, and you are responsible to provide a custom
 /// implementation that will create the interface of your game.
-/// @return [Application] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 application_start(VALUE rcv, SEL sel)

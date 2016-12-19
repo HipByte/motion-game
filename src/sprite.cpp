@@ -82,7 +82,7 @@ run_action(VALUE rcv, cocos2d::FiniteTimeAction *action)
 /// @param delta_location [Point] a point that will be added to the receiver's
 ///   current location.
 /// @param interval [Float] the animation interval.
-/// @return [Sprite] the receiver.
+/// @return [self] the receiver.
 /// @yield if passed a block, the block will be called for the action.
 
 static VALUE
@@ -96,7 +96,7 @@ sprite_move_by(VALUE rcv, SEL sel, VALUE delta_location, VALUE interval)
 /// Moves the position of the receiver to a new given location.
 /// @param location [Point] where the receiver should be moved to.
 /// @param interval [Float] the animation interval.
-/// @return [Sprite] the receiver.
+/// @return [self] the receiver.
 /// @yield if passed a block, the block will be called for the action.
 
 static VALUE
@@ -111,7 +111,7 @@ sprite_move_to(VALUE rcv, SEL sel, VALUE location, VALUE interval)
 /// sum of the current rotation and the given +delta_angle+ object.
 /// @param delta_angle [Float] the angle to add to the current rotation
 /// @param interval [Float] the animation interval.
-/// @return [Sprite] the receiver.
+/// @return [self] the receiver.
 /// @yield if passed a block, the block will be called for the action.
 
 static VALUE
@@ -126,7 +126,7 @@ sprite_rotate_by(VALUE rcv, SEL sel, VALUE delta_angle, VALUE interval)
 /// by modifying it's rotation attribute.
 /// @param angle [Float] the receiver should be rotated to.
 /// @param interval [Float] the animation interval.
-/// @return [Sprite] the receiver.
+/// @return [self] the receiver.
 /// @yield if passed a block, the block will be called for the action.
 
 static VALUE
@@ -141,7 +141,7 @@ sprite_rotate_to(VALUE rcv, SEL sel, VALUE angle, VALUE interval)
 /// @param number_of_blinks [Integer] the number of times the receiver should
 ///   blink.
 /// @param interval [Float] the animation interval.
-/// @return [Sprite] the receiver.
+/// @return [self] the receiver.
 /// @yield if passed a block, the block will be called for the action.
 
 static VALUE
@@ -162,7 +162,7 @@ sprite_blink(VALUE rcv, SEL sel, VALUE blinks, VALUE interval)
 /// @param delay [Float] the delay in seconds between each frame animation.
 /// @param loops [Integer] the number of times the animation should loop.
 ///   If given {Repeat::FOREVER} (or negative value directly), the animation will loop forever.
-/// @return [Sprite] the receiver.
+/// @return [self] the receiver.
 /// @yield if passed a block, the block will be called for the action.
 
 static VALUE
@@ -256,7 +256,7 @@ need_physics(VALUE rcv)
 /// Attaches a physics body with a box shape to the sprite.
 /// @param size [Size] the size of the box. If +nil+ is given, the size of the
 ///   sprite, retrieved with {#size}, will be used instead.
-/// @return [Sprite] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 sprite_attach_physics_box(VALUE rcv, SEL sel, int argc, VALUE *argv)
@@ -277,7 +277,7 @@ sprite_attach_physics_box(VALUE rcv, SEL sel, int argc, VALUE *argv)
 /// @method #apply_impulse(force)
 /// Applies a continuous force to the sprite body.
 /// @param force [Point] the force to apply.
-/// @return [Sprite] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 sprite_apply_impulse(VALUE rcv, SEL sel, VALUE force)
@@ -289,7 +289,7 @@ sprite_apply_impulse(VALUE rcv, SEL sel, VALUE force)
 /// @method #apply_force(force)
 /// Applies an immediate force to the sprite body.
 /// @param force [Point] the force to apply.
-/// @return [Sprite] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 sprite_apply_force(VALUE rcv, SEL sel, VALUE force)

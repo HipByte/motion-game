@@ -18,7 +18,7 @@ menu_alloc(VALUE rcv, SEL sel)
 /// aligns menu items vertically with padding
 /// (call after adding items via image_item)
 /// @param padding [Float] the amount of padding between the items.
-/// @return [Menu] the receiver.
+/// @return [self] the receiver.
 static VALUE
 menu_align_items_vertically(VALUE rcv, SEL sel, int argc, VALUE *argv)
 {
@@ -39,7 +39,7 @@ menu_align_items_vertically(VALUE rcv, SEL sel, int argc, VALUE *argv)
 /// aligns menu items horizontally with padding
 /// (call after adding items via image_item)
 /// @param padding [Float] the amount of padding between the items.
-/// @return [Menu] the receiver.
+/// @return [self] the receiver.
 static VALUE
 menu_align_items_horizontally(VALUE rcv, SEL sel, int argc, VALUE *argv)
 {
@@ -82,6 +82,7 @@ menu_enabled_set(VALUE rcv, SEL sel, VALUE val)
 /// @param normal_image [String] normal image name.
 /// @param selected_image [String] selected image name.
 /// @yield The methods to call when tapped menu.
+/// @return [self] the receiver.
 
 static VALUE
 menu_image_item(VALUE rcv, SEL sel, VALUE normal_image, VALUE selected_image)

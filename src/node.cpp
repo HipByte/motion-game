@@ -195,7 +195,7 @@ node_name_set(VALUE rcv, SEL sel, VALUE val)
 
 /// @method #run_action(action)
 /// Run the provided action on the receiver node.
-/// @return [Node] the receiver.
+/// @return [self] the receiver.
 /// @yield if passed a block, the block will be called for the action.
 
 static VALUE
@@ -220,7 +220,7 @@ node_run_action(VALUE rcv, SEL sel, VALUE action)
 
 /// @method #stop_all_actions()
 /// Stop all actions running on the node
-/// @return [Node] the receiver.
+/// @return [self] the receiver.
 static VALUE
 node_stop_all_actions(VALUE rcv, SEL sel)
 {
@@ -231,7 +231,7 @@ node_stop_all_actions(VALUE rcv, SEL sel)
 /// @method #stop_action(action)
 /// Stop the provided action
 /// @param action [Action] the action to stop.
-/// @return [Node] the receiver.
+/// @return [self] the receiver.
 static VALUE
 node_stop_action(VALUE rcv, SEL sel, VALUE action)
 {
@@ -257,7 +257,7 @@ node_intersects(VALUE rcv, SEL sel, VALUE node)
 /// Adds a child node to the receiver with a local z-order.
 /// @param node [Node] the child to add.
 /// @param zpos [Integer] the local z-order.
-/// @return [Node] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 node_add(VALUE rcv, SEL sel, int argc, VALUE *argv)
@@ -282,7 +282,7 @@ node_add(VALUE rcv, SEL sel, int argc, VALUE *argv)
 /// Removes all children nodes from the receiver.
 /// @param cleanup [Boolean] cleans all running actions on children before
 ///   removing them.
-/// @return [Node] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 node_clear(VALUE rcv, SEL sel, int argc, VALUE *argv)
@@ -298,7 +298,7 @@ node_clear(VALUE rcv, SEL sel, int argc, VALUE *argv)
 /// Removes the given child node from the receiver.
 /// @param cleanup [Boolean] cleans all running actions on child before
 ///   removing it.
-/// @return [Node] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 node_delete(VALUE rcv, SEL sel, int argc, VALUE *argv)
@@ -341,7 +341,7 @@ node_children(VALUE rcv, SEL sel)
 ///   node.parent.delete(node, cleanup)
 /// @param cleanup [Boolean] cleans all running actions on the receiver before
 ///   removing it from the parent.
-/// @return [Node] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 node_delete_from_parent(VALUE rcv, SEL sel, int argc, VALUE *argv)
@@ -399,7 +399,7 @@ draw_alloc(VALUE rcv, SEL sel)
 
 /// @method #clear
 /// Clears drew shapes.
-/// @return [Draw] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 draw_clear(VALUE rcv, SEL sel)
@@ -413,7 +413,7 @@ draw_clear(VALUE rcv, SEL sel)
 /// @param pos [Point] the position where to draw.
 /// @param radius [Float] the radius of the circle to draw.
 /// @param color [Color] the color to use to fill the circle.
-/// @return [Draw] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 draw_dot(VALUE rcv, SEL sel, VALUE pos, VALUE radius, VALUE color)
@@ -429,7 +429,7 @@ draw_dot(VALUE rcv, SEL sel, VALUE pos, VALUE radius, VALUE color)
 /// @param destination [Point] the position where to end drawing (higher-right).
 /// @param color [Color] the color to use to draw.
 /// @param fill [Boolean] whether the rectangle should be filled up.
-/// @return [Draw] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 draw_rect(VALUE rcv, SEL sel, int argc, VALUE *argv)
@@ -457,7 +457,7 @@ draw_rect(VALUE rcv, SEL sel, int argc, VALUE *argv)
 /// @param destination [Point] the position where to end drawing (higher-right).
 /// @param thickness [Float] the line thickness.
 /// @param color [Color] the color to use to draw.
-/// @return [Draw] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 draw_line(VALUE rcv, SEL sel, int argc, VALUE *argv)
@@ -477,7 +477,7 @@ draw_line(VALUE rcv, SEL sel, int argc, VALUE *argv)
 /// @param position2 [Point] The triangle vertex point.
 /// @param position3 [Point] The triangle vertex point.
 /// @param color [Color] the color to use to draw.
-/// @return [Draw] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 draw_triangle(VALUE rcv, SEL sel, int argc, VALUE *argv)

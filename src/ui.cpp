@@ -98,7 +98,7 @@ widget_highlighted_set(VALUE rcv, SEL sel, VALUE val)
 /// @yield [Symbol] the given block will be called when the event
 ///   is received with a +Symbol+ that describes the type of event, which can
 ///   be +:begin+, +:move+, +:end+ or +:cancel+.
-/// @return [Widget] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 widget_on_touch(VALUE rcv, SEL sel)
@@ -763,7 +763,7 @@ list_new(VALUE rcv, SEL sel)
 /// @method #add_item(widget)
 /// Adds a new item to the end of the list.
 /// @param widget [Widget] the item to add.
-/// @return [List] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 list_add_item(VALUE rcv, SEL sel, VALUE widget)
@@ -778,7 +778,7 @@ list_add_item(VALUE rcv, SEL sel, VALUE widget)
 /// Inserts a new item at the given index in the list.
 /// @param index [Integer] the index where to add the item.
 /// @param widget [Widget] the item to add.
-/// @return [List] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 list_insert_item(VALUE rcv, SEL sel, VALUE index, VALUE widget)
@@ -804,7 +804,7 @@ list_item_at(VALUE rcv, SEL sel, VALUE index)
 /// @method #delete_item(index)
 /// Deletes the item at the given index.
 /// @param index [Integer] the index to look up.
-/// @return [List] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 list_delete_item(VALUE rcv, SEL sel, VALUE index)
@@ -815,7 +815,7 @@ list_delete_item(VALUE rcv, SEL sel, VALUE index)
 
 /// @method #clear_items
 /// Removes all items in the list.
-/// @return [List] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 list_clear_items(VALUE rcv, SEL sel)
@@ -830,7 +830,7 @@ list_clear_items(VALUE rcv, SEL sel)
 /// Configures a block to be called when an item is selected in the list view.
 /// @yield [Integer] the given block will be called when an item is selected,
 ///   passing the index of the selection as the argument.
-/// @return [List] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 list_on_selection(VALUE rcv, SEL sel)
@@ -906,7 +906,7 @@ web_new(VALUE rcv, SEL sel)
 /// Loads a given HTML data into the widget.
 /// @param str [String] the HTML string to load.
 /// @param baseurl [String] the base URL for the content.
-/// @return [Web] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 web_load_html(VALUE rcv, SEL sel, VALUE str, VALUE baseurl)
@@ -918,7 +918,7 @@ web_load_html(VALUE rcv, SEL sel, VALUE str, VALUE baseurl)
 /// @method #load_url(url)
 /// Loads a given URL into the widget.
 /// @param url [String] the URL to load.
-/// @return [Web] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 web_load_url(VALUE rcv, SEL sel, VALUE str)
@@ -930,7 +930,7 @@ web_load_url(VALUE rcv, SEL sel, VALUE str)
 /// @method #load_file(path)
 /// Loads a given file into the widget.
 /// @param path [String] the file to load.
-/// @return [Web] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 web_load_file(VALUE rcv, SEL sel, VALUE str)
@@ -941,7 +941,7 @@ web_load_file(VALUE rcv, SEL sel, VALUE str)
 
 /// @method #stop
 /// Stops the current loading.
-/// @return [Web] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 web_stop(VALUE rcv, SEL sel)
@@ -952,7 +952,7 @@ web_stop(VALUE rcv, SEL sel)
 
 /// @method #reload
 /// Reloads the current context.
-/// @return [Web] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 web_reload(VALUE rcv, SEL sel)
@@ -966,7 +966,7 @@ web_reload(VALUE rcv, SEL sel)
 /// @method #evaluate(expr)
 /// Evaluates the given JavaScript expression.
 /// @param expr [String] a JavaScript expression to evaluate.
-/// @return [Web] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 web_evaluate(VALUE rcv, SEL sel, VALUE expr)

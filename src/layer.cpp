@@ -112,7 +112,7 @@ scene_initialize(VALUE rcv, SEL sel)
 /// @method #start_update
 /// Starts the update loop. The +#update+ method will be called on this object
 /// for every frame.
-/// @return [Scene] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 scene_start_update(VALUE rcv, SEL sel)
@@ -124,7 +124,7 @@ scene_start_update(VALUE rcv, SEL sel)
 /// @method #stop_update
 /// Stops the update loop. The +#update+ method will no longer be called on
 /// this object.
-/// @return [Scene] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 scene_stop_update(VALUE rcv, SEL sel)
@@ -138,7 +138,7 @@ scene_stop_update(VALUE rcv, SEL sel)
 /// this method. The default implementation is empty.
 /// @param delta [Float] a value representing the amount of time, in seconds,
 ///   since the last time this method was called.
-/// @return [Scene] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 scene_update(VALUE rcv, SEL sel, VALUE delta)
@@ -188,7 +188,7 @@ scene_schedule(VALUE rcv, SEL sel, int argc, VALUE *argv)
 /// Unschedules a task that's currently running.
 /// @param key [String] a token representing the task to unschedule,
 ///   returned by {#schedule}.
-/// @return [Scene] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 scene_unschedule(VALUE rcv, SEL sel, VALUE key)
@@ -251,7 +251,7 @@ scene_on_touch_event(VALUE rcv, SEL sel, mc_Scene_EventType type)
 /// Starts listening for touch begin events on the receiver.
 /// @yield [Events::Touch] the given block will be yield when a touch begin
 ///   event is received.
-/// @return [Scene] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 scene_on_touch_begin(VALUE rcv, SEL sel)
@@ -263,7 +263,7 @@ scene_on_touch_begin(VALUE rcv, SEL sel)
 /// Starts listening for touch end events on the receiver.
 /// @yield [Events::Touch] the given block will be yield when a touch end
 ///   event is received.
-/// @return [Scene] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 scene_on_touch_end(VALUE rcv, SEL sel)
@@ -275,7 +275,7 @@ scene_on_touch_end(VALUE rcv, SEL sel)
 /// Starts listening for touch move events on the receiver.
 /// @yield [Events::Touch] the given block will be yield when a touch move
 ///   event is received.
-/// @return [Scene] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 scene_on_touch_move(VALUE rcv, SEL sel)
@@ -287,7 +287,7 @@ scene_on_touch_move(VALUE rcv, SEL sel)
 /// Starts listening for touch cancel events on the receiver.
 /// @yield [Events::Touch] the given block will be yield when a touch cancel
 ///   event is received.
-/// @return [Scene] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 scene_on_touch_cancel(VALUE rcv, SEL sel)
@@ -298,7 +298,7 @@ scene_on_touch_cancel(VALUE rcv, SEL sel)
 /// Starts listening for accelerometer events on the receiver.
 /// @yield [Events::Acceleration] the given block will be yield when an
 ///   accelerometer event is received from the device.
-/// @return [Scene] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 scene_on_accelerate(VALUE rcv, SEL sel)
@@ -327,7 +327,7 @@ scene_on_accelerate(VALUE rcv, SEL sel)
 /// Starts listening for contact begin events from the physics engine.
 /// @yield [Events::PhysicsContact] the given block will be yield when a
 ///   contact event is received from the physics engine.
-/// @return [Scene] the receiver.
+/// @return [self] the receiver.
 
 static VALUE
 scene_on_contact_begin(VALUE rcv, SEL sel)
