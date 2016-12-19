@@ -68,7 +68,7 @@ point_y_set(VALUE rcv, SEL sel, VALUE y)
 /// @method #+(point)
 /// Adds the coordinates of the receiver with the coordinates of the given
 /// point object.
-/// @param point [Point]
+/// @param point [Point] A coordinate.
 /// @return [Point] A new Point object.
 
 static VALUE
@@ -80,7 +80,7 @@ point_plus(VALUE rcv, SEL sel, VALUE obj)
 /// @method #-(point)
 /// Substracts the coordinates of the receiver with the coordinates of the given
 /// point object.
-/// @param point [Point]
+/// @param point [Point] A coordinate.
 /// @return [Point] A new Point object.
 
 static VALUE
@@ -91,7 +91,7 @@ point_minus(VALUE rcv, SEL sel, VALUE obj)
 
 /// @method #distance(point)
 /// Calculates the distance between two points.
-/// @param point [Point]
+/// @param point [Point] A point to calculate the distance.
 /// @return [Float] the distance.
 
 static VALUE
@@ -175,7 +175,7 @@ size_height_set(VALUE rcv, SEL sel, VALUE obj)
 /// @method #+(size)
 /// Adds the dimensions of the receiver with the dimensions of the given
 /// size object.
-/// @param size [Size]
+/// @param size [Size] A dimensios.
 /// @return [Size] a new Size object.
 
 static VALUE
@@ -187,7 +187,7 @@ size_plus(VALUE rcv, SEL sel, VALUE obj)
 /// @method #-(size)
 /// Substracts the dimensions of the receiver with the dimensions of the given
 /// size object.
-/// @param size [Size]
+/// @param size [Size] A dimensios.
 /// @return [Size] a new Size object.
 
 static VALUE
