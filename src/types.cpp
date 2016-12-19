@@ -89,13 +89,13 @@ point_minus(VALUE rcv, SEL sel, VALUE obj)
     return rb_ccvec2_to_obj(*VEC2(rcv) - rb_any_to_ccvec2(obj));
 }
 
-/// @method #get_distance(point)
+/// @method #distance(point)
 /// Calculates the distance between two points.
 /// @param point [Point]
 /// @return [Float] the distance.
 
 static VALUE
-point_get_distance(VALUE rcv, SEL sel, VALUE obj)
+point_distance(VALUE rcv, SEL sel, VALUE obj)
 {
     return DBL2NUM(VEC2(rcv)->getDistance(rb_any_to_ccvec2(obj)));
 }
@@ -356,7 +356,7 @@ Init_Types(void)
     rb_define_method(rb_cPoint, "y=", point_y_set, 1);
     rb_define_method(rb_cPoint, "+", point_plus, 1);
     rb_define_method(rb_cPoint, "-", point_minus, 1);
-    rb_define_method(rb_cPoint, "get_distance", point_get_distance, 1);
+    rb_define_method(rb_cPoint, "distance", point_distance, 1);
     rb_define_method(rb_cPoint, "inspect", point_inspect, 0);
 
     rb_cSize = rb_define_class_under(rb_mMC, "Size", rb_cObject);
