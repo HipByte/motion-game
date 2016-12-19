@@ -13,7 +13,7 @@ rb_add_relationship(VALUE container, VALUE child)
 {
     static ID ivar_name = 0;
     if (ivar_name == 0) {
-	ivar_name = rb_intern("__children__");
+	ivar_name = rb_intern("@__children__");
     }
     VALUE ary = rb_ivar_get(container, ivar_name);
     if (ary == Qnil) {
