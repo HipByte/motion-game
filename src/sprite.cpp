@@ -187,7 +187,9 @@ sprite_animate(VALUE rcv, SEL sel, int argc, VALUE *argv)
 	else {
 	    frame = cocos2d::SpriteFrameCache::getInstance()->getSpriteFrameByName(frame_name);
 	}
-	assert(frame != NULL);
+	if (frame == NULL) {
+	    rb_raise(rb_eRuntimeError, "Failed to create sprite frame.");
+	}
 	frames.pushBack(frame);
     }
 
