@@ -58,6 +58,27 @@ sprite_new(VALUE rcv, SEL sel, VALUE name)
     return rb_cocos2d_object_new(sprite, rcv);
 }
 
+/// @method #new_with_image(data, len)
+/// Creates a sprite from +data+ stream buffer image data and +len+ length
+/// @param data [String] image data stream buffer
+/// @param len [Integer] data length
+/// @return [Sprite]
+
+static VALUE
+sprite_new_with_image(VALUE rcv, SEL sel, VALUE data, VALUE len)
+{
+  cocos2d::Sprite *sprite = NULL;
+  cocos2d::Texture2D *texture = new cocos2d::Texture2D();
+  cocos2d::Image *image = new cocos2d::Image();
+
+  image->initWithImageData((unsigned char *)RSTRING_PTR(StringValue(data)), len);
+  texture->initWithImage(image);
+  sprite = cocos2d::Sprite::createWithTexture(texture);
+
+  assert(sprite != NULL); // TODO raise exception
+  return rb_class_wrap_new((void *)sprite, rcv);
+}
+
 /// @group Actions
 
 static VALUE
@@ -484,6 +505,7 @@ Init_Sprite(void)
 
     rb_define_singleton_method(rb_cSprite, "load", sprite_load, 1);
     rb_define_singleton_method(rb_cSprite, "new", sprite_new, 1);
+    rb_define_singleton_method(rb_cSprite, "new_with_image", sprite_new_with_image, 2);
     rb_define_method(rb_cSprite, "move_by", sprite_move_by, 2);
     rb_define_method(rb_cSprite, "move_to", sprite_move_to, 2);
     rb_define_method(rb_cSprite, "rotate_by", sprite_rotate_by, 2);
