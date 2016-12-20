@@ -516,7 +516,7 @@ Init_Action(void)
     rb_define_singleton_method(rb_cTintBy, "new", tint_by_new, 4);
 
     rb_cTintTo = rb_define_class_under(rb_mMC, "TintTo", rb_cAction);
-    rb_define_singleton_method(rb_cTintTo, "new", tint_by_new, 4);
+    rb_define_singleton_method(rb_cTintTo, "new", tint_to_new, 4);
 
     rb_cFadeTo = rb_define_class_under(rb_mMC, "FadeTo", rb_cAction);
     rb_define_singleton_method(rb_cFadeTo, "new", fade_to_new, 2);
