@@ -111,8 +111,9 @@ static inline cocos2d::Color3B
 rb_any_to_cccolor3(VALUE obj)
 {
     if (rb_obj_is_kind_of(obj, rb_cArray)) {
-	if (RARRAY_LEN(obj) != 3) {
-	    rb_raise(rb_eArgError, "expected Array of 3 elements");
+	int len = RARRAY_LEN(obj);
+	if (len != 3 && len != 4) {
+	    rb_raise(rb_eArgError, "expected Array of 3 or 4 elements");
 	}
 	return cocos2d::Color3B(
 		NUM2BYTE(RARRAY_AT(obj, 0)),
@@ -133,14 +134,19 @@ static inline cocos2d::Color4B
 rb_any_to_cccolor4(VALUE obj)
 {
     if (rb_obj_is_kind_of(obj, rb_cArray)) {
-	if (RARRAY_LEN(obj) != 4) {
-	    rb_raise(rb_eArgError, "expected Array of 4 elements");
+	int len = RARRAY_LEN(obj);
+	if (len != 3 && len != 4) {
+	    rb_raise(rb_eArgError, "expected Array of 3 or 4 elements");
+	}
+	GLubyte alpha = 255;
+	if (len == 4) {
+	    alpha = NUM2BYTE(RARRAY_AT(obj, 3));
 	}
 	return cocos2d::Color4B(
 		NUM2BYTE(RARRAY_AT(obj, 0)),
 		NUM2BYTE(RARRAY_AT(obj, 1)),
 		NUM2BYTE(RARRAY_AT(obj, 2)),
-		NUM2BYTE(RARRAY_AT(obj, 3)));
+		alpha);
     }
     else if (rb_obj_is_kind_of(obj, rb_cSymbol)) {
 	auto color = rb_sym_to_cccolor3(obj);
