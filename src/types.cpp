@@ -120,6 +120,8 @@ point_inspect(VALUE rcv, SEL sel)
 ///   size.width = 200
 ///   size.height = 400
 ///   node.size = size
+/// or
+///   node.size = MG::Size.new(200, 400)
 
 VALUE rb_cSize = Qnil;
 
@@ -132,10 +134,43 @@ rb_ccsize_to_obj(cocos2d::Size _size)
     return rb_class_wrap_new(size, rb_cSize);
 }
 
+/// @group Constructors
+
+/// @method #initialize(*args)
+/// @overload initialize
+///   Creates a new object.
+///   @return [Color] a Size object.
+
+/// @overload initialize(ary)
+///   Creates a new object with 2-element +Array+.
+///   @param ary [Array] 2-element +Array+.
+///   @return [Color] a Size object.
+
+/// @overload initialize(width, height)
+///   Creates a new object.
+///   @param width [Float] a size width.
+///   @param height [Float] a size height.
+///   @return [Color] a Size object.
+
+/// @endgroup
+
 static VALUE
-size_alloc(VALUE rcv, SEL sel)
+size_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
 {
-    return rb_ccsize_to_obj(cocos2d::Size());
+    switch (argc) {
+      case 0:
+	return rb_ccsize_to_obj(cocos2d::Size());
+      case 1:
+	// Array
+	if (!rb_obj_is_kind_of(argv[0], rb_cArray)) {
+	    rb_raise(rb_eArgError, "expected Array");
+	}
+	return rb_ccsize_to_obj(rb_any_to_ccsize(argv[0]));
+    }
+
+    VALUE width, height;
+    rb_scan_args(argc, argv, "2", &width, &height);
+    return rb_ccsize_to_obj(cocos2d::Size(NUM2DBL(width), NUM2DBL(height)));
 }
 
 /// @property #width
@@ -407,7 +442,7 @@ Init_Types(void)
 
     rb_cSize = rb_define_class_under(rb_mMC, "Size", rb_cObject);
 
-    rb_define_singleton_method(rb_cSize, "alloc", size_alloc, 0);
+    rb_define_constructor(rb_cSize, size_new, -1);
     rb_define_method(rb_cSize, "width", size_width, 0);
     rb_define_method(rb_cSize, "width=", size_width_set, 1);
     rb_define_method(rb_cSize, "height", size_height, 0);
