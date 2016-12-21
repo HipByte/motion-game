@@ -338,8 +338,8 @@ color_inspect(VALUE rcv, SEL sel)
 {
     auto color = COLOR(rcv);
     char buf[100];
-    snprintf(buf, sizeof buf, "#<Color Red:%d Green:%d Blue:%d Alpha:%d>",
-	    color->r, color->g, color->b, color->a);
+    snprintf(buf, sizeof buf, "#<Color Red:%f Green:%f Blue:%f Alpha:%f>",
+	    color->r/255.0, color->g/255.0, color->b/255.0, color->a/255.0);
     return RSTRING_NEW(buf);
 }
 
