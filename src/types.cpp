@@ -223,7 +223,7 @@ size_inspect(VALUE rcv, SEL sel)
 {
     auto vec = SIZE(rcv);
     char buf[100];
-    snprintf(buf, sizeof buf, "[%f, %f]", vec->width, vec->height);
+    snprintf(buf, sizeof buf, "#<Size Width:%f Height:%f>", vec->width, vec->height);
     return RSTRING_NEW(buf);
 }
 
