@@ -117,8 +117,8 @@ point_inspect(VALUE rcv, SEL sel)
 ///   node.size = [200, 400]
 /// is the same as
 ///   size = MG::Size.new
-///   size.x = 200
-///   size.y = 400
+///   size.width = 200
+///   size.height = 400
 ///   node.size = size
 
 VALUE rb_cSize = Qnil;
