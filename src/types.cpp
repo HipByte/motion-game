@@ -234,13 +234,14 @@ size_inspect(VALUE rcv, SEL sel)
 /// (red-green-blue) or 4-element +Array+ (red-green-blue-alpha) can be passed
 /// instead, as a convenience shortcut. For example,
 ///   node.color = [0.2, 0.3, 0.4]
-///   node.color = [0.2, 0.3, 0.4, 0.75]
 /// is the same as
 ///   color = MG::Color.new
 ///   color.red = 0.2
 ///   color.green = 0.3
 ///   color.blue = 0.4
 ///   node.color = color
+/// or
+///   node.color = MG::Color.new(0.2, 0.3, 0.4)
 /// Alternatively, a +Symbol+ corresponding to a basic color name can be
 /// provided. For example,
 ///   node.color = :red
