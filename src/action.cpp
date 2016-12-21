@@ -483,77 +483,77 @@ Init_Action(void)
     rb_define_method(rb_cAction, "done?", action_done, 0);
 
     rb_cMoveBy = rb_define_class_under(rb_mMC, "MoveBy", rb_cAction);
-    rb_define_singleton_method(rb_cMoveBy, "new", move_by_new, 2);
+    rb_define_constructor(rb_cMoveBy, move_by_new, 2);
 
     rb_cMoveTo = rb_define_class_under(rb_mMC, "MoveTo", rb_cAction);
-    rb_define_singleton_method(rb_cMoveTo, "new", move_to_new, 2);
+    rb_define_constructor(rb_cMoveTo, move_to_new, 2);
 
     rb_cJumpBy = rb_define_class_under(rb_mMC, "JumpBy", rb_cAction);
-    rb_define_singleton_method(rb_cJumpBy, "new", jump_by_new, 4);
+    rb_define_constructor(rb_cJumpBy, jump_by_new, 4);
 
     rb_cJumpTo = rb_define_class_under(rb_mMC, "JumpTo", rb_cAction);
-    rb_define_singleton_method(rb_cJumpTo, "new", jump_to_new, 4);
+    rb_define_constructor(rb_cJumpTo, jump_to_new, 4);
 
     rb_cRotateBy = rb_define_class_under(rb_mMC, "RotateBy", rb_cAction);
-    rb_define_singleton_method(rb_cRotateBy, "new", rotate_by_new, 2);
+    rb_define_constructor(rb_cRotateBy, rotate_by_new, 2);
 
     rb_cRotateTo = rb_define_class_under(rb_mMC, "RotateTo", rb_cAction);
-    rb_define_singleton_method(rb_cRotateTo, "new", rotate_to_new, 2);
+    rb_define_constructor(rb_cRotateTo, rotate_to_new, 2);
 
     rb_cScaleBy = rb_define_class_under(rb_mMC, "ScaleBy", rb_cAction);
-    rb_define_singleton_method(rb_cScaleBy, "new", scale_by_new, 2);
+    rb_define_constructor(rb_cScaleBy, scale_by_new, 2);
 
     rb_cScaleTo = rb_define_class_under(rb_mMC, "ScaleTo", rb_cAction);
-    rb_define_singleton_method(rb_cScaleTo, "new", scale_to_new, 2);
+    rb_define_constructor(rb_cScaleTo, scale_to_new, 2);
 
     rb_cSkewBy = rb_define_class_under(rb_mMC, "SkewBy", rb_cAction);
-    rb_define_singleton_method(rb_cSkewBy, "new", skew_by_new, 3);
+    rb_define_constructor(rb_cSkewBy, skew_by_new, 3);
 
     rb_cSkewTo = rb_define_class_under(rb_mMC, "SkewTo", rb_cAction);
-    rb_define_singleton_method(rb_cSkewTo, "new", skew_to_new, 3);
+    rb_define_constructor(rb_cSkewTo, skew_to_new, 3);
 
     rb_cTintBy = rb_define_class_under(rb_mMC, "TintBy", rb_cAction);
-    rb_define_singleton_method(rb_cTintBy, "new", tint_by_new, 4);
+    rb_define_constructor(rb_cTintBy, tint_by_new, 4);
 
     rb_cTintTo = rb_define_class_under(rb_mMC, "TintTo", rb_cAction);
-    rb_define_singleton_method(rb_cTintTo, "new", tint_to_new, 4);
+    rb_define_constructor(rb_cTintTo, tint_to_new, 4);
 
     rb_cFadeTo = rb_define_class_under(rb_mMC, "FadeTo", rb_cAction);
-    rb_define_singleton_method(rb_cFadeTo, "new", fade_to_new, 2);
+    rb_define_constructor(rb_cFadeTo, fade_to_new, 2);
 
     rb_cFadeIn = rb_define_class_under(rb_mMC, "FadeIn", rb_cAction);
-    rb_define_singleton_method(rb_cFadeIn, "new", fade_in_new, 1);
+    rb_define_constructor(rb_cFadeIn, fade_in_new, 1);
 
     rb_cFadeOut = rb_define_class_under(rb_mMC, "FadeOut", rb_cAction);
-    rb_define_singleton_method(rb_cFadeOut, "new", fade_out_new, 1);
+    rb_define_constructor(rb_cFadeOut, fade_out_new, 1);
 
     rb_cBlink = rb_define_class_under(rb_mMC, "Blink", rb_cAction);
-    rb_define_singleton_method(rb_cBlink, "new", blink_new, 2);
+    rb_define_constructor(rb_cBlink, blink_new, 2);
 
     rb_cSequence = rb_define_class_under(rb_mMC, "Sequence", rb_cAction);
-    rb_define_singleton_method(rb_cSequence, "new", sequence_new, 1);
+    rb_define_constructor(rb_cSequence, sequence_new, 1);
 
     rb_cSpawn = rb_define_class_under(rb_mMC, "Spawn", rb_cAction);
-    rb_define_singleton_method(rb_cSpawn, "new", spawn_new, 1);
+    rb_define_constructor(rb_cSpawn, spawn_new, 1);
 
     rb_cFollow = rb_define_class_under(rb_mMC, "Follow", rb_cAction);
-    rb_define_singleton_method(rb_cFollow, "new", follow_new, 1);
+    rb_define_constructor(rb_cFollow, follow_new, 1);
 
     rb_cDelayTime = rb_define_class_under(rb_mMC, "DelayTime", rb_cAction);
-    rb_define_singleton_method(rb_cDelayTime, "new", delay_time_new, 1);
+    rb_define_constructor(rb_cDelayTime, delay_time_new, 1);
 
     rb_cRepeat = rb_define_class_under(rb_mMC, "Repeat", rb_cAction);
-    rb_define_singleton_method(rb_cRepeat, "new", repeat_new, 2);
+    rb_define_constructor(rb_cRepeat, repeat_new, 2);
     rb_define_const(rb_cRepeat, "FOREVER", LONG2FIX(-1));
 
     rb_cRepeatForever = rb_define_class_under(rb_mMC, "RepeatForever", rb_cAction);
-    rb_define_singleton_method(rb_cRepeatForever, "new", repeat_forever_new, 1);
+    rb_define_constructor(rb_cRepeatForever, repeat_forever_new, 1);
 
     rb_cSpeed = rb_define_class_under(rb_mMC, "Speed", rb_cAction);
-    rb_define_singleton_method(rb_cSpeed, "new", speed_new, 2);
+    rb_define_constructor(rb_cSpeed, speed_new, 2);
 
     rb_cAnimate = rb_define_class_under(rb_mMC, "Animate", rb_cAction);
-    rb_define_singleton_method(rb_cAnimate, "new", animate_new, -1);
+    rb_define_constructor(rb_cAnimate, animate_new, -1);
 }
 
 // TODO: Add actions

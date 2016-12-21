@@ -7,6 +7,76 @@
 
 VALUE rb_mMC = Qnil;
 
+#if CC_TARGET_OS_IPHONE || CC_TARGET_OS_APPLETV
+#include <unordered_map>
+static std::unordered_map<VALUE, std::pair<void*, int>> new_funcs;
+
+static VALUE
+singleton_new(VALUE klass, SEL sel, int argc, VALUE *argv)
+{
+    auto iter = new_funcs.find(klass);
+    if (iter == new_funcs.end()) {
+	abort();
+    }
+    auto f = iter->second;
+    void *func = f.first;
+    int arity = f.second;
+    if (arity != -1 && arity != argc) {
+	rb_raise(rb_eArgError, "wrong number of arguments (%d for %d)",
+		argc, arity);
+    }
+
+    VALUE (*imp)(VALUE, SEL, ...) = (VALUE (*)(VALUE, SEL, ...))func;
+    if (arity == -1) {
+	return (*imp)(klass, sel, argc, argv);
+    }
+
+    switch (argc) {
+      case 0:
+	return (*imp)(klass, sel);
+      case 1:
+	return (*imp)(klass, sel, argv[0]);
+      case 2:
+	return (*imp)(klass, sel, argv[0], argv[1]);
+      case 3:
+	return (*imp)(klass, sel, argv[0], argv[1], argv[2]);
+      case 4:
+	return (*imp)(klass, sel, argv[0], argv[1], argv[2], argv[3]);
+      case 5:
+	return (*imp)(klass, sel, argv[0], argv[1], argv[2], argv[3],
+		argv[4]);
+      case 6:
+	return (*imp)(klass, sel, argv[0], argv[1], argv[2], argv[3],
+		argv[4], argv[5]);
+      case 7:
+	return (*imp)(klass, sel, argv[0], argv[1], argv[2], argv[3],
+		argv[4], argv[5], argv[6]);
+      case 8:
+	return (*imp)(klass, sel, argv[0], argv[1], argv[2], argv[3],
+		argv[4], argv[5], argv[6], argv[7]);
+      case 9:
+	return (*imp)(klass, sel, argv[0], argv[1], argv[2], argv[3],
+		argv[4], argv[5], argv[6], argv[7], argv[8]);
+      case 10:
+	return (*imp)(klass, sel, argv[0], argv[1], argv[2], argv[3],
+		argv[4], argv[5], argv[6], argv[7], argv[8], argv[9]);
+      default:
+	rb_raise(rb_eArgError, "doesn't support passing more than 10 arguments");
+    }
+}
+#endif
+
+void
+rb_define_constructor0(VALUE klass, void *func, int arity)
+{
+#if CC_TARGET_OS_IPHONE || CC_TARGET_OS_APPLETV
+    new_funcs[klass] = std::make_pair(func, arity);
+    rb_define_singleton_method(klass, "new", singleton_new, -1);
+#else
+    rb_define_singleton_method(klass, "new", func, arity);
+#endif
+}
+
 extern "C"
 void
 Init_Fluency(void)

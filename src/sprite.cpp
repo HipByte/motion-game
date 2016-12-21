@@ -483,7 +483,7 @@ Init_Sprite(void)
     // rb_register_cocos2d_object_finalizer(rb_cSprite); removed because rb_cSprite inherits rb_cNode and it already has finalizer.
 
     rb_define_singleton_method(rb_cSprite, "load", sprite_load, 1);
-    rb_define_singleton_method(rb_cSprite, "new", sprite_new, 1);
+    rb_define_constructor(rb_cSprite, sprite_new, 1);
     rb_define_method(rb_cSprite, "move_by", sprite_move_by, 2);
     rb_define_method(rb_cSprite, "move_to", sprite_move_to, 2);
     rb_define_method(rb_cSprite, "rotate_by", sprite_rotate_by, 2);

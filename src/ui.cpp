@@ -995,7 +995,7 @@ Init_UI(void)
 
     rb_cUIText = rb_define_class_under(rb_mMC, "Text", rb_cUIWidget);
 
-    rb_define_singleton_method(rb_cUIText, "new", text_new, -1);
+    rb_define_constructor(rb_cUIText, text_new, -1);
     rb_define_method(rb_cUIText, "text", text_text, 0);
     rb_define_method(rb_cUIText, "text=", text_text_set, 1);
     rb_define_method(rb_cUIText, "text_color", text_text_color, 0);
@@ -1019,7 +1019,7 @@ Init_UI(void)
 
     rb_cUIButton = rb_define_class_under(rb_mMC, "Button", rb_cUIWidget);
 
-    rb_define_singleton_method(rb_cUIButton, "new", button_new, -1);
+    rb_define_constructor(rb_cUIButton, button_new, -1);
     rb_define_method(rb_cUIButton, "text", button_text, 0);
     rb_define_method(rb_cUIButton, "text=", button_text_set, 1);
     rb_define_method(rb_cUIButton, "text_color", button_text_color, 0);
@@ -1036,13 +1036,13 @@ Init_UI(void)
 
     rb_cUISlider = rb_define_class_under(rb_mMC, "Slider", rb_cUIWidget);
 
-    rb_define_singleton_method(rb_cUISlider, "new", slider_new, 0);
+    rb_define_constructor(rb_cUISlider, slider_new, 0);
     rb_define_method(rb_cUISlider, "progress", slider_progress, 0);
     rb_define_method(rb_cUISlider, "progress=", slider_progress_set, 1);
 
     rb_cUILayout = rb_define_class_under(rb_mMC, "Layout", rb_cUIWidget);
 
-    rb_define_singleton_method(rb_cUILayout, "new", layout_new, 0);
+    rb_define_constructor(rb_cUILayout, layout_new, 0);
     rb_define_method(rb_cUILayout, "type", layout_type, 0);
     rb_define_method(rb_cUILayout, "type=", layout_type_set, 1);
     rb_define_method(rb_cUILayout, "background_color", layout_background_color, 0);
@@ -1057,7 +1057,7 @@ Init_UI(void)
 
     rb_cUIScroll = rb_define_class_under(rb_mMC, "Scroll", rb_cUILayout);
 
-    rb_define_singleton_method(rb_cUIScroll, "new", scroll_new, 0);
+    rb_define_constructor(rb_cUIScroll, scroll_new, 0);
     rb_define_method(rb_cUIScroll, "direction", scroll_direction, 0);
     rb_define_method(rb_cUIScroll, "direction=", scroll_direction_set, 1);
     rb_define_method(rb_cUIScroll, "inner_size", scroll_inner_size, 0);
@@ -1071,7 +1071,7 @@ Init_UI(void)
 
     rb_cUIList = rb_define_class_under(rb_mMC, "List", rb_cUIScroll);
 
-    rb_define_singleton_method(rb_cUIList, "new", list_new, 0);
+    rb_define_constructor(rb_cUIList, list_new, 0);
     rb_define_method(rb_cUIList, "add_item", list_add_item, 1);
     rb_define_method(rb_cUIList, "insert_item", list_insert_item, 2);
     rb_define_method(rb_cUIList, "item_at", list_item_at, 1);
@@ -1085,7 +1085,7 @@ Init_UI(void)
 #if !CC_TARGET_OS_APPLETV
     rb_cUIWeb = rb_define_class_under(rb_mMC, "Web", rb_cUIWidget);
 
-    rb_define_singleton_method(rb_cUIWeb, "new", web_new, 0);
+    rb_define_constructor(rb_cUIWeb, web_new, 0);
     rb_define_method(rb_cUIWeb, "load_html", web_load_html, 2);
     rb_define_method(rb_cUIWeb, "load_url", web_load_url, 1);
     rb_define_method(rb_cUIWeb, "load_file", web_load_file, 1);

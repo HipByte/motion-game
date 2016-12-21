@@ -217,7 +217,7 @@ Init_Particle(void)
     rb_cParticle = rb_define_class_under(rb_mMC, "Particle", rb_cNode);
     // rb_register_cocos2d_object_finalizer(rb_cParticle); removed because rb_cParticle inherits rb_cNode and it already has finalizer.
 
-    rb_define_singleton_method(rb_cParticle, "new", particle_new, -1);
+    rb_define_constructor(rb_cParticle, particle_new, -1);
     rb_define_method(rb_cParticle, "texture=", particle_texture_set, 1);
     rb_define_method(rb_cParticle, "speed", particle_speed, 0);
     rb_define_method(rb_cParticle, "speed=", particle_speed_set, 1);
