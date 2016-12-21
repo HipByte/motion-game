@@ -264,10 +264,54 @@ rb_cccolor4_to_obj(cocos2d::Color4B _color)
     return rb_class_wrap_new(color, rb_cColor);
 }
 
+/// @group Constructors
+
+/// @method #initialize(*args)
+/// @overload initialize
+///   Creates a new object with default color set.
+///   @return [Color] a Color object.
+
+/// @overload initialize(ary)
+///   Creates a new object with 3-element or 4-element +Array+.
+///   @param ary [Array] 3-element or 4-element +Array+.
+///   @return [Color] a Color object.
+
+/// @overload initialize(red, green, blue, alpha=1.0)
+///   Creates a new object.
+///   @param red [Float] the red portion of the color, from +0.0+ to +1.0+.
+///   @param green [Float] the green portion of the color, from +0.0+ to +1.0+.
+///   @param blue [Float] the blue portion of the color, from +0.0+ to +1.0+.
+///   @param alpha [Float] the alpha portion of the color, from +0.0+ to +1.0+.
+///   @return [Color] a Color object.
+
+/// @endgroup
+
 static VALUE
-color_alloc(VALUE rcv, SEL sel)
+color_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
 {
-    return rb_cccolor4_to_obj(cocos2d::Color4B::BLACK);
+    switch (argc) {
+      case 0:
+	return rb_cccolor4_to_obj(cocos2d::Color4B::BLACK);
+      case 1:
+	// Array
+	if (!rb_obj_is_kind_of(argv[0], rb_cArray)) {
+	    rb_raise(rb_eArgError, "expected Array");
+	}
+	return rb_cccolor4_to_obj(rb_any_to_cccolor4(argv[0]));
+    }
+
+    VALUE red, green, blue, alpha;
+    rb_scan_args(argc, argv, "31", &red, &green, &blue, &alpha);
+
+    GLubyte alpha_c = 255;
+    if (argc == 4) {
+	alpha_c = NUM2BYTE(alpha);
+    }
+    return rb_cccolor4_to_obj(cocos2d::Color4B(
+		NUM2BYTE(red),
+		NUM2BYTE(green),
+		NUM2BYTE(blue),
+		alpha_c));
 }
 
 /// @property #red
@@ -375,7 +419,7 @@ Init_Types(void)
 
     rb_cColor = rb_define_class_under(rb_mMC, "Color", rb_cObject);
 
-    rb_define_singleton_method(rb_cColor, "alloc", color_alloc, 0);
+    rb_define_constructor(rb_cColor, color_new, -1);
     rb_define_method(rb_cColor, "red", color_red, 0);
     rb_define_method(rb_cColor, "red=", color_red_set, 1);
     rb_define_method(rb_cColor, "green", color_green, 0);
