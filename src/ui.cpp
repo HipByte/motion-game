@@ -741,6 +741,94 @@ scroll_inner_container(VALUE rcv, SEL sel)
 	? Qnil : rb_cocos2d_object_new(layout, rb_cUILayout);
 }
 
+/// @method #jump_to_bottom
+/// Move inner container to bottom boundary of scrollview.
+/// @return [self] the receiver.
+
+static VALUE
+scroll_jump_to_bottom(VALUE rcv, SEL sel)
+{
+    SCROLL(rcv)->jumpToBottom();
+    return rcv;
+}
+
+/// @method #jump_to_bottom_left
+/// Move inner container to bottom and left boundary of scrollview.
+/// @return [self] the receiver.
+
+static VALUE
+scroll_jump_to_bottom_left(VALUE rcv, SEL sel)
+{
+    SCROLL(rcv)->jumpToBottomLeft();
+    return rcv;
+}
+
+/// @method #jump_to_bottom_right
+/// Move inner container to bottom and right boundary of scrollview.
+/// @return [self] the receiver.
+
+static VALUE
+scroll_jump_to_bottom_right(VALUE rcv, SEL sel)
+{
+    SCROLL(rcv)->jumpToBottomRight();
+    return rcv;
+}
+
+/// @method #jump_to_left
+/// Move inner container to left boundary of scrollview.
+/// @return [self] the receiver.
+
+static VALUE
+scroll_jump_to_left(VALUE rcv, SEL sel)
+{
+    SCROLL(rcv)->jumpToLeft();
+    return rcv;
+}
+
+/// @method #jump_to_right
+/// Move inner container to right boundary of scrollview.
+/// @return [self] the receiver.
+
+static VALUE
+scroll_jump_to_right(VALUE rcv, SEL sel)
+{
+    SCROLL(rcv)->jumpToRight();
+    return rcv;
+}
+
+/// @method #jump_to_top
+/// Move inner container to top boundary of scrollview.
+/// @return [self] the receiver.
+
+static VALUE
+scroll_jump_to_top(VALUE rcv, SEL sel)
+{
+    SCROLL(rcv)->jumpToTop();
+    return rcv;
+}
+
+/// @method #jump_to_top_left
+/// Move inner container to top and left boundary of scrollview.
+/// @return [self] the receiver.
+
+static VALUE
+scroll_jump_to_top_left(VALUE rcv, SEL sel)
+{
+    SCROLL(rcv)->jumpToTopLeft();
+    return rcv;
+}
+
+/// @method #jump_to_top_right
+/// Move inner container to top and right boundary of scrollview.
+/// @return [self] the receiver.
+
+static VALUE
+scroll_jump_to_top_right(VALUE rcv, SEL sel)
+{
+    SCROLL(rcv)->jumpToTopRight();
+    return rcv;
+}
+
 /// @class List < Scroll
 
 /// @group Constructors
@@ -1063,6 +1151,14 @@ Init_UI(void)
     rb_define_method(rb_cUIScroll, "inner_size", scroll_inner_size, 0);
     rb_define_method(rb_cUIScroll, "inner_size=", scroll_inner_size_set, 1);
     rb_define_method(rb_cUIScroll, "inner_container", scroll_inner_container, 0);
+    rb_define_method(rb_cUIScroll, "jump_to_bottom", scroll_jump_to_bottom, 0);
+    rb_define_method(rb_cUIScroll, "jump_to_bottom_left", scroll_jump_to_bottom_left, 0);
+    rb_define_method(rb_cUIScroll, "jump_to_bottom_right", scroll_jump_to_bottom_right, 0);
+    rb_define_method(rb_cUIScroll, "jump_to_left", scroll_jump_to_left, 0);
+    rb_define_method(rb_cUIScroll, "jump_to_right", scroll_jump_to_right, 0);
+    rb_define_method(rb_cUIScroll, "jump_to_top", scroll_jump_to_top, 0);
+    rb_define_method(rb_cUIScroll, "jump_to_top_left", scroll_jump_to_top_left, 0);
+    rb_define_method(rb_cUIScroll, "jump_to_top_right", scroll_jump_to_top_right, 0);
 
     sym_none = rb_name2sym("none");
     sym_vertical = rb_name2sym("vertical");
