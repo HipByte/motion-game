@@ -105,7 +105,7 @@ point_inspect(VALUE rcv, SEL sel)
 {
     auto vec = VEC2(rcv);
     char buf[100];
-    snprintf(buf, sizeof buf, "[%f, %f]", vec->x, vec->y);
+    snprintf(buf, sizeof buf, "#<Point x=%f, y=%f>", vec->x, vec->y);
     return RSTRING_NEW(buf);
 }
 
@@ -258,7 +258,7 @@ size_inspect(VALUE rcv, SEL sel)
 {
     auto vec = SIZE(rcv);
     char buf[100];
-    snprintf(buf, sizeof buf, "#<Size Width:%f Height:%f>", vec->width, vec->height);
+    snprintf(buf, sizeof buf, "#<Size width=%f, height=%f>", vec->width, vec->height);
     return RSTRING_NEW(buf);
 }
 
@@ -419,7 +419,7 @@ color_inspect(VALUE rcv, SEL sel)
 {
     auto color = COLOR(rcv);
     char buf[100];
-    snprintf(buf, sizeof buf, "#<Color Red:%f Green:%f Blue:%f Alpha:%f>",
+    snprintf(buf, sizeof buf, "#<Color red=%f, green=%f, blue=%f, alpha=%f>",
 	    color->r/255.0, color->g/255.0, color->b/255.0, color->a/255.0);
     return RSTRING_NEW(buf);
 }
