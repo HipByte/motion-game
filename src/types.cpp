@@ -139,18 +139,18 @@ rb_ccsize_to_obj(cocos2d::Size _size)
 /// @method #initialize(*args)
 /// @overload initialize
 ///   Creates a new object.
-///   @return [Color] a Size object.
+///   @return [Size] a Size object.
 
 /// @overload initialize(ary)
 ///   Creates a new object with 2-element +Array+.
 ///   @param ary [Array] 2-element +Array+.
-///   @return [Color] a Size object.
+///   @return [Size] a Size object.
 
 /// @overload initialize(width, height)
 ///   Creates a new object.
 ///   @param width [Float] a size width.
 ///   @param height [Float] a size height.
-///   @return [Color] a Size object.
+///   @return [Size] a Size object.
 
 /// @endgroup
 
