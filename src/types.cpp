@@ -13,6 +13,8 @@
 ///   point.x = 10
 ///   point.y = 20
 ///   node.location = point
+/// or
+///   node.location = MG::Point.new(10, 20)
 
 VALUE rb_cPoint = Qnil;
 
@@ -25,10 +27,43 @@ rb_ccvec2_to_obj(cocos2d::Vec2 _vec2)
     return rb_class_wrap_new(vec2, rb_cPoint);
 }
 
+/// @group Constructors
+
+/// @method #initialize(*args)
+/// @overload initialize
+///   Creates a new object.
+///   @return [Point] a Point object.
+
+/// @overload initialize(ary)
+///   Creates a new object with 2-element +Array+.
+///   @param ary [Array] 2-element +Array+.
+///   @return [Point] a Point object.
+
+/// @overload initialize(x, y)
+///   Creates a new object.
+///   @param x [Float] the x coordinate of the point.
+///   @param y [Float] the y coordinate of the point.
+///   @return [Point] a Point object.
+
+/// @endgroup
+
 static VALUE
-point_alloc(VALUE rcv, SEL sel)
+point_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
 {
-    return rb_ccvec2_to_obj(cocos2d::Vec2());
+    switch (argc) {
+      case 0:
+	return rb_ccvec2_to_obj(cocos2d::Vec2());
+      case 1:
+	// Array
+	if (!rb_obj_is_kind_of(argv[0], rb_cArray)) {
+	    rb_raise(rb_eArgError, "expected Array");
+	}
+	return rb_ccvec2_to_obj(rb_any_to_ccvec2(argv[0]));
+    }
+
+    VALUE x, y;
+    rb_scan_args(argc, argv, "2", &x, &y);
+    return  rb_ccvec2_to_obj(cocos2d::Size(NUM2DBL(x), NUM2DBL(y)));
 }
 
 /// @property #x
@@ -430,7 +465,7 @@ Init_Types(void)
 {
     rb_cPoint = rb_define_class_under(rb_mMC, "Point", rb_cObject);
 
-    rb_define_singleton_method(rb_cPoint, "alloc", point_alloc, 0);
+    rb_define_constructor(rb_cPoint, point_new, -1);
     rb_define_method(rb_cPoint, "x", point_x, 0);
     rb_define_method(rb_cPoint, "x=", point_x_set, 1);
     rb_define_method(rb_cPoint, "y", point_y, 0);
