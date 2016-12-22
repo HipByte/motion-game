@@ -1,5 +1,5 @@
 module MG
-  class GameScene < MG::Scene
+  class GameScene < Scene
     BIRD =  1 << 0
     WORLD = 1 << 1
 
@@ -17,13 +17,13 @@ module MG
 
       # On touch, the bird jumps.
       on_touch_begin do
-        MG::Audio.play('sfx_wing')
+        Audio.play('sfx_wing')
         @bird.velocity = [0, 200]
       end
 
       # On collision contact, it's game over.
       on_contact_begin do
-        MG::Audio.play('sfx_hit')
+        Audio.play('sfx_hit')
         puts "game over!11!!!1!!1!1!!1111!!!!!11!!!eleven"
         true
       end
@@ -32,7 +32,7 @@ module MG
     end
 
     def fly
-      MG::Audio.play('sfx_wing')
+      Audio.play('sfx_wing')
       @bird.velocity = [0, 200]
     end
 
@@ -40,8 +40,8 @@ module MG
       x = 0
       @backgrounds << []
       4.times do
-        skyline = MG::Sprite.new('skyline.png')
-        skyline.position = [x, MG::Director.shared.size.height / 2.0]
+        skyline = Sprite.new('skyline.png')
+        skyline.position = [x, Director.shared.size.height / 2.0]
         add skyline, 0
         x += skyline.size.width - 5
         @backgrounds.last << skyline
@@ -52,7 +52,7 @@ module MG
       x = 0
       @backgrounds << []
       4.times do
-        ground = MG::Sprite.new('ground.png')
+        ground = Sprite.new('ground.png')
         ground.attach_physics_box
         ground.dynamic = false
         ground.category_mask = WORLD
@@ -65,19 +65,19 @@ module MG
     end
 
     def add_bird
-      @bird = MG::Sprite.new('bird_one.png')
+      @bird = Sprite.new('bird_one.png')
       @bird.attach_physics_box
       @bird.category_mask = BIRD
       @bird.contact_mask = WORLD
-      @bird.position = [100, MG::Director.shared.size.height / 2]
-      @bird.animate(['bird_one.png', 'bird_two.png', 'bird_three.png'], 0.5, MG::Repeat::FOREVER)
+      @bird.position = [100, Director.shared.size.height / 2]
+      @bird.animate(['bird_one.png', 'bird_two.png', 'bird_three.png'], 0.5, Repeat::FOREVER)
       add @bird
     end
 
     def add_pipe
       pipe_y = @random.rand(150.0..450.0)
       [['pipe_up.png', 0], ['pipe_down.png', 850]].each do |sprite_name, y_offset|
-        pipe = MG::Sprite.new(sprite_name)
+        pipe = Sprite.new(sprite_name)
         pipe.attach_physics_box
         pipe.category_mask = WORLD
         pipe.contact_mask = BIRD
