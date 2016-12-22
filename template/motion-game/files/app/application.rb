@@ -1,6 +1,6 @@
 class Application < MG::Application
   def start
-    MG::Director.shared.run(MainScene.new)
+    MG::Director.shared.run(MG::MainScene.new)
   end
 
   def resume
