@@ -6,3 +6,4 @@ doc
 v3-deps-78.zip
 
 motion-game-*.gem
+/samples/*/Gemfile.lock
