@@ -1,5 +1,5 @@
 module MG
-  class GameScene < Scene
+  class MainScene < Scene
     def initialize
       @random = Random.new
 

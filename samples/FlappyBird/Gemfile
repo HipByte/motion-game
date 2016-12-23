@@ -1,4 +1,6 @@
 source 'https://rubygems.org'
 
 gem 'rake'
+gem 'motion-game'
+# gem 'motion-game', path: '../../motion-game'
 # Add your dependencies here:

@@ -1,5 +1,5 @@
 module MG
-  class GameScene < Scene
+  class MainScene < Scene
     BIRD =  1 << 0
     WORLD = 1 << 1
 
