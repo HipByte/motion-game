@@ -17,6 +17,10 @@ static VALUE sym_absolute = Qnil, sym_relative = Qnil, sym_none = Qnil,
 /// directly but use a subclass instead.
 
 static VALUE rb_cUIWidget = Qnil;
+static VALUE sym_begin = Qnil;
+static VALUE sym_move = Qnil;
+static VALUE sym_end = Qnil;
+static VALUE sym_cancel = Qnil;
 
 #define WIDGET(obj) _COCOS_WRAP_GET(obj, cocos2d::ui::Widget)
 
@@ -115,16 +119,16 @@ widget_on_touch(VALUE rcv, SEL sel)
 	    VALUE sym = Qnil;
 	    switch (event_type) {
 	      case cocos2d::ui::Widget::TouchEventType::BEGAN:
-		sym = rb_name2sym("begin");
+		sym = sym_begin;
 		break;
 	      case cocos2d::ui::Widget::TouchEventType::MOVED:
-		sym = rb_name2sym("move");
+		sym = sym_move;
 		break;
 	      case cocos2d::ui::Widget::TouchEventType::ENDED:
-		sym = rb_name2sym("end");
+		sym = sym_end;
 		break;
 	      case cocos2d::ui::Widget::TouchEventType::CANCELED:
-		sym = rb_name2sym("cancel");
+		sym = sym_cancel;
 		break;
 	    }
 	    rb_block_call(block, 1, &sym);
@@ -1070,6 +1074,10 @@ Init_UI(void)
 {
     rb_cUIWidget = rb_define_class_under(rb_mMC, "Widget", rb_cNode);
     // rb_register_cocos2d_object_finalizer(rb_cUIWidget); removed because rb_cUIWidget inherits rb_cNode and it already has finalizer.
+    sym_begin = rb_name2sym("begin");
+    sym_move = rb_name2sym("move");
+    sym_end = rb_name2sym("end");
+    sym_cancel = rb_name2sym("cancel");
 
     rb_define_method(rb_cUIWidget, "enabled?", widget_enabled, 0);
     rb_define_method(rb_cUIWidget, "enabled=", widget_enabled_set, 1);
