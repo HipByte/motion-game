@@ -597,6 +597,13 @@ checkbox_on_selected(VALUE rcv, SEL sel)
 }
 
 /// @class Slider < Widget
+/// A slider widget. The {#on_changed} method can be used to set a callback when
+/// the slider is changed. Example:
+///   slider = Slider.new
+///   slider.load_bar_texture("slider_bar.png")
+///   slider.load_slid_ball_textures("slider_normal_ball.png", "", "")
+///   slider.load_progress_bar_texture("slider_progress.png");
+///   slider.on_changed { puts slider.progress }
 
 /// @group Constructors
 
