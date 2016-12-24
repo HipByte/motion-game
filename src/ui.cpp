@@ -4,6 +4,7 @@
 #include <ui/UIWidget.h>
 #include <ui/UIText.h>
 #include <ui/UIButton.h>
+#include <ui/UICheckBox.h>
 #include <ui/UISlider.h>
 #include <ui/UIScrollView.h>
 #include <ui/UIListView.h>
@@ -496,6 +497,103 @@ button_load_texture_disabled(VALUE rcv, SEL sel, VALUE val)
 {
   BUTTON(rcv)->loadTextureDisabled(RSTRING_PTR(StringValue(val)));
   return val;
+}
+
+/// @class CheckBox < Widget
+/// A checkbox widget. The {#on_selected} method can be used to set a callback when
+/// the checkbox is selected. Example:
+///   check_box = CheckBox.new(
+///                   "check_box_normal.png",
+///                   "check_box_normal_press.png",
+///                   "check_box_active.png",
+///                   "check_box_normal_disable.png",
+///                   "check_box_active_disable.png")
+///   check_box.on_selected { |type| puts "selected!" if type == :selected }
+
+/// @group Constructors
+
+static VALUE rb_cUICheckBox = Qnil;
+static VALUE sym_selected = Qnil;
+static VALUE sym_unselected = Qnil;
+
+#define CHECKBOX(obj) _COCOS_WRAP_GET(obj, cocos2d::ui::CheckBox)
+
+/// @method #initialize(background, background_selected, cross, background_disabled, front_cross_disabled)
+/// Creates a new CheckBox widget.
+/// @param background [String] a background texture name.
+/// @param background_selected [String] a background selected state texture name.
+/// @param cross [String] a cross texture name.
+/// @param front_cross_disabled [String] a cross dark state texture name.
+/// @return [CheckBox] a CheckBox instance.
+
+static VALUE
+checkbox_new(VALUE rcv, SEL sel, VALUE background, VALUE background_selected, VALUE cross, VALUE background_disabled, VALUE front_cross_disabled)
+{
+    return rb_cocos2d_object_new(cocos2d::ui::CheckBox::create(
+	    RSTRING_PTR(StringValue(background)),
+	    RSTRING_PTR(StringValue(background_selected)),
+	    RSTRING_PTR(StringValue(cross)),
+	    RSTRING_PTR(StringValue(background_disabled)),
+	    RSTRING_PTR(StringValue(front_cross_disabled))),
+	    rcv);
+}
+
+/// @endgroup
+
+/// @method #selected?
+/// Get selcted state of checkbox.
+/// @return [Boolean] true if checkbox is selected.
+
+static VALUE
+checkbox_selected(VALUE rcv, SEL sel)
+{
+    return CHECKBOX(rcv)->isSelected() == true ? Qtrue : Qfalse;
+}
+
+/// @method #selected=(value)
+/// Set selcted state for checkbox.
+/// @param value [Boolean] true that checkbox is selected, false otherwise.
+
+static VALUE
+checkbox_set_selected(VALUE rcv, SEL sel, VALUE val)
+{
+    bool selected = RTEST(val) ? true : false;
+    CHECKBOX(rcv)->setSelected(selected);
+    return val;
+}
+
+/// @method #on_selected
+/// Configures a block to be called when a touch event is received on the
+/// widget.
+/// @yield [Symbol] the given block will be called when the event
+///   is received with a +Symbol+ that describes the type of event, which can
+///   be +:selected+ or +:unselected+
+/// @return [self] the receiver.
+
+static VALUE
+checkbox_on_selected(VALUE rcv, SEL sel)
+{
+    VALUE block = rb_current_block();
+    if (block == Qnil) {
+	rb_raise(rb_eArgError, "block not given");
+    }
+    block = rb_retain(block); // FIXME need release...
+
+    CHECKBOX(rcv)->addEventListener(
+	[block](cocos2d::Ref *ref,
+		cocos2d::ui::CheckBox::EventType event_type) {
+	    VALUE sym = Qnil;
+	    switch (event_type) {
+	      case cocos2d::ui::CheckBox::EventType::SELECTED:
+		sym = sym_selected;
+		break;
+	      case cocos2d::ui::CheckBox::EventType::UNSELECTED:
+		sym = sym_unselected;
+		break;
+	    }
+	    rb_block_call(block, 1, &sym);
+	});
+    return rcv;
 }
 
 /// @class Slider < Widget
@@ -1129,6 +1227,15 @@ Init_UI(void)
     rb_define_method(rb_cUIButton, "load_texture_normal", button_load_texture_normal, 1);
     rb_define_method(rb_cUIButton, "load_texture_pressed", button_load_texture_pressed, 1);
     rb_define_method(rb_cUIButton, "load_texture_disabled", button_load_texture_disabled, 1);
+
+    rb_cUICheckBox = rb_define_class_under(rb_mMC, "CheckBox", rb_cUIWidget);
+    sym_selected = rb_name2sym("selected");
+    sym_unselected = rb_name2sym("unselectd");
+
+    rb_define_constructor(rb_cUICheckBox, checkbox_new, 5);
+    rb_define_method(rb_cUICheckBox, "selected?", checkbox_selected, 0);
+    rb_define_method(rb_cUICheckBox, "selected=", checkbox_set_selected, 1);
+    rb_define_method(rb_cUICheckBox, "on_selected", checkbox_on_selected, 0);
 
     rb_cUISlider = rb_define_class_under(rb_mMC, "Slider", rb_cUIWidget);
 
