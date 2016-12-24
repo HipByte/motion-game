@@ -70,7 +70,7 @@ rb_any_to_ccsize(VALUE obj)
 	return cocos2d::Size(NUM2DBL(RARRAY_AT(obj, 0)),
 		NUM2DBL(RARRAY_AT(obj, 1)));
     }
-    else if (rb_obj_is_kind_of(obj, rb_cSize)) {
+    else if (rb_obj_is_kind_of(obj, rb_cPoint) || rb_obj_is_kind_of(obj, rb_cSize)) {
 	return *SIZE(obj);
     }
     rb_raise(rb_eArgError, "expected Array or Size");
