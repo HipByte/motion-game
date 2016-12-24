@@ -661,6 +661,18 @@ slider_load_slid_ball_textures(VALUE rcv, SEL sel, VALUE normal, VALUE pressed, 
     return rcv;
 }
 
+/// @method #load_progress_bar_texture(value)
+/// Load texture for slider progress bar.
+/// @param value [String] a texture name.
+/// @return [self] the receiver.
+
+static VALUE
+slider_load_progress_bar_texture(VALUE rcv, SEL sel, VALUE name)
+{
+    SLIDER(rcv)->loadProgressBarTexture(RSTRING_PTR(StringValue(name)));
+    return rcv;
+}
+
 /// @class Layout < Widget
 
 /// @group Constructors
@@ -1273,6 +1285,7 @@ Init_UI(void)
     rb_define_method(rb_cUISlider, "progress=", slider_progress_set, 1);
     rb_define_method(rb_cUISlider, "load_bar_texture", slider_load_bar_texture, 1);
     rb_define_method(rb_cUISlider, "load_slid_ball_textures", slider_load_slid_ball_textures, 3);
+    rb_define_method(rb_cUISlider, "load_progress_bar_texture", slider_load_progress_bar_texture, 1);
 
     rb_cUILayout = rb_define_class_under(rb_mMC, "Layout", rb_cUIWidget);
 
