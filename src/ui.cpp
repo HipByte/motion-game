@@ -644,6 +644,23 @@ slider_load_bar_texture(VALUE rcv, SEL sel, VALUE name)
     return rcv;
 }
 
+/// @method #load_slid_ball_textures(normal, pressed, disabled)
+/// Load textures for slider ball.
+/// @param normal [String] a ball normal normal state texture.
+/// @param pressed [String] a ball selected selected state texture.
+/// @param disabled [String] a ball disabled dark state texture.
+/// @return [self] the receiver.
+
+static VALUE
+slider_load_slid_ball_textures(VALUE rcv, SEL sel, VALUE normal, VALUE pressed, VALUE disabled)
+{
+    SLIDER(rcv)->loadSlidBallTextures(
+	RSTRING_PTR(StringValue(normal)),
+	RSTRING_PTR(StringValue(pressed)),
+	RSTRING_PTR(StringValue(disabled)));
+    return rcv;
+}
+
 /// @class Layout < Widget
 
 /// @group Constructors
@@ -1255,6 +1272,7 @@ Init_UI(void)
     rb_define_method(rb_cUISlider, "progress", slider_progress, 0);
     rb_define_method(rb_cUISlider, "progress=", slider_progress_set, 1);
     rb_define_method(rb_cUISlider, "load_bar_texture", slider_load_bar_texture, 1);
+    rb_define_method(rb_cUISlider, "load_slid_ball_textures", slider_load_slid_ball_textures, 3);
 
     rb_cUILayout = rb_define_class_under(rb_mMC, "Layout", rb_cUIWidget);
 
