@@ -673,6 +673,31 @@ slider_load_progress_bar_texture(VALUE rcv, SEL sel, VALUE name)
     return rcv;
 }
 
+/// @method #on_changed
+/// Configures a block to be called when a slider event is received on the
+/// widget.
+/// @yield the block will be called when a slider event is received.
+/// @return [self] the receiver.
+
+static VALUE
+slider_on_changed(VALUE rcv, SEL sel)
+{
+    VALUE block = rb_current_block();
+    if (block == Qnil) {
+	rb_raise(rb_eArgError, "block not given");
+    }
+    block = rb_retain(block); // FIXME need release...
+
+    SLIDER(rcv)->addEventListener(
+	[block](cocos2d::Ref *ref,
+		cocos2d::ui::Slider::EventType event_type) {
+	    if (event_type == cocos2d::ui::Slider::EventType::ON_PERCENTAGE_CHANGED) {
+		rb_block_call(block, 0, NULL);
+	    }
+	});
+    return rcv;
+}
+
 /// @class Layout < Widget
 
 /// @group Constructors
@@ -1286,6 +1311,7 @@ Init_UI(void)
     rb_define_method(rb_cUISlider, "load_bar_texture", slider_load_bar_texture, 1);
     rb_define_method(rb_cUISlider, "load_slid_ball_textures", slider_load_slid_ball_textures, 3);
     rb_define_method(rb_cUISlider, "load_progress_bar_texture", slider_load_progress_bar_texture, 1);
+    rb_define_method(rb_cUISlider, "on_changed", slider_on_changed, 0);
 
     rb_cUILayout = rb_define_class_under(rb_mMC, "Layout", rb_cUIWidget);
 
