@@ -55,7 +55,7 @@ rb_any_to_ccvec2(VALUE obj)
     else if (rb_obj_is_kind_of(obj, rb_cPoint) || rb_obj_is_kind_of(obj, rb_cSize)) {
 	return *VEC2(obj);
     }
-    rb_raise(rb_eArgError, "expected Array or Point");
+    rb_raise(rb_eArgError, "expected Array, Point or Size");
 }
 
 VALUE rb_ccvec2_to_obj(cocos2d::Vec2 obj);
@@ -73,7 +73,7 @@ rb_any_to_ccsize(VALUE obj)
     else if (rb_obj_is_kind_of(obj, rb_cPoint) || rb_obj_is_kind_of(obj, rb_cSize)) {
 	return *SIZE(obj);
     }
-    rb_raise(rb_eArgError, "expected Array or Size");
+    rb_raise(rb_eArgError, "expected Array, Point or Size");
 }
 
 VALUE rb_ccsize_to_obj(cocos2d::Size obj);
