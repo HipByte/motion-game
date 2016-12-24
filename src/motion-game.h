@@ -52,7 +52,7 @@ rb_any_to_ccvec2(VALUE obj)
 	return cocos2d::Vec2(NUM2DBL(RARRAY_AT(obj, 0)),
 		NUM2DBL(RARRAY_AT(obj, 1)));
     }
-    else if (rb_obj_is_kind_of(obj, rb_cPoint)) {
+    else if (rb_obj_is_kind_of(obj, rb_cPoint) || rb_obj_is_kind_of(obj, rb_cSize)) {
 	return *VEC2(obj);
     }
     rb_raise(rb_eArgError, "expected Array or Point");
