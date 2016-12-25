@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.author      = 'HipByte'
   spec.email       = 'info@hipbyte.com'
   spec.homepage    = 'https://github.com/HipByte/motion-game'
-  spec.license     = 'BSD'
+  spec.license     = 'BSD-2-Clause'
 
   spec.files       = ['README.md', '.document', 'doc/API_reference.rb']
   spec.files      += Dir.glob('lib/**/*.rb') + Dir.glob('template/**/*')
