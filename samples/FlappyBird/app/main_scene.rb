@@ -76,7 +76,7 @@ module MG
 
     def add_pipe
       pipe_y = @random.rand(150.0..450.0)
-      [['pipe_up.png', 0], ['pipe_down.png', 850]].each do |sprite_name, y_offset|
+      [['pipe_up.png', 0], ['pipe_down.png', Director.shared.size.height - 480]].each do |sprite_name, y_offset|
         pipe = Sprite.new(sprite_name)
         pipe.attach_physics_box
         pipe.category_mask = WORLD
