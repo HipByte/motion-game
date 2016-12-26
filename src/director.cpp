@@ -204,6 +204,22 @@ director_show_stats(VALUE rcv, SEL sel)
     return DIRECTOR(rcv)->isDisplayStats() ? Qtrue : Qfalse;
 }
 
+/// @property #content_scale_factor
+/// @return [Float] the scale factor of content for multi-resolution.
+
+static VALUE
+director_content_scale_factor(VALUE rcv, SEL sel)
+{
+    return DBL2NUM(DIRECTOR(rcv)->getContentScaleFactor());
+}
+
+static VALUE
+director_content_scale_factor_set(VALUE rcv, SEL sel, VALUE scale)
+{
+    DIRECTOR(rcv)->setContentScaleFactor(NUM2DBL(scale));
+    return scale;
+}
+
 extern "C"
 void
 Init_Director(void)
@@ -224,6 +240,8 @@ Init_Director(void)
     rb_define_method(rb_cDirector, "size", director_size, 0);
     rb_define_method(rb_cDirector, "show_stats=", director_show_stats_set, 1);
     rb_define_method(rb_cDirector, "show_stats?", director_show_stats, 0);
+    rb_define_method(rb_cDirector, "content_scale_factor", director_content_scale_factor, 0);
+    rb_define_method(rb_cDirector, "content_scale_factor=", director_content_scale_factor_set, 1);
 
     // Internal.
 #if CC_TARGET_OS_IPHONE || CC_TARGET_OS_APPLETV
