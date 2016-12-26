@@ -43,8 +43,8 @@ Init_GLView(void)
     rb_define_method(rb_cGLView, "design_resolution_size", glview_design_resolution_size, 3);
 
     rb_cResolutionPolicy = rb_define_class_under(rb_mMC, "ResolutionPolicy", rb_cObject);
-    rb_define_const(rb_cResolutionPolicy, "EXACT_FIT", LONG2FIX(ResolutionPolicy::EXACT_FIT));
-    rb_define_const(rb_cResolutionPolicy, "NO_BORDER", LONG2FIX(ResolutionPolicy::NO_BORDER));
-    rb_define_const(rb_cResolutionPolicy, "SHOW_ALL", LONG2FIX(ResolutionPolicy::SHOW_ALL));
+    rb_define_const(rb_cResolutionPolicy, "EXACT_FIT", LONG2NUM(ResolutionPolicy::EXACT_FIT));
+    rb_define_const(rb_cResolutionPolicy, "NO_BORDER", LONG2NUM(ResolutionPolicy::NO_BORDER));
+    rb_define_const(rb_cResolutionPolicy, "SHOW_ALL", LONG2NUM(ResolutionPolicy::SHOW_ALL));
 }
 
