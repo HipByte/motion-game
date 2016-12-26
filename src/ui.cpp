@@ -6,6 +6,7 @@
 #include <ui/UIButton.h>
 #include <ui/UICheckBox.h>
 #include <ui/UISlider.h>
+#include <ui/UILoadingBar.h>
 #include <ui/UIScrollView.h>
 #include <ui/UIListView.h>
 #include <ui/UIWebView.h>
@@ -705,6 +706,54 @@ slider_on_changed(VALUE rcv, SEL sel)
     return rcv;
 }
 
+/// @class LoadingBar < Widget
+/// A loading bar widget.
+
+/// @group Constructors
+
+static VALUE rb_cUILoadingBar = Qnil;
+
+#define LOADING_BAR(obj) _COCOS_WRAP_GET(obj, cocos2d::ui::LoadingBar)
+
+static VALUE
+loadingbar_new(VALUE rcv, SEL sel)
+{
+    auto loadingBar = cocos2d::ui::LoadingBar::create();
+    loadingBar->setPercent(0);
+    return rb_cocos2d_object_new(loadingBar, rcv);
+}
+
+/// @endgroup
+
+/// @property #progress
+/// @return [Integer] the progress direction of the slider, as a percentage
+///   value from +1+ to +100+.
+
+static VALUE
+loadingbar_progress(VALUE rcv, SEL sel)
+{
+    return LONG2NUM(LOADING_BAR(rcv)->getPercent());
+}
+
+static VALUE
+loadingbar_progress_set(VALUE rcv, SEL sel, VALUE val)
+{
+    LOADING_BAR(rcv)->setPercent(NUM2LONG(val));
+    return val;
+}
+
+/// @method #load_texture(value)
+/// Load texture for loading bar.
+/// @param value [String] a texture name.
+/// @return [self] the receiver.
+
+static VALUE
+loadingbar_load_texture(VALUE rcv, SEL sel, VALUE name)
+{
+    LOADING_BAR(rcv)->loadTexture(RSTRING_PTR(StringValue(name)));
+    return rcv;
+}
+
 /// @class Layout < Widget
 
 /// @group Constructors
@@ -1319,6 +1368,13 @@ Init_UI(void)
     rb_define_method(rb_cUISlider, "load_slid_ball_textures", slider_load_slid_ball_textures, 3);
     rb_define_method(rb_cUISlider, "load_progress_bar_texture", slider_load_progress_bar_texture, 1);
     rb_define_method(rb_cUISlider, "on_changed", slider_on_changed, 0);
+
+    rb_cUILoadingBar = rb_define_class_under(rb_mMC, "LoadingBar", rb_cUIWidget);
+
+    rb_define_constructor(rb_cUILoadingBar, loadingbar_new, 0);
+    rb_define_method(rb_cUILoadingBar, "progress", loadingbar_progress, 0);
+    rb_define_method(rb_cUILoadingBar, "progress=", loadingbar_progress_set, 1);
+    rb_define_method(rb_cUILoadingBar, "load_texture", loadingbar_load_texture, 1);
 
     rb_cUILayout = rb_define_class_under(rb_mMC, "Layout", rb_cUIWidget);
 
