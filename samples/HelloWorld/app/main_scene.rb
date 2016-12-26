@@ -19,8 +19,7 @@ module MG
       password.position = [position_x, 570]
       add password
 
-      button = Button.new("test")
-      button.font_size = 32
+      button = Button.new("test", "", 32)
       button.anchor_point = [0, 0]
       button.position = [position_x, 500]
       button.load_texture_normal("button.png")

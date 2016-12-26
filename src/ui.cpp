@@ -582,21 +582,28 @@ static VALUE rb_cUIButton = Qnil;
 
 #define BUTTON(obj) _COCOS_WRAP_GET(obj, cocos2d::ui::Button)
 
-/// @method #initialize(title='')
+/// @method #initialize(title='', font='', font_size=0)
 /// Creates a new Button widget with an optional title.
 /// @param title [String] title for the button.
+/// @param font [String] name of the font the text widget should use.
+/// @param font_size [Integer] size of the font the text widget should use.
 
 static VALUE
 button_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
 {
-    VALUE title = Qnil;
-
-    rb_scan_args(argc, argv, "01", &title);
+    VALUE title = Qnil, font_name = Qnil, font_size = Qnil;;
+    rb_scan_args(argc, argv, "03", &title, &font_name, &font_size);
 
     cocos2d::ui::Button *button = cocos2d::ui::Button::create();
 
     if (title != Qnil) {
 	button->setTitleText(RSTRING_PTR(StringValue(title)));
+    }
+    if (font_name != Qnil) {
+	button->setTitleFontName(RSTRING_PTR(StringValue(font_name)));
+    }
+    if (font_size != Qnil) {
+	button->setTitleFontSize(NUM2LONG(font_size));
     }
 
     return rb_cocos2d_object_new(button, rcv);
