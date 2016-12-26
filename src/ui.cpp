@@ -389,6 +389,12 @@ static VALUE rb_cUITextField = Qnil;
 
 #define TEXT_FIELD(obj) _COCOS_WRAP_GET(obj, cocos2d::ui::TextField)
 
+/// @method #initialize(placeholder='', font='', font_size=0)
+/// Creates a new Text widget with optional content, font name and size.
+/// @param placeholder [String] text of placeholder.
+/// @param font [String] font name.
+/// @param font_size [Integer] font size.
+
 static VALUE
 textfield_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
 {
