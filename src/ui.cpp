@@ -1512,10 +1512,6 @@ Init_UI(void)
 {
     rb_cUIWidget = rb_define_class_under(rb_mMC, "Widget", rb_cNode);
     // rb_register_cocos2d_object_finalizer(rb_cUIWidget); removed because rb_cUIWidget inherits rb_cNode and it already has finalizer.
-    sym_begin = rb_name2sym("begin");
-    sym_move = rb_name2sym("move");
-    sym_end = rb_name2sym("end");
-    sym_cancel = rb_name2sym("cancel");
 
     rb_define_method(rb_cUIWidget, "enabled?", widget_enabled, 0);
     rb_define_method(rb_cUIWidget, "enabled=", widget_enabled_set, 1);
@@ -1526,6 +1522,11 @@ Init_UI(void)
     //rb_define_method(rb_cUIWidget, "size", widget_size, 0);
     //rb_define_method(rb_cUIWidget, "size=", widget_size_set, 1);
     rb_define_method(rb_cUIWidget, "on_touch", widget_on_touch, 0);
+
+    sym_begin = rb_name2sym("begin");
+    sym_move = rb_name2sym("move");
+    sym_end = rb_name2sym("end");
+    sym_cancel = rb_name2sym("cancel");
 
     rb_cUIText = rb_define_class_under(rb_mMC, "Text", rb_cUIWidget);
 
@@ -1592,13 +1593,14 @@ Init_UI(void)
     rb_define_method(rb_cUIButton, "load_texture_disabled", button_load_texture_disabled, 1);
 
     rb_cUICheckBox = rb_define_class_under(rb_mMC, "CheckBox", rb_cUIWidget);
-    sym_selected = rb_name2sym("selected");
-    sym_unselected = rb_name2sym("unselectd");
 
     rb_define_constructor(rb_cUICheckBox, checkbox_new, 5);
     rb_define_method(rb_cUICheckBox, "selected?", checkbox_selected, 0);
     rb_define_method(rb_cUICheckBox, "selected=", checkbox_set_selected, 1);
     rb_define_method(rb_cUICheckBox, "on_selected", checkbox_on_selected, 0);
+
+    sym_selected = rb_name2sym("selected");
+    sym_unselected = rb_name2sym("unselectd");
 
     rb_cUISlider = rb_define_class_under(rb_mMC, "Slider", rb_cUIWidget);
 
