@@ -3,6 +3,7 @@
 
 #include <ui/UIWidget.h>
 #include <ui/UIText.h>
+#include <ui/UITextField.h>
 #include <ui/UIButton.h>
 #include <ui/UICheckBox.h>
 #include <ui/UISlider.h>
@@ -158,6 +159,10 @@ widget_size_set(VALUE rcv, SEL sel, VALUE val)
 /// @group Constructors
 
 static VALUE rb_cUIText = Qnil;
+static VALUE sym_attach = Qnil;
+static VALUE sym_detach = Qnil;
+static VALUE sym_insert = Qnil;
+static VALUE sym_delete = Qnil;
 
 #define TEXT(obj) _COCOS_WRAP_GET(obj, cocos2d::ui::Text)
 
@@ -278,9 +283,9 @@ static VALUE sym_top = Qnil, sym_center = Qnil, sym_bottom = Qnil,
 	     sym_left = Qnil, sym_right = Qnil;
 
 static VALUE
-text_vertical_align(VALUE rcv, SEL sel)
+vertical_align_to_symbol(cocos2d::TextVAlignment alignment)
 {
-    switch (TEXT(rcv)->getTextVerticalAlignment()) {
+    switch (alignment) {
       case cocos2d::TextVAlignment::TOP:
 	return sym_top;
       case cocos2d::TextVAlignment::CENTER:
@@ -294,22 +299,34 @@ text_vertical_align(VALUE rcv, SEL sel)
 }
 
 static VALUE
-text_vertical_align_set(VALUE rcv, SEL sel, VALUE val)
+text_vertical_align(VALUE rcv, SEL sel)
+{
+    return vertical_align_to_symbol(TEXT(rcv)->getTextVerticalAlignment());
+}
+
+static cocos2d::TextVAlignment
+symbol_to_vertical_align(VALUE sym)
 {
     cocos2d::TextVAlignment align;
-    if (val == sym_top) {
+    if (sym == sym_top) {
 	align = cocos2d::TextVAlignment::TOP;
     }
-    else if (val == sym_center) {
+    else if (sym == sym_center) {
 	align = cocos2d::TextVAlignment::CENTER;
     }
-    else if (val == sym_bottom) {
+    else if (sym == sym_bottom) {
 	align = cocos2d::TextVAlignment::BOTTOM;
     }
     else {
 	rb_raise(rb_eArgError, "expected :top, :center or :bottom symbol");
     }
-    TEXT(rcv)->setTextVerticalAlignment(align);
+    return align;
+}
+
+static VALUE
+text_vertical_align_set(VALUE rcv, SEL sel, VALUE val)
+{
+    TEXT(rcv)->setTextVerticalAlignment(symbol_to_vertical_align(val));
     return val;
 }
 
@@ -317,9 +334,9 @@ text_vertical_align_set(VALUE rcv, SEL sel, VALUE val)
 /// @return [:left, :center, :right] the horizontal alignment of the text.
 
 static VALUE
-text_horizontal_align(VALUE rcv, SEL sel)
+horizontal_align_to_symbol(cocos2d::TextHAlignment align)
 {
-    switch (TEXT(rcv)->getTextHorizontalAlignment()) {
+    switch (align) {
       case cocos2d::TextHAlignment::LEFT:
 	return sym_left;
       case cocos2d::TextHAlignment::CENTER:
@@ -333,23 +350,224 @@ text_horizontal_align(VALUE rcv, SEL sel)
 }
 
 static VALUE
-text_horizontal_align_set(VALUE rcv, SEL sel, VALUE val)
+text_horizontal_align(VALUE rcv, SEL sel)
+{
+    return horizontal_align_to_symbol(TEXT(rcv)->getTextHorizontalAlignment());
+}
+
+static cocos2d::TextHAlignment
+symbol_to_horizontal_align(VALUE sym)
 {
     cocos2d::TextHAlignment align;
-    if (val == sym_left) {
+    if (sym == sym_left) {
 	align = cocos2d::TextHAlignment::LEFT;
     }
-    else if (val == sym_center) {
+    else if (sym == sym_center) {
 	align = cocos2d::TextHAlignment::CENTER;
     }
-    else if (val == sym_right) {
+    else if (sym == sym_right) {
 	align = cocos2d::TextHAlignment::RIGHT;
     }
     else {
 	rb_raise(rb_eArgError, "expected :left, :center or :right symbol");
     }
-    TEXT(rcv)->setTextHorizontalAlignment(align);
+    return align;
+}
+
+static VALUE
+text_horizontal_align_set(VALUE rcv, SEL sel, VALUE val)
+{
+    TEXT(rcv)->setTextHorizontalAlignment(symbol_to_horizontal_align(val));
     return val;
+}
+
+/// @class TextField < Widget
+
+/// @group Constructors
+
+static VALUE rb_cUITextField = Qnil;
+
+#define TEXT_FIELD(obj) _COCOS_WRAP_GET(obj, cocos2d::ui::TextField)
+
+static VALUE
+textfield_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
+{
+    VALUE placeholder = Qnil, font_name = Qnil, font_size = Qnil;
+    rb_scan_args(argc, argv, "03", &placeholder, &font_name, &font_size);
+
+    auto textField = cocos2d::ui::TextField::create();
+
+    if (placeholder != Qnil) {
+	textField->setPlaceHolder(RSTRING_PTR(StringValue(placeholder)));
+    }
+    if (font_name != Qnil) {
+	textField->setFontName(RSTRING_PTR(StringValue(font_name)));
+    }
+    if (font_size != Qnil) {
+	textField->setFontSize(NUM2LONG(font_size));
+    }
+
+    return rb_cocos2d_object_new(textField, rcv);
+}
+
+/// @endgroup
+
+/// @property #placeholder
+/// @return [String] a placeholder string.
+
+static VALUE
+textfield_placeholder(VALUE rcv, SEL sel)
+{
+    return RSTRING_NEW(TEXT_FIELD(rcv)->getPlaceHolder().c_str());
+}
+
+static VALUE
+textfield_placeholder_set(VALUE rcv, SEL sel, VALUE str)
+{
+    TEXT_FIELD(rcv)->setPlaceHolder(RSTRING_PTR(StringValue(str)));
+    return str;
+}
+
+/// @property #font
+/// @return [String] name of the font used by the widget.
+
+static VALUE
+textfield_font(VALUE rcv, SEL sel)
+{
+    return RSTRING_NEW(TEXT_FIELD(rcv)->getFontName().c_str());
+}
+
+static VALUE
+textfield_font_set(VALUE rcv, SEL sel, VALUE str)
+{
+    TEXT_FIELD(rcv)->setFontName(RSTRING_PTR(StringValue(str)));
+    return str;
+}
+
+/// @property #font_size
+/// @return [Integer] size of the font used by the widget.
+
+static VALUE
+textfield_font_size(VALUE rcv, SEL sel)
+{
+    return LONG2NUM(TEXT_FIELD(rcv)->getFontSize());
+}
+
+static VALUE
+textfield_font_size_set(VALUE rcv, SEL sel, VALUE val)
+{
+    TEXT_FIELD(rcv)->setFontSize(NUM2LONG(val));
+    return val;
+}
+
+/// @property #string
+/// @return [String] a string of TextField.
+
+static VALUE
+textfield_string(VALUE rcv, SEL sel)
+{
+    return RSTRING_NEW(TEXT_FIELD(rcv)->getString().c_str());
+}
+
+static VALUE
+textfield_string_set(VALUE rcv, SEL sel, VALUE str)
+{
+    TEXT_FIELD(rcv)->setString(RSTRING_PTR(StringValue(str)));
+    return str;
+}
+
+/// @method #password_enabled?
+/// Query whether password is enabled or not.
+/// @return [Boolean] true if enabled password.
+
+static VALUE
+textfield_password_enabled(VALUE rcv, SEL sel)
+{
+    return TEXT_FIELD(rcv)->isPasswordEnabled() == true ? Qtrue : Qfalse;
+}
+
+/// @method #password_enabled=(value)
+/// Toggle enable password input mode.
+/// @return [Boolean] true if enable password.
+
+static VALUE
+textfield_password_enabled_set(VALUE rcv, SEL sel, VALUE value)
+{
+    bool val = RTEST(value) ? true : false;
+    TEXT_FIELD(rcv)->setPasswordEnabled(val);
+    return rcv;
+}
+
+/// @property #vertical_align
+/// @return [:top, :center, :bottom] the vertical alignment of the text.
+
+static VALUE
+textfield_vertical_align(VALUE rcv, SEL sel)
+{
+    return vertical_align_to_symbol(TEXT_FIELD(rcv)->getTextVerticalAlignment());
+}
+
+static VALUE
+textfield_vertical_align_set(VALUE rcv, SEL sel, VALUE val)
+{
+    TEXT_FIELD(rcv)->setTextVerticalAlignment(symbol_to_vertical_align(val));
+    return val;
+}
+
+/// @property #horizontal_align
+/// @return [:left, :center, :right] the horizontal alignment of the text.
+
+static VALUE
+textfield_horizontal_align(VALUE rcv, SEL sel)
+{
+    return horizontal_align_to_symbol(TEXT_FIELD(rcv)->getTextHorizontalAlignment());
+}
+
+static VALUE
+textfield_horizontal_align_set(VALUE rcv, SEL sel, VALUE val)
+{
+    TEXT_FIELD(rcv)->setTextHorizontalAlignment(symbol_to_horizontal_align(val));
+    return val;
+}
+
+/// @method #on_event
+/// Configures a block to be called when a slider event is received on the
+/// widget.
+/// @yield [Symbol] the given block will be called when the event
+///   is received with a +Symbol+ that describes the type of event, which can
+///   be +:attach+, +:detach+, +:insert+ or +:delete+.
+/// @return [self] the receiver.
+
+static VALUE
+textfield_on_event(VALUE rcv, SEL sel)
+{
+    VALUE block = rb_current_block();
+    if (block == Qnil) {
+	rb_raise(rb_eArgError, "block not given");
+    }
+    block = rb_retain(block); // FIXME need release...
+
+    TEXT_FIELD(rcv)->addEventListener(
+	[block](cocos2d::Ref *ref,
+		cocos2d::ui::TextField::EventType event_type) {
+	    VALUE sym = Qnil;
+	    switch (event_type) {
+	      case cocos2d::ui::TextField::EventType::ATTACH_WITH_IME:
+		sym = sym_attach;
+		break;
+	      case cocos2d::ui::TextField::EventType::DETACH_WITH_IME:
+		sym = sym_detach;
+		break;
+	      case cocos2d::ui::TextField::EventType::INSERT_TEXT:
+		sym = sym_insert;
+		break;
+	      case cocos2d::ui::TextField::EventType::DELETE_BACKWARD:
+		sym = sym_delete;
+		break;
+	    }
+	    rb_block_call(block, 1, &sym);
+	});
+    return rcv;
 }
 
 /// @class Button < Widget
@@ -1332,6 +1550,29 @@ Init_UI(void)
     sym_bottom = rb_name2sym("bottom");
     sym_left = rb_name2sym("left");
     sym_right = rb_name2sym("right");
+
+    rb_cUITextField = rb_define_class_under(rb_mMC, "TextField", rb_cUIWidget);
+
+    rb_define_constructor(rb_cUITextField, textfield_new, -1);
+    rb_define_method(rb_cUITextField, "placeholder", textfield_placeholder, 0);
+    rb_define_method(rb_cUITextField, "placeholder=", textfield_placeholder_set, 1);
+    rb_define_method(rb_cUITextField, "font", textfield_font, 0);
+    rb_define_method(rb_cUITextField, "font=", textfield_font_set, 1);
+    rb_define_method(rb_cUITextField, "font_size", textfield_font_size, 0);
+    rb_define_method(rb_cUITextField, "string", textfield_string, 0);
+    rb_define_method(rb_cUITextField, "string=", textfield_string_set, 1);
+    rb_define_method(rb_cUITextField, "password_enabled?", textfield_password_enabled, 0);
+    rb_define_method(rb_cUITextField, "password_enabled=", textfield_password_enabled_set, 1);
+    rb_define_method(rb_cUITextField, "vertical_align", textfield_vertical_align, 0);
+    rb_define_method(rb_cUITextField, "vertical_align=", textfield_vertical_align_set, 1);
+    rb_define_method(rb_cUITextField, "horizontal_align", textfield_horizontal_align, 0);
+    rb_define_method(rb_cUITextField, "horizontal_align=", textfield_horizontal_align_set, 1);
+    rb_define_method(rb_cUITextField, "on_event", textfield_on_event, 0);
+
+    sym_attach = rb_name2sym("attach");
+    sym_detach = rb_name2sym("detach");
+    sym_insert = rb_name2sym("insert");
+    sym_delete = rb_name2sym("delete");
 
     rb_cUIButton = rb_define_class_under(rb_mMC, "Button", rb_cUIWidget);
 
