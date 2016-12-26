@@ -136,6 +136,7 @@ Init_Fluency(void)
 
     INIT_MODULE(Application)
     INIT_MODULE(Director)
+    INIT_MODULE(GLView)
     INIT_MODULE(Events)
     INIT_MODULE(Node)
     INIT_MODULE(Layer)

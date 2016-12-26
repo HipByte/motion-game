@@ -220,6 +220,16 @@ director_content_scale_factor_set(VALUE rcv, SEL sel, VALUE scale)
     return scale;
 }
 
+/// @property-readonly #glview
+/// @return [GLView] a GLView instance.
+
+static VALUE
+director_glview(VALUE rcv, SEL sel)
+{
+    auto glview = DIRECTOR(rcv)->getOpenGLView();
+    return rb_cocos2d_object_new(glview, rb_cGLView);
+}
+
 extern "C"
 void
 Init_Director(void)
@@ -242,6 +252,7 @@ Init_Director(void)
     rb_define_method(rb_cDirector, "show_stats?", director_show_stats, 0);
     rb_define_method(rb_cDirector, "content_scale_factor", director_content_scale_factor, 0);
     rb_define_method(rb_cDirector, "content_scale_factor=", director_content_scale_factor_set, 1);
+    rb_define_method(rb_cDirector, "glview", director_glview, 0);
 
     // Internal.
 #if CC_TARGET_OS_IPHONE || CC_TARGET_OS_APPLETV

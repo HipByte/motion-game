@@ -7,6 +7,7 @@ extern "C" {
 
 extern VALUE rb_mMC;
 extern VALUE rb_cDirector;
+extern VALUE rb_cGLView;
 extern VALUE rb_cApplication;
 extern VALUE rb_cNode;
 extern VALUE rb_cTouch;
@@ -25,6 +26,7 @@ extern VALUE rb_cColor;
 
 #define APPLICATION(obj) _COCOS_WRAP_GET(obj, cocos2d::Application)
 #define DIRECTOR(obj) _COCOS_WRAP_GET(obj, cocos2d::Director)
+#define GLVIEW(obj) _COCOS_WRAP_GET(obj, cocos2d::GLView)
 #define NODE(obj) _COCOS_WRAP_GET(obj, cocos2d::Node)
 #define SPRITE(obj) _COCOS_WRAP_GET(obj, cocos2d::Sprite)
 #define MENU(obj) _COCOS_WRAP_GET(obj, cocos2d::Menu)
