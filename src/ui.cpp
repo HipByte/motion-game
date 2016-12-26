@@ -585,8 +585,8 @@ static VALUE rb_cUIButton = Qnil;
 /// @method #initialize(title='', font='', font_size=0)
 /// Creates a new Button widget with an optional title.
 /// @param title [String] title for the button.
-/// @param font [String] name of the font the text widget should use.
-/// @param font_size [Integer] size of the font the text widget should use.
+/// @param font [String] name of the font the button widget should use.
+/// @param font_size [Integer] size of the font the button widget should use.
 
 static VALUE
 button_new(VALUE rcv, SEL sel, int argc, VALUE *argv)
