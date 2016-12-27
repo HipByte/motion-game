@@ -5,4 +5,5 @@ Motion::Project::App.setup do |app|
   app.name = 'FlappyBird'
 
   app.info_plist['UISupportedInterfaceOrientations'] = ['UIInterfaceOrientationPortrait']
+  app.info_plist['UIViewControllerBasedStatusBarAppearance'] = true # hide status bar
 end
