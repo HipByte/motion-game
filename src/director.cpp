@@ -23,23 +23,6 @@ director_instance(VALUE rcv, SEL sel)
     return mc_director_instance;
 }
 
-#if CC_TARGET_OS_IPHONE || CC_TARGET_OS_APPLETV
-static VALUE
-director_view_set(VALUE rcv, SEL sel, VALUE obj)
-{
-    cocos2d::GLView *glview =
-	cocos2d::GLViewImpl::createWithEAGLView((void *)obj);
-    DIRECTOR(rcv)->setOpenGLView(glview);
-    return obj;
-}
-
-static VALUE
-director_view_get(VALUE rcv, SEL sel)
-{
-    return (VALUE)DIRECTOR(rcv)->getOpenGLView()->getEAGLView();
-}
-#endif
-
 /// @group Managing Scenes
 
 /// @method #run(scene)
@@ -229,6 +212,24 @@ director_glview(VALUE rcv, SEL sel)
     auto glview = DIRECTOR(rcv)->getOpenGLView();
     return rb_cocos2d_object_new(glview, rb_cGLView);
 }
+
+// Internal
+#if CC_TARGET_OS_IPHONE || CC_TARGET_OS_APPLETV
+static VALUE
+director_view_set(VALUE rcv, SEL sel, VALUE obj)
+{
+    cocos2d::GLView *glview =
+	cocos2d::GLViewImpl::createWithEAGLView((void *)obj);
+    DIRECTOR(rcv)->setOpenGLView(glview);
+    return obj;
+}
+
+static VALUE
+director_view_get(VALUE rcv, SEL sel)
+{
+    return (VALUE)DIRECTOR(rcv)->getOpenGLView()->getEAGLView();
+}
+#endif
 
 extern "C"
 void
