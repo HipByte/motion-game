@@ -5,6 +5,7 @@
 #include <ui/UIText.h>
 #include <ui/UITextField.h>
 #include <ui/UIButton.h>
+#include <ui/UIRadioButton.h>
 #include <ui/UICheckBox.h>
 #include <ui/UISlider.h>
 #include <ui/UILoadingBar.h>
@@ -729,6 +730,121 @@ button_load_texture_disabled(VALUE rcv, SEL sel, VALUE val)
 {
   BUTTON(rcv)->loadTextureDisabled(RSTRING_PTR(StringValue(val)));
   return val;
+}
+
+
+/// @class RadioButton < Widget
+/// RadioButton is a specific type of two-states button that is similar to CheckBox.
+
+/// @group Constructors
+
+static VALUE rb_cUIRadioButton = Qnil;
+
+#define RADIO(obj) _COCOS_WRAP_GET(obj, cocos2d::ui::RadioButton)
+
+/// @method #initialize(background, cross)
+/// Creates a new RadioButton widget.
+/// @param background [String] a background texture name.
+/// @param cross [String] a cross texture name.
+/// @return [RadioButton] a RadioButton instance.
+
+static VALUE
+radio_new(VALUE rcv, SEL sel, VALUE background, VALUE cross)
+{
+    return rb_cocos2d_object_new(cocos2d::ui::RadioButton::create(
+	    RSTRING_PTR(StringValue(background)),
+	    RSTRING_PTR(StringValue(cross))),
+	    rcv);
+}
+
+/// @endgroup
+
+/// @method #selected?
+/// Get selected state of radio button.
+/// @return [Boolean] true if radio button is selected.
+
+static VALUE
+radio_selected(VALUE rcv, SEL sel)
+{
+    return RADIO(rcv)->isSelected() == true ? Qtrue : Qfalse;
+}
+
+/// @method #selected=(value)
+/// Set selected state for radio button.
+/// @param value [Boolean] true that radio button is selected, false otherwise.
+
+static VALUE
+radio_selected_set(VALUE rcv, SEL sel, VALUE val)
+{
+    bool selected = RTEST(val) ? true : false;
+    RADIO(rcv)->setSelected(selected);
+    return val;
+}
+
+
+/// @class RadioButtonGroup < Widget
+/// RadioButtonGroup groups designated radio buttons to make them interact to each other.
+
+/// @group Constructors
+
+static VALUE rb_cUIRadioButtonGroup = Qnil;
+
+#define RADIO_GROUP(obj) _COCOS_WRAP_GET(obj, cocos2d::ui::RadioButtonGroup)
+
+/// @method #initialize
+/// Create and return a empty RadioButtonGroup instance
+/// @return [RadioButtonGroup] a RadioButtonGroup instance.
+
+static VALUE
+radio_group_new(VALUE rcv, SEL sel)
+{
+    return rb_cocos2d_object_new(cocos2d::ui::RadioButtonGroup::create(), rcv);
+}
+
+/// @endgroup
+
+/// @method #add(button)
+/// Add a radio button into this group.
+/// @param button [RadioButton] a RadioButton.
+/// @return [self] the receiver.
+
+/// @method #<<(button)
+/// This is alias method of {#add}.
+
+static VALUE
+radio_group_add(VALUE rcv, SEL sel, VALUE radio)
+{
+    rb_add_relationship(rcv, radio);
+    RADIO_GROUP(rcv)->addRadioButton(RADIO(radio));
+    return rcv;
+}
+
+/// @method #select(value)
+/// Select a radio button.
+/// @param value [RadioButton, Integer] Select a radio button by RadioButton instance if it was given.
+///   If Integer value was given, select a radio button by index.
+/// @return [self] the receiver.
+
+static VALUE
+radio_group_select(VALUE rcv, SEL sel, VALUE val)
+{
+    if (rb_obj_is_kind_of(rcv, rb_cInteger)) {
+	RADIO_GROUP(rcv)->setSelectedButton(NUM2LONG(val));
+    }
+    else {
+	RADIO_GROUP(rcv)->setSelectedButton(RADIO(val));
+    }
+    return rcv;
+}
+
+/// @method #selected
+/// Get the index of selected radio button.
+/// @return [Integer] the index of selected radio button.
+
+static VALUE
+radio_group_selected(VALUE rcv, SEL sel)
+{
+    return LONG2NUM(RADIO_GROUP(rcv)->getSelectedButtonIndex());
 }
 
 /// @class CheckBox < Widget
@@ -1604,6 +1720,20 @@ Init_UI(void)
     rb_define_method(rb_cUIButton, "load_texture_normal", button_load_texture_normal, 1);
     rb_define_method(rb_cUIButton, "load_texture_pressed", button_load_texture_pressed, 1);
     rb_define_method(rb_cUIButton, "load_texture_disabled", button_load_texture_disabled, 1);
+
+    rb_cUIRadioButton = rb_define_class_under(rb_mMC, "RadioButton", rb_cUIWidget);
+
+    rb_define_constructor(rb_cUIRadioButton, radio_new, 2);
+    rb_define_method(rb_cUIRadioButton, "selected?", radio_selected, 0);
+    rb_define_method(rb_cUIRadioButton, "selected=", radio_selected_set, 1);
+
+    rb_cUIRadioButtonGroup = rb_define_class_under(rb_mMC, "RadioButtonGroup", rb_cUIWidget);
+
+    rb_define_constructor(rb_cUIRadioButtonGroup, radio_group_new, 0);
+    rb_define_method(rb_cUIRadioButtonGroup, "add", radio_group_add, 1);
+    rb_define_method(rb_cUIRadioButtonGroup, "<<", radio_group_add, 1);
+    rb_define_method(rb_cUIRadioButtonGroup, "select", radio_group_select, 1);
+    rb_define_method(rb_cUIRadioButtonGroup, "selected", radio_group_selected, 0);
 
     rb_cUICheckBox = rb_define_class_under(rb_mMC, "CheckBox", rb_cUIWidget);
 
