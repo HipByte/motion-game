@@ -787,7 +787,7 @@ checkbox_selected(VALUE rcv, SEL sel)
 /// @param value [Boolean] true that checkbox is selected, false otherwise.
 
 static VALUE
-checkbox_set_selected(VALUE rcv, SEL sel, VALUE val)
+checkbox_selected_set(VALUE rcv, SEL sel, VALUE val)
 {
     bool selected = RTEST(val) ? true : false;
     CHECKBOX(rcv)->setSelected(selected);
@@ -1609,7 +1609,7 @@ Init_UI(void)
 
     rb_define_constructor(rb_cUICheckBox, checkbox_new, 5);
     rb_define_method(rb_cUICheckBox, "selected?", checkbox_selected, 0);
-    rb_define_method(rb_cUICheckBox, "selected=", checkbox_set_selected, 1);
+    rb_define_method(rb_cUICheckBox, "selected=", checkbox_selected_set, 1);
     rb_define_method(rb_cUICheckBox, "on_selected", checkbox_on_selected, 0);
 
     sym_selected = rb_name2sym("selected");
