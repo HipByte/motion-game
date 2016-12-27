@@ -50,6 +50,29 @@ module MG
       @loading.position = [position_x, 300]
       add @loading
 
+      radio1 = RadioButton.new("radio_off.png", "radio_on.png")
+      radio1.anchor_point = [0, 0]
+      radio1.position = [position_x, 200]  
+      add radio1
+
+      radio2 = RadioButton.new("radio_off.png", "radio_on.png")
+      radio2.anchor_point = [0, 0]
+      radio2.position = [position_x + 50, 200]      
+      add radio2
+
+      radio3 = RadioButton.new("radio_off.png", "radio_on.png")
+      radio3.anchor_point = [0, 0]
+      radio3.position = [position_x + 100, 200]      
+      add radio3
+
+      radio_group = RadioButtonGroup.new
+      radio_group.position = [position_x, 300]  
+      radio_group << radio1
+      radio_group << radio2
+      radio_group << radio3
+      radio_group.select(radio2)
+      add radio_group
+
       start_update
     end
 
