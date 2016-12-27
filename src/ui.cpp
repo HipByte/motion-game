@@ -866,23 +866,18 @@ static VALUE sym_unselected = Qnil;
 
 #define CHECKBOX(obj) _COCOS_WRAP_GET(obj, cocos2d::ui::CheckBox)
 
-/// @method #initialize(background, background_selected, cross, background_disabled, front_cross_disabled)
+/// @method #initialize(background, cross)
 /// Creates a new CheckBox widget.
 /// @param background [String] a background texture name.
-/// @param background_selected [String] a background selected state texture name.
 /// @param cross [String] a cross texture name.
-/// @param front_cross_disabled [String] a cross dark state texture name.
 /// @return [CheckBox] a CheckBox instance.
 
 static VALUE
-checkbox_new(VALUE rcv, SEL sel, VALUE background, VALUE background_selected, VALUE cross, VALUE background_disabled, VALUE front_cross_disabled)
+checkbox_new(VALUE rcv, SEL sel, VALUE background, VALUE cross)
 {
     return rb_cocos2d_object_new(cocos2d::ui::CheckBox::create(
 	    RSTRING_PTR(StringValue(background)),
-	    RSTRING_PTR(StringValue(background_selected)),
-	    RSTRING_PTR(StringValue(cross)),
-	    RSTRING_PTR(StringValue(background_disabled)),
-	    RSTRING_PTR(StringValue(front_cross_disabled))),
+	    RSTRING_PTR(StringValue(cross))),
 	    rcv);
 }
 
@@ -1737,7 +1732,7 @@ Init_UI(void)
 
     rb_cUICheckBox = rb_define_class_under(rb_mMC, "CheckBox", rb_cUIWidget);
 
-    rb_define_constructor(rb_cUICheckBox, checkbox_new, 5);
+    rb_define_constructor(rb_cUICheckBox, checkbox_new, 2);
     rb_define_method(rb_cUICheckBox, "selected?", checkbox_selected, 0);
     rb_define_method(rb_cUICheckBox, "selected=", checkbox_selected_set, 1);
     rb_define_method(rb_cUICheckBox, "on_selected", checkbox_on_selected, 0);
