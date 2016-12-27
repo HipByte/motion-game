@@ -41,7 +41,7 @@ module MG
       @backgrounds << []
       4.times do
         skyline = Sprite.new('skyline.png')
-        skyline.position = [x, Director.shared.size.height / 2.0 + 30]
+        skyline.position = [x, Director.shared.size.height / 2.0 + 50]
         add skyline, 0
         x += skyline.size.width - 5
         @backgrounds.last << skyline
