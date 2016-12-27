@@ -1,6 +1,10 @@
 class Application < MG::Application
   def start
-    MG::Director.shared.run(MG::MainScene.new)
+    director = MG::Director.shared
+    size = director.size
+    director.glview.design_resolution_size(size.width, size.height, MG::ResolutionPolicy::SHOW_ALL)
+    director.content_scale_factor = 1.0
+    director.run(MG::MainScene.new)
   end
 
   def resume
