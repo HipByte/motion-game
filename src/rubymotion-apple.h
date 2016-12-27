@@ -25,7 +25,7 @@ VALUE rb_uint2big(VALUE);
 #define FIXNUM_MAX (LONG_MAX>>2)
 #define POSFIXABLE(f) (((VALUE)f) < FIXNUM_MAX+1)
 #define INT2NUM(x) (POSFIXABLE(x) ? LONG2FIX(x) : rb_uint2big(x))
-#define LONG2NUM(x) INT2NUM(x)
+#define LONG2NUM(x) INT2NUM((VALUE)x)
 long rb_num2int(VALUE);
 #define FIX2INT(x) ((int)FIX2LONG(x))
 #define NUM2INT(x) (FIXNUM_P(x) ? FIX2INT(x) : rb_num2int((VALUE)x))
