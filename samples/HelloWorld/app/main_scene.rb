@@ -26,12 +26,7 @@ module MG
       button.load_texture_pressed("button_pressed.png")
       add button
 
-      check_box = CheckBox.new(
-                      "check_box_normal.png",
-                      "",
-                      "check_box_active.png",
-                      "",
-                      "")
+      check_box = CheckBox.new("check_box_off.png", "check_box_on.png")
       check_box.anchor_point = [0, 0]
       check_box.position = [position_x, 420]
       add check_box
