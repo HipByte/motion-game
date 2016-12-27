@@ -773,7 +773,7 @@ checkbox_new(VALUE rcv, SEL sel, VALUE background, VALUE background_selected, VA
 /// @endgroup
 
 /// @method #selected?
-/// Get selcted state of checkbox.
+/// Get selected state of checkbox.
 /// @return [Boolean] true if checkbox is selected.
 
 static VALUE
@@ -783,7 +783,7 @@ checkbox_selected(VALUE rcv, SEL sel)
 }
 
 /// @method #selected=(value)
-/// Set selcted state for checkbox.
+/// Set selected state for checkbox.
 /// @param value [Boolean] true that checkbox is selected, false otherwise.
 
 static VALUE
