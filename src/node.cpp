@@ -353,6 +353,58 @@ node_delete_from_parent(VALUE rcv, SEL sel, int argc, VALUE *argv)
     return rcv;
 }
 
+/// @method #schedule(delay, repeat=0, interval=0)
+/// Schedules a given block for execution.
+/// @param delay [Float] the duration of the block, in seconds.
+/// @param repeat [Integer] the number of times the block should be repeated.
+///   If {Repeat::FOREVER} (or negative value directly) was given, the animation will loop forever.
+/// @param interval [Float] the interval between repetitions, in seconds.
+/// @yield [Float] the given block will be yield with the delta value,
+///   in seconds.
+/// @return [String] a token representing the task that can be passed to
+///   {#unschedule} when needed.
+
+static VALUE
+node_schedule(VALUE rcv, SEL sel, int argc, VALUE *argv)
+{
+    VALUE block = rb_current_block();
+    if (block == Qnil) {
+	rb_raise(rb_eArgError, "block not given");
+    }
+    block = rb_retain(block); // FIXME need release...
+
+    VALUE interval = Qnil, repeat = Qnil, delay = Qnil;
+    rb_scan_args(argc, argv, "12", &delay, &repeat, &interval);
+
+    float interval_c  = RTEST(interval) ? NUM2DBL(interval) : 0;
+    int tmp_repeat_c = RTEST(repeat) ? NUM2LONG(repeat) : 0;
+    unsigned int repeat_c = (tmp_repeat_c >= 0) ? tmp_repeat_c : kRepeatForever;
+    float delay_c = NUM2DBL(delay);
+    char key[100];
+    snprintf(key, sizeof key, "schedule_lambda_%p", (void *)block);
+
+    NODE(rcv)->schedule([block](float delta) {
+		VALUE delta_obj = DBL2NUM(delta);
+		rb_block_call(block, 1, &delta_obj);
+	    },
+	    interval_c, repeat_c, delay_c, key);
+
+    return RSTRING_NEW(key);
+}
+
+/// @method #unschedule(key)
+/// Unschedules a task that's currently running.
+/// @param key [String] a token representing the task to unschedule,
+///   returned by {#schedule}.
+/// @return [self] the receiver.
+
+static VALUE
+node_unschedule(VALUE rcv, SEL sel, VALUE key)
+{
+    NODE(rcv)->unschedule(RSTRING_PTR(StringValue(key)));
+    return rcv;
+}
+
 /// @class Parallax < Node
 
 #define PNODE(obj) _COCOS_WRAP_GET(obj, cocos2d::ParallaxNode)
@@ -529,6 +581,8 @@ Init_Node(void)
     rb_define_method(rb_cNode, "delete_from_parent", node_delete_from_parent, -1);
     rb_define_method(rb_cNode, "run_action", node_run_action, 1);
     rb_define_method(rb_cNode, "stop_all_actions", node_stop_all_actions, 0);
+    rb_define_method(rb_cNode, "schedule", node_schedule, -1);
+    rb_define_method(rb_cNode, "unschedule", node_unschedule, 1);
 
     rb_cParallaxNode = rb_define_class_under(rb_mMC, "Parallax", rb_cNode);
 
