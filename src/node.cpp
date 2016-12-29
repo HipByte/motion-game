@@ -353,6 +353,8 @@ node_delete_from_parent(VALUE rcv, SEL sel, int argc, VALUE *argv)
     return rcv;
 }
 
+/// @endgroup
+
 /// @method #schedule(delay, repeat=0, interval=0)
 /// Schedules a given block for execution.
 /// @param delay [Float] the duration of the block, in seconds.
