@@ -1209,7 +1209,7 @@ static VALUE
 layout_add(VALUE rcv, SEL sel, VALUE widget)
 {
     rb_add_relationship(rcv, widget);
-    LAYOUT(rcv)->addChild(WIDGET(widget));
+    LAYOUT(rcv)->addChild(NODE(widget));
     return widget;
 }
 
