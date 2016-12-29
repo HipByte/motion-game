@@ -392,6 +392,36 @@ node_schedule(VALUE rcv, SEL sel, int argc, VALUE *argv)
     return RSTRING_NEW(key);
 }
 
+/// @method #schedule_once(delay)
+/// Schedules a given block for execution that runs only once, with a delay of 0 or larger.
+/// @param delay [Float] the duration of the block, in seconds.
+/// @yield [Float] the given block will be yield with the delta value,
+///   in seconds.
+/// @return [String] a token representing the task that can be passed to
+///   {#unschedule} when needed.
+
+static VALUE
+node_schedule_once(VALUE rcv, SEL sel, VALUE delay)
+{
+    VALUE block = rb_current_block();
+    if (block == Qnil) {
+	rb_raise(rb_eArgError, "block not given");
+    }
+    block = rb_retain(block); // FIXME need release...
+
+    float delay_c = NUM2DBL(delay);
+    char key[100];
+    snprintf(key, sizeof key, "schedule_once_lambda_%p", (void *)block);
+
+    NODE(rcv)->scheduleOnce([block](float delta) {
+		VALUE delta_obj = DBL2NUM(delta);
+		rb_block_call(block, 1, &delta_obj);
+	    },
+	    delay_c, key);
+
+    return RSTRING_NEW(key);
+}
+
 /// @method #unschedule(key)
 /// Unschedules a task that's currently running.
 /// @param key [String] a token representing the task to unschedule,
@@ -582,6 +612,7 @@ Init_Node(void)
     rb_define_method(rb_cNode, "run_action", node_run_action, 1);
     rb_define_method(rb_cNode, "stop_all_actions", node_stop_all_actions, 0);
     rb_define_method(rb_cNode, "schedule", node_schedule, -1);
+    rb_define_method(rb_cNode, "schedule_once", node_schedule_once, 1);
     rb_define_method(rb_cNode, "unschedule", node_unschedule, 1);
 
     rb_cParallaxNode = rb_define_class_under(rb_mMC, "Parallax", rb_cNode);
