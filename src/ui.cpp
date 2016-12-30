@@ -702,34 +702,37 @@ button_zoom_scale_set(VALUE rcv, SEL sel, VALUE val)
 /// @method #load_texture_normal(name)
 /// Load normal state texture for button.
 /// @param name [String] A texture name.
+/// @return [self] the receiver.
 
 static VALUE
 button_load_texture_normal(VALUE rcv, SEL sel, VALUE val)
 {
   BUTTON(rcv)->loadTextureNormal(RSTRING_PTR(StringValue(val)));
-  return val;
+  return rcv;
 }
 
 /// @method #load_texture_pressed(name)
 /// Load selected state texture for button.
 /// @param name [String] A texture name.
+/// @return [self] the receiver.
 
 static VALUE
 button_load_texture_pressed(VALUE rcv, SEL sel, VALUE val)
 {
   BUTTON(rcv)->loadTexturePressed(RSTRING_PTR(StringValue(val)));
-  return val;
+  return rcv;
 }
 
 /// @method #load_texture_disabled(name)
 /// Load disabled state texture for button.
 /// @param name [String] A texture name.
+/// @return [self] the receiver.
 
 static VALUE
 button_load_texture_disabled(VALUE rcv, SEL sel, VALUE val)
 {
   BUTTON(rcv)->loadTextureDisabled(RSTRING_PTR(StringValue(val)));
-  return val;
+  return rcv;
 }
 
 
