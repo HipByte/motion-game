@@ -69,7 +69,8 @@ singleton_new(VALUE klass, SEL sel, int argc, VALUE *argv)
 void
 rb_define_constructor0(VALUE klass, void *func, int arity)
 {
-#if CC_TARGET_OS_IPHONE || CC_TARGET_OS_APPLETV
+#if (CC_TARGET_OS_IPHONE || CC_TARGET_OS_APPLETV) && !defined(__arm64__)
+    // FIXME : [#67] On arm64 device, it causes an exception.
     new_funcs[klass] = std::make_pair(func, arity);
     rb_define_singleton_method(klass, "new", singleton_new, -1);
 #else
