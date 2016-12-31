@@ -29,7 +29,7 @@ begin
     when 'iPhoneSimulator'
       cflags << " -arch i386 -arch x86_64 #{EXTRA_CFLAGS} -O#{OPTZ_LEVEL} -mios-simulator-version-min=#{XCODE_IOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_IPHONE=1 -include platform/ios/cocos2d-prefix.pch"
     when 'iPhoneOS'
-      cflags << " -arch armv7 -arch armv7s -arch arm64 #{EXTRA_CFLAGS} -O#{OPTZ_LEVEL} -mios-version-min=#{XCODE_IOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_IPHONE=1 -include platform/ios/cocos2d-prefix.pch"
+      cflags << " -arch armv7 -arch arm64 #{EXTRA_CFLAGS} -O#{OPTZ_LEVEL} -mios-version-min=#{XCODE_IOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_IPHONE=1 -include platform/ios/cocos2d-prefix.pch"
     when 'AppleTVSimulator'
       cflags << " -arch i386 -arch x86_64 #{EXTRA_CFLAGS} -O#{OPTZ_LEVEL} -mtvos-simulator-version-min=#{XCODE_TVOS_DEPLOYMENT_TARGET} -DCC_TARGET_OS_APPLETV=1 -include platform/tvos/cocos2d-prefix.pch"
     when 'AppleTVOS'
