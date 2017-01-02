@@ -135,6 +135,16 @@ point_distance(VALUE rcv, SEL sel, VALUE obj)
     return DBL2NUM(VEC2(rcv)->getDistance(rb_any_to_ccvec2(obj)));
 }
 
+/// @method #angle
+/// Calculates the angle in radians between this vector and the x-axis.
+/// @return [Float] the angle.
+
+static VALUE
+point_angle(VALUE rcv, SEL sel)
+{
+    return DBL2NUM(VEC2(rcv)->getAngle());
+}
+
 static VALUE
 point_inspect(VALUE rcv, SEL sel)
 {
@@ -473,6 +483,7 @@ Init_Types(void)
     rb_define_method(rb_cPoint, "+", point_plus, 1);
     rb_define_method(rb_cPoint, "-", point_minus, 1);
     rb_define_method(rb_cPoint, "distance", point_distance, 1);
+    rb_define_method(rb_cPoint, "angle", point_angle, 0);
     rb_define_method(rb_cPoint, "inspect", point_inspect, 0);
 
     rb_cSize = rb_define_class_under(rb_mMC, "Size", rb_cObject);
