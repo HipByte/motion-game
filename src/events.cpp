@@ -62,6 +62,15 @@ touch_location(VALUE rcv, SEL sel)
     return rb_ccvec2_to_obj(TOUCH(rcv)->getLocation());
 }
 
+/// @property-readonly #start_location
+/// @return [Point] the start_location of the touch event.
+
+static VALUE
+touch_start_location(VALUE rcv, SEL sel)
+{
+    return rb_ccvec2_to_obj(TOUCH(rcv)->getStartLocation());
+}
+
 extern "C"
 void
 Init_Events(void)
@@ -78,4 +87,5 @@ Init_Events(void)
     rb_cTouch = rb_define_class_under(rb_mEvents, "Touch", rb_cObject);
 
     rb_define_method(rb_cTouch, "location", touch_location, 0);
+    rb_define_method(rb_cTouch, "start_location", touch_start_location, 0);
 }
