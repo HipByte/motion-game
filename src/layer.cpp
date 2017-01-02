@@ -211,6 +211,7 @@ scene_on_touch_begin(VALUE rcv, SEL sel)
 
 /// @method #on_touch_end
 /// Starts listening for touch end events on the receiver.
+/// This method requires {#on_touch_begin} calling in order to catch the event.
 /// @yield [Events::Touch] the given block will be yield when a touch end
 ///   event is received.
 /// @return [self] the receiver.
@@ -223,6 +224,7 @@ scene_on_touch_end(VALUE rcv, SEL sel)
 
 /// @method #on_touch_move
 /// Starts listening for touch move events on the receiver.
+/// This method requires {#on_touch_begin} calling in order to catch the event.
 /// @yield [Events::Touch] the given block will be yield when a touch move
 ///   event is received.
 /// @return [self] the receiver.
@@ -235,6 +237,7 @@ scene_on_touch_move(VALUE rcv, SEL sel)
 
 /// @method #on_touch_cancel
 /// Starts listening for touch cancel events on the receiver.
+/// This method requires {#on_touch_begin} calling in order to catch the event.
 /// @yield [Events::Touch] the given block will be yield when a touch cancel
 ///   event is received.
 /// @return [self] the receiver.
