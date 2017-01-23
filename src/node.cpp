@@ -437,6 +437,16 @@ node_unschedule(VALUE rcv, SEL sel, VALUE key)
     return rcv;
 }
 
+/// @method #number_of_running_actions
+/// @return [Integer] the number of running actions for the node.
+
+static VALUE
+
+node_number_of_running_actions(VALUE rcv, SEL sel)
+{
+    return SSIZET2NUM(NODE(rcv)->getNumberOfRunningActions());
+}
+
 /// @class Parallax < Node
 
 #define PNODE(obj) _COCOS_WRAP_GET(obj, cocos2d::ParallaxNode)
@@ -616,6 +626,7 @@ Init_Node(void)
     rb_define_method(rb_cNode, "schedule", node_schedule, -1);
     rb_define_method(rb_cNode, "schedule_once", node_schedule_once, 1);
     rb_define_method(rb_cNode, "unschedule", node_unschedule, 1);
+    rb_define_method(rb_cNode, "number_of_running_actions", node_number_of_running_actions, 0);
 
     rb_cParallaxNode = rb_define_class_under(rb_mMC, "Parallax", rb_cNode);
 
