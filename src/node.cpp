@@ -441,7 +441,6 @@ node_unschedule(VALUE rcv, SEL sel, VALUE key)
 /// @return [Integer] the number of running actions for the node.
 
 static VALUE
-
 node_number_of_running_actions(VALUE rcv, SEL sel)
 {
     return SSIZET2NUM(NODE(rcv)->getNumberOfRunningActions());
