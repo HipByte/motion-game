@@ -29,6 +29,7 @@ VALUE rb_uint2big(VALUE);
 long rb_num2int(VALUE);
 #define FIX2INT(x) ((int)FIX2LONG(x))
 #define NUM2INT(x) (FIXNUM_P(x) ? FIX2INT(x) : rb_num2int((VALUE)x))
+#define SSIZET2NUM(v) LONG2NUM(v)
 
 const char *rb_str_cstr(VALUE);
 VALUE rb_string_value(VALUE*);
