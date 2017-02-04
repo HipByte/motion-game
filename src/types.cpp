@@ -124,6 +124,18 @@ point_minus(VALUE rcv, SEL sel, VALUE obj)
     return rb_ccvec2_to_obj(*VEC2(rcv) - rb_any_to_ccvec2(obj));
 }
 
+/// @method #equal?(point)
+/// check if the coordinates of the receiver and the coordinates of the given
+/// point object is equal.
+/// @param point [Point] A coordinate.
+/// @return [Boolean] true if the two points contain the same X and Y values.
+
+static VALUE
+point_equal(VALUE rcv, SEL sel, VALUE obj)
+{
+    return VEC2(rcv)->equals(rb_any_to_ccvec2(obj)) ? Qtrue : Qfalse;;
+}
+
 /// @method #distance(point)
 /// Calculates the distance between two points.
 /// @param point [Point] A point to calculate the distance.
@@ -482,6 +494,7 @@ Init_Types(void)
     rb_define_method(rb_cPoint, "y=", point_y_set, 1);
     rb_define_method(rb_cPoint, "+", point_plus, 1);
     rb_define_method(rb_cPoint, "-", point_minus, 1);
+    rb_define_method(rb_cPoint, "equal?", point_equal, 1);
     rb_define_method(rb_cPoint, "distance", point_distance, 1);
     rb_define_method(rb_cPoint, "angle", point_angle, 0);
     rb_define_method(rb_cPoint, "inspect", point_inspect, 0);
