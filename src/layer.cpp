@@ -158,6 +158,11 @@ scene_add_listener(VALUE rcv, cocos2d::EventListener *listener)
     return rcv;
 }
 
+static bool
+scene_dummy_onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *event) {
+    return true;
+}
+
 static VALUE
 scene_on_touch_event(VALUE rcv, SEL sel, mc_Scene_EventType type)
 {
@@ -192,6 +197,11 @@ scene_on_touch_event(VALUE rcv, SEL sel, mc_Scene_EventType type)
       case ON_CANCEL:
 	scene->touch_listener->onTouchCancelled = lambda;
 	break;
+    }
+    if (scene->touch_listener->onTouchBegan == NULL) {
+	// EventDispatcher will use the return value of 'onTouchBegan' to determine whether to pass following 'move', 'end'
+	// message to 'EventListenerTouchOneByOne' or not. So 'onTouchBegan' needs to be set.
+	scene->touch_listener->onTouchBegan = scene_dummy_onTouchBegan;
     }
 
     return scene_add_listener(rcv, scene->touch_listener);
