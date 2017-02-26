@@ -14,10 +14,16 @@ static std::unordered_map<VALUE, std::pair<void*, int>> new_funcs;
 static VALUE
 singleton_new(VALUE klass, SEL sel, int argc, VALUE *argv)
 {
-    auto iter = new_funcs.find(klass);
-    if (iter == new_funcs.end()) {
-	abort();
+    std::unordered_map<VALUE, std::pair<void*, int>>::iterator iter;
+    Class k = (Class)klass;
+    while (k != NULL) {
+	iter = new_funcs.find(klass);
+	if (iter != new_funcs.end()) {
+	    break;
+	}
+	k = class_getSuperclass(k);
     }
+    assert(k == NULL);
     auto f = iter->second;
     void *func = f.first;
     int arity = f.second;
