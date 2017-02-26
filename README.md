@@ -95,7 +95,7 @@ $ rake android:device
 
 ### API reference
 
-The whole framework API is documented. The [API reference](http://www.rubydoc.info/gems/motion-game/1.1.12) is available online.
+The whole framework API is documented. The [API reference](http://www.rubydoc.info/gems/motion-game/) is available online.
 
 You can also build the API reference locally:
 
