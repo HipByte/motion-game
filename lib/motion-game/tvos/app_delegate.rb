@@ -5,7 +5,6 @@ class AppDelegate
     @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
 
     rootViewController = RootViewController.alloc.init
-    rootViewController.wantsFullScreenLayout = true
     glview = CCEAGLView.viewWithFrame(@window.bounds)
     rootViewController.view = glview
 
