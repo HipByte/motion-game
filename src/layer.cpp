@@ -308,7 +308,7 @@ scene_on_contact_begin(VALUE rcv, SEL sel)
 
 /// @endgroup
 
-/// @property #gravity
+/// @method #gravity
 /// @return [Point] the gravity of the scene's physics world.
 
 static VALUE
@@ -316,6 +316,10 @@ scene_gravity(VALUE rcv, SEL sel)
 {
     return rb_ccvec2_to_obj(SCENE(rcv)->scene->getPhysicsWorld()->getGravity());
 }
+
+/// @method #gravity=(point)
+/// Set the gravity of the scene's physics world. Specify [0,0] if you don't want gravity.
+/// @param point [Point] the gravity of the scene's physics world.
 
 static VALUE
 scene_gravity_set(VALUE rcv, SEL sel, VALUE arg)
