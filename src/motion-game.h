@@ -16,6 +16,7 @@ extern VALUE rb_cScene;
 extern VALUE rb_cMenu;
 extern VALUE rb_cLabel;
 extern VALUE rb_cSprite;
+extern VALUE rb_cTileMap;
 extern VALUE rb_cParticle;
 extern VALUE rb_cAudio;
 extern VALUE rb_cPoint;
@@ -29,6 +30,7 @@ extern VALUE rb_cColor;
 #define GLVIEW(obj) _COCOS_WRAP_GET(obj, cocos2d::GLView)
 #define NODE(obj) _COCOS_WRAP_GET(obj, cocos2d::Node)
 #define SPRITE(obj) _COCOS_WRAP_GET(obj, cocos2d::Sprite)
+#define TILEMAP(obj) _COCOS_WRAP_GET(obj, cocos2d::TMXTiledMap)
 #define MENU(obj) _COCOS_WRAP_GET(obj, cocos2d::Menu)
 #define AUDIO(obj) _COCOS_WRAP_GET(obj, CocosDenshion::SimpleAudioEngine)
 #define VEC2(obj) _COCOS_WRAP_GET(obj, cocos2d::Vec2)
